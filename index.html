@@ -1,0 +1,727 @@
+<title>Хүсэлтийн портал</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  /* ---- Tokens: dark-first design. Bare :root = dark palette. ---- */
+  :root{
+    --bg:#0a0d15; --bg-glow:radial-gradient(1200px 600px at 80% -10%, rgba(124,108,246,.10), transparent 60%),
+                  radial-gradient(900px 500px at 10% 110%, rgba(94,234,212,.05), transparent 60%);
+    --surface:#111725; --surface-2:#0d1320; --surface-3:#161e30;
+    --border:#212b42; --border-strong:#2e3b5c;
+    --text:#e8edf7; --muted:#8e99b3; --faint:#5d6883;
+    --accent:#8b7cf7; --accent-strong:#a89bff; --accent-soft:rgba(139,124,247,.14);
+    --good:#34d399; --good-soft:rgba(52,211,153,.12);
+    --warn:#fbbf24; --danger:#f87171; --danger-soft:rgba(248,113,113,.12);
+    --btn-primary:#3b82f6; --btn-primary-text:#fff;
+    --ring:rgba(139,124,247,.45);
+    --shadow:0 16px 48px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f4f5fa; --bg-glow:radial-gradient(1200px 600px at 80% -10%, rgba(124,108,246,.08), transparent 60%);
+      --surface:#ffffff; --surface-2:#f7f8fc; --surface-3:#eef0f8;
+      --border:#e2e6f2; --border-strong:#c9d0e4;
+      --text:#1b2336; --muted:#5c6780; --faint:#8b94ac;
+      --accent:#6d5ce6; --accent-strong:#5a48d6; --accent-soft:rgba(109,92,230,.10);
+      --good:#0e9f6e; --good-soft:rgba(14,159,110,.10);
+      --warn:#b45309; --danger:#dc2626; --danger-soft:rgba(220,38,38,.08);
+      --btn-primary:#2563eb; --btn-primary-text:#fff;
+      --ring:rgba(109,92,230,.35);
+      --shadow:0 12px 36px rgba(27,35,54,.10);
+      color-scheme:light;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f4f5fa; --bg-glow:radial-gradient(1200px 600px at 80% -10%, rgba(124,108,246,.08), transparent 60%);
+    --surface:#ffffff; --surface-2:#f7f8fc; --surface-3:#eef0f8;
+    --border:#e2e6f2; --border-strong:#c9d0e4;
+    --text:#1b2336; --muted:#5c6780; --faint:#8b94ac;
+    --accent:#6d5ce6; --accent-strong:#5a48d6; --accent-soft:rgba(109,92,230,.10);
+    --good:#0e9f6e; --good-soft:rgba(14,159,110,.10);
+    --warn:#b45309; --danger:#dc2626; --danger-soft:rgba(220,38,38,.08);
+    --btn-primary:#2563eb; --btn-primary-text:#fff;
+    --ring:rgba(109,92,230,.35);
+    --shadow:0 12px 36px rgba(27,35,54,.10);
+    color-scheme:light;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0a0d15; --bg-glow:radial-gradient(1200px 600px at 80% -10%, rgba(124,108,246,.10), transparent 60%);
+    --surface:#111725; --surface-2:#0d1320; --surface-3:#161e30;
+    --border:#212b42; --border-strong:#2e3b5c;
+    --text:#e8edf7; --muted:#8e99b3; --faint:#5d6883;
+    --accent:#8b7cf7; --accent-strong:#a89bff; --accent-soft:rgba(139,124,247,.14);
+    --good:#34d399; --good-soft:rgba(52,211,153,.12);
+    --warn:#fbbf24; --danger:#f87171; --danger-soft:rgba(248,113,113,.12);
+    --btn-primary:#3b82f6; --btn-primary-text:#fff;
+    --ring:rgba(139,124,247,.45);
+    --shadow:0 16px 48px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); background-image:var(--bg-glow); background-attachment:fixed;
+    color:var(--text); font:15px/1.55 "Manrope",system-ui,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  .mono{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+  button{font:inherit; color:inherit; cursor:pointer}
+  input,textarea,select{font:inherit; color:var(--text)}
+  :is(button,input,textarea,select,a):focus-visible{outline:2px solid var(--ring); outline-offset:2px; border-radius:8px}
+  @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation:none!important; transition:none!important} }
+
+  /* ---------- login ---------- */
+  #login{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px}
+  .login-card{
+    width:min(420px,100%); background:var(--surface); border:1px solid var(--border); border-radius:18px;
+    box-shadow:var(--shadow); padding:40px 36px 30px; text-align:center;
+  }
+  .login-card .avatar{
+    width:76px; height:76px; margin:0 auto 18px; border-radius:50%;
+    background:conic-gradient(from 200deg, var(--accent), #4f8ef7, var(--good), var(--accent));
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:26px; color:#fff;
+    box-shadow:0 0 0 6px var(--accent-soft);
+  }
+  .login-card .domain{font-size:12px; color:var(--muted); letter-spacing:.04em}
+  .login-card h1{font-size:24px; font-weight:800; margin:8px 0 12px; text-wrap:balance}
+  .login-card p{color:var(--muted); font-size:14px; margin:0 auto 26px; max-width:34ch}
+  .g-btn{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+    background:var(--surface-2); border:1px solid var(--border-strong); border-radius:12px;
+    padding:13px 16px; font-weight:700; font-size:15px; transition:border-color .15s, background .15s;
+  }
+  .g-btn:hover{border-color:var(--accent); background:var(--surface-3)}
+  .login-card .foot{margin-top:22px; font-size:12px; color:var(--faint)}
+  .proto-badge{
+    display:inline-block; margin-bottom:14px; padding:3px 10px; border-radius:99px; font-size:11px; letter-spacing:.12em;
+    color:var(--accent-strong); background:var(--accent-soft); border:1px solid var(--border-strong); text-transform:uppercase;
+  }
+
+  /* ---------- app shell ---------- */
+  #app{display:none; min-height:100vh}
+  header.top{
+    position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:14px;
+    padding:12px clamp(16px,4vw,36px); background:color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter:blur(12px); border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex; align-items:center; gap:11px; min-width:0}
+  .brand .logo{width:36px; height:36px; border-radius:10px; flex:none;
+    background:conic-gradient(from 200deg, var(--accent), #4f8ef7, var(--good), var(--accent));
+    display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:15px}
+  .brand .t1{font-size:14px; font-weight:700; letter-spacing:.02em}
+  .brand .t2{font-size:10px; color:var(--faint); letter-spacing:.18em; text-transform:uppercase}
+  .spacer{flex:1}
+  .userchip{display:flex; align-items:center; gap:9px; padding:5px 12px 5px 6px; border:1px solid var(--border);
+    border-radius:99px; background:var(--surface)}
+  .userchip .uav{width:26px; height:26px; border-radius:50%; background:var(--accent); color:#fff; font-size:12px;
+    font-weight:800; display:flex; align-items:center; justify-content:center}
+  .userchip .un{font-size:13px; font-weight:700; line-height:1.15}
+  .userchip .ue{font-size:10.5px; color:var(--muted)}
+  .icon-btn{width:34px; height:34px; border-radius:99px; border:1px solid var(--border); background:var(--surface);
+    display:flex; align-items:center; justify-content:center; color:var(--muted)}
+  .icon-btn:hover{color:var(--text); border-color:var(--border-strong)}
+  .ghost-btn{display:flex; align-items:center; gap:7px; padding:7px 13px; border-radius:99px; border:1px solid var(--border);
+    background:var(--surface); color:var(--muted); font-size:13px; font-weight:600}
+  .ghost-btn:hover{color:var(--text)}
+  .soon{font-size:10px; color:var(--faint)}
+  .primary-pill{display:flex; align-items:center; gap:8px; padding:8px 16px; border-radius:99px; border:none;
+    background:var(--btn-primary); color:var(--btn-primary-text); font-size:13px; font-weight:700}
+  .primary-pill .cnt{background:rgba(255,255,255,.25); border-radius:99px; padding:0 7px; font-size:12px}
+  @media (max-width:900px){ .userchip .meta, .ghost-btn .lbl{display:none} }
+
+  /* ---------- layout ---------- */
+  main{display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:26px; align-items:start;
+    padding:28px clamp(16px,4vw,36px) 80px; max-width:1240px; margin:0 auto}
+  @media (max-width:1020px){ main{grid-template-columns:1fr} .sidebar{position:static; order:-1} }
+
+  .crumb{display:inline-flex; align-items:center; gap:7px; font-size:12px; color:var(--muted);
+    border:1px solid var(--border); border-radius:99px; padding:4px 12px; background:var(--surface); margin-bottom:14px}
+  .crumb .dot{width:6px; height:6px; border-radius:50%; background:var(--accent)}
+  h2.page{font-size:clamp(22px,3.4vw,30px); font-weight:800; margin:0 0 8px; text-wrap:balance}
+  .lede{color:var(--muted); font-size:14.5px; max-width:62ch; margin:0 0 22px}
+
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:18px}
+  .card.flash{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+  .step-head{display:flex; align-items:baseline; gap:11px; margin-bottom:4px}
+  .step-no{font-size:11px; color:var(--faint); border:1px solid var(--border); border-radius:7px; padding:2px 7px}
+  .step-head h3{font-size:16.5px; font-weight:800; margin:0}
+  .step-head .aside{margin-left:auto; font-size:12px; color:var(--faint)}
+  .step-sub{font-size:13px; color:var(--muted); margin:0 0 14px}
+
+  /* dept bar */
+  .dept-bar{display:flex; align-items:center; gap:13px; padding:15px 18px; flex-wrap:wrap}
+  .dept-bar .k{font-size:10.5px; letter-spacing:.16em; color:var(--faint)}
+  .dept-bar .v{font-weight:800; font-size:15px}
+  .tag-auto{font-size:11px; font-weight:700; color:var(--good); background:var(--good-soft); border-radius:99px; padding:3px 10px}
+  .dept-wrap{margin-left:auto; position:relative}
+  .dept-menu{position:absolute; right:0; top:calc(100% + 6px); z-index:30; min-width:320px; max-height:280px; overflow:auto;
+    background:var(--surface-3); border:1px solid var(--border-strong); border-radius:12px; box-shadow:var(--shadow); padding:6px; display:none}
+  .dept-menu.open{display:block}
+  .dept-menu button{display:block; width:100%; text-align:left; background:none; border:none; border-radius:8px;
+    padding:9px 11px; font-size:13.5px}
+  .dept-menu button:hover{background:var(--accent-soft)}
+  .dept-menu button.on{color:var(--accent-strong); font-weight:700}
+
+  /* search + categories */
+  .search{display:flex; align-items:center; gap:9px; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:11px; padding:10px 14px; margin-bottom:14px}
+  .search input{flex:1; background:none; border:none; outline:none; font-size:14px}
+  .search svg{color:var(--faint); flex:none}
+  .cat-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px}
+  .cat{display:flex; align-items:center; gap:12px; text-align:left; background:var(--surface-2);
+    border:1px solid var(--border); border-radius:12px; padding:13px 14px; transition:border-color .12s, background .12s}
+  .cat:hover{border-color:var(--border-strong)}
+  .cat.on{border-color:var(--accent); background:var(--accent-soft); box-shadow:0 0 0 3px var(--accent-soft)}
+  .cat .ic{width:36px; height:36px; flex:none; border-radius:10px; background:var(--surface-3); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; color:var(--muted)}
+  .cat.on .ic{color:var(--accent-strong); border-color:var(--accent)}
+  .cat .tt{font-size:13.5px; font-weight:700; line-height:1.3}
+  .cat .cd{font-size:10.5px; color:var(--faint); margin-top:2px}
+  .cat-empty{color:var(--faint); font-size:13.5px; padding:14px 4px; display:none}
+
+  /* description */
+  textarea#desc{width:100%; min-height:150px; resize:vertical; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:12px; padding:13px 15px; font-size:14.5px; line-height:1.6}
+  textarea#desc::placeholder{color:var(--faint)}
+  .desc-foot{display:flex; align-items:center; gap:10px; margin-top:9px; flex-wrap:wrap}
+  .desc-foot .hint{font-size:12px; color:var(--faint)}
+  .desc-foot .count{margin-left:auto; font-size:11.5px; color:var(--faint)}
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:11px}
+  .chip{border:1px dashed var(--border-strong); background:none; color:var(--muted); border-radius:99px;
+    padding:6px 13px; font-size:12.5px; font-weight:600}
+  .chip:hover{color:var(--text); border-color:var(--accent)}
+
+  /* links */
+  .link-row{display:flex; align-items:center; gap:9px; margin-bottom:9px}
+  .link-row .li-wrap{flex:1; display:flex; align-items:center; gap:9px; background:var(--surface-2);
+    border:1px solid var(--border); border-radius:11px; padding:10px 13px}
+  .link-row input{flex:1; background:none; border:none; outline:none; font-size:13.5px}
+  .link-row .st{font-size:11px; font-weight:700; flex:none}
+  .link-row .st.ok{color:var(--good)} .link-row .st.bad{color:var(--danger)}
+  .link-row .rm{border:none; background:none; color:var(--faint); font-size:17px; line-height:1; padding:4px}
+  .add-link{width:100%; border:1px dashed var(--border-strong); background:none; border-radius:11px; padding:11px;
+    color:var(--muted); font-size:13.5px; font-weight:600}
+  .add-link:hover{color:var(--text); border-color:var(--accent)}
+  .link-note{font-size:12.5px; color:var(--muted); margin-top:11px; line-height:1.6}
+  .fmt-box{margin-top:13px; background:var(--surface-2); border:1px solid var(--border); border-left:3px solid var(--accent);
+    border-radius:10px; padding:13px 16px; font-size:13px; color:var(--muted); line-height:1.7}
+  .fmt-box b{color:var(--text)}
+  .req-flag{font-size:12px; font-weight:700; color:var(--warn)}
+
+  /* urgency / confidentiality */
+  .seg-row{display:flex; gap:22px; flex-wrap:wrap}
+  .seg-group .lb{font-size:11px; letter-spacing:.12em; color:var(--faint); text-transform:uppercase; margin-bottom:7px}
+  .seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden; background:var(--surface-2)}
+  .seg button{border:none; background:none; padding:8px 16px; font-size:13px; font-weight:600; color:var(--muted)}
+  .seg button.on{background:var(--accent-soft); color:var(--accent-strong)}
+
+  .submit-bar{display:flex; align-items:center; gap:14px; margin-top:4px}
+  .submit{background:var(--btn-primary); color:var(--btn-primary-text); border:none; border-radius:12px;
+    padding:13px 26px; font-size:15px; font-weight:800}
+  .submit:disabled{opacity:.45; cursor:not-allowed}
+  .submit-note{font-size:12.5px; color:var(--faint)}
+
+  /* ---------- sidebar ---------- */
+  .sidebar{position:sticky; top:82px}
+  .sum-card{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px}
+  .sum-head{display:flex; align-items:center; gap:13px; margin-bottom:15px}
+  .ring{width:46px; height:46px; flex:none; position:relative}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .pc{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:10.5px; font-weight:600}
+  .sum-head .h1{font-size:15px; font-weight:800}
+  .sum-head .h2{font-size:11.5px; color:var(--faint)}
+  .sum-rows{display:flex; flex-direction:column}
+  .srow{display:flex; justify-content:space-between; gap:14px; padding:9px 0; border-top:1px solid var(--border); font-size:13px}
+  .srow .k{color:var(--faint); flex:none}
+  .srow .v{text-align:right; font-weight:600; max-width:22ch}
+  .srow .v.good{color:var(--good)}
+  .srow .v.dim{color:var(--faint); font-weight:500}
+  .checks{border-top:1px solid var(--border); margin-top:4px; padding-top:12px; display:flex; flex-direction:column; gap:7px}
+  .checks .c{display:flex; gap:8px; font-size:12.5px; color:var(--muted); align-items:baseline}
+  .checks .c .m{flex:none; font-weight:700}
+  .checks .c.ok .m{color:var(--good)} .checks .c.no .m{color:var(--faint)}
+  .sla{margin-top:14px; background:var(--surface-2); border:1px solid var(--border); border-radius:11px; padding:12px 14px}
+  .sla .t{font-size:12px; font-weight:800; margin-bottom:4px}
+  .sla .d{font-size:12px; color:var(--muted); line-height:1.6}
+
+  /* ---------- my requests ---------- */
+  #myview{display:none}
+  .req-item{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:12px;
+    display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap}
+  .req-item .no{font-size:11px; color:var(--faint); flex:none; padding-top:2px}
+  .req-item .bd{flex:1; min-width:220px}
+  .req-item .rt{font-weight:800; font-size:14.5px}
+  .req-item .rd{font-size:13px; color:var(--muted); margin-top:3px; max-width:70ch}
+  .req-item .rm2{font-size:11.5px; color:var(--faint); margin-top:7px}
+  .status{flex:none; font-size:11.5px; font-weight:700; border-radius:99px; padding:4px 12px}
+  .status.wait{color:var(--warn); background:color-mix(in srgb, var(--warn) 12%, transparent)}
+  .empty{color:var(--faint); text-align:center; padding:46px 20px; border:1px dashed var(--border-strong); border-radius:14px; font-size:14px}
+
+  /* ---------- tour ---------- */
+  #tour{position:absolute; z-index:60; width:min(330px, calc(100vw - 32px)); background:var(--surface-3);
+    border:1px solid var(--border-strong); border-radius:14px; box-shadow:var(--shadow); padding:16px 18px; display:none}
+  #tour .th{display:flex; justify-content:space-between; font-size:11px; color:var(--faint); margin-bottom:8px}
+  #tour .th button{background:none; border:none; color:var(--faint); font-size:11px; padding:0}
+  #tour .tt{font-weight:800; font-size:14.5px; margin-bottom:5px}
+  #tour .td{font-size:12.5px; color:var(--muted); line-height:1.55}
+  #tour .bars{display:flex; gap:4px; margin:12px 0}
+  #tour .bars i{flex:1; height:3px; border-radius:2px; background:var(--border)}
+  #tour .bars i.on{background:var(--accent)}
+  #tour .tf{display:flex; gap:8px; justify-content:flex-end}
+  #tour .tf .b1{background:none; border:1px solid var(--border-strong); border-radius:9px; padding:7px 15px; font-size:13px; font-weight:600}
+  #tour .tf .b2{background:var(--accent); border:none; color:#fff; border-radius:9px; padding:7px 17px; font-size:13px; font-weight:700}
+  #tour .never{display:flex; gap:7px; align-items:center; margin-top:11px; font-size:11.5px; color:var(--faint)}
+
+  /* toast */
+  #toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px); z-index:80;
+    background:var(--surface-3); border:1px solid var(--good); color:var(--text); border-radius:12px;
+    padding:13px 22px; font-size:14px; font-weight:700; opacity:0; pointer-events:none; transition:.25s; box-shadow:var(--shadow)}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+</style>
+
+<!-- ============ LOGIN ============ -->
+<section id="login">
+  <div class="login-card">
+    <span class="proto-badge">Прототип v0.1</span>
+    <div class="avatar" aria-hidden="true">ХП</div>
+    <div class="domain mono">portal.example.mn</div>
+    <h1>Хуулийн хүсэлтийн портал</h1>
+    <p>Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газрыг тань ажилтны бүртгэлээс автоматаар таних тул гараар бөглөх шаардлагагүй.</p>
+    <button class="g-btn" id="btnLogin">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.3-2.2H12v4.1h6.5c-.1 1.1-.8 2.7-2.4 3.8l3.7 2.9c2.2-2.1 3.7-5.1 3.7-8.6z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.7-2.9c-1 .7-2.4 1.2-4.2 1.2-3.2 0-6-2.2-7-5.1l-3.8 3C3.2 21.3 7.3 24 12 24z"/><path fill="#FBBC05" d="M5 14.3c-.2-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3l-3.9-3C.4 8.3 0 10.1 0 12s.4 3.7 1.2 5.3l3.8-3z"/><path fill="#EA4335" d="M12 4.7c2.3 0 3.8 1 4.7 1.8l3.4-3.3C18 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.7l3.9 3c1-2.9 3.7-5 6.9-5z"/></svg>
+      Google хаягаар нэвтрэх
+    </button>
+    <div class="foot mono">@netgroup.mn хаягтай ажилтан</div>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">ХП</div>
+      <div>
+        <div class="t1 mono">portal.example.mn</div>
+        <div class="t2">Хуулийн хүсэлтийн портал</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="userchip">
+      <div class="uav" id="uav">А</div>
+      <div class="meta"><div class="un" id="uname">—</div><div class="ue mono" id="uemail">—</div></div>
+    </div>
+    <button class="icon-btn" id="btnTheme" title="Гэрэлтэй / харанхуй горим" aria-label="Гэрэлтэй / харанхуй горим солих">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M19.4 4.6l-1.8 1.8M6.4 17.6l-1.8 1.8"/></svg>
+    </button>
+    <button class="icon-btn" id="btnHelp" title="Танилцуулга дахин үзэх" aria-label="Танилцуулга дахин үзэх">?</button>
+    <button class="ghost-btn" id="btnLogout"><span aria-hidden="true">⎋</span><span class="lbl">Гарах</span></button>
+    <button class="ghost-btn" disabled title="Тун удахгүй"><span class="lbl">Гэрээний сан</span> <span class="soon">· тун удахгүй</span></button>
+    <button class="primary-pill" id="btnMy">Миний хүсэлтүүд <span class="cnt" id="myCnt">0</span></button>
+  </header>
+
+  <!-- ---- form view ---- -->
+  <main id="formview">
+    <div>
+      <span class="crumb"><span class="dot"></span> Шинэ хүсэлт</span>
+      <h2 class="page">Хуулийн дүгнэлт, хяналтын хүсэлт илгээх</h2>
+      <p class="lede">Гурван зүйл л шаардлагатай: юуны талаар вэ, юу шийдвэрлүүлэх вэ, аль баримт дээр вэ. Бусдыг нь систем өөрөө бөглөнө.</p>
+
+      <div class="card dept-bar" id="deptCard">
+        <span class="k mono">ХҮСЭГЧ ГАЗАР</span>
+        <span class="v" id="deptName">Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар</span>
+        <span class="tag-auto">Автоматаар</span>
+        <div class="dept-wrap">
+          <button class="ghost-btn" id="btnDept">Өөрчлөх ▾</button>
+          <div class="dept-menu" id="deptMenu" role="menu"></div>
+        </div>
+      </div>
+
+      <div class="card" id="catCard">
+        <div class="step-head"><span class="step-no mono">01</span><h3>Юуны талаар хүсэлт вэ?</h3>
+          <span class="aside">Тохирохгүй бол «Бусад / эргэлзээтэй»</span></div>
+        <p class="step-sub">Ангилал сонгосноор хариуцагч, хугацаа, шаардлагууд автоматаар тодорхойлогдоно.</p>
+        <div class="search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="catSearch" type="search" placeholder="Хайх — «гэрээ», «тамга», «лиценз»…" aria-label="Ангилал хайх">
+        </div>
+        <div class="cat-grid" id="catGrid"></div>
+        <div class="cat-empty" id="catEmpty">Илэрц олдсонгүй — «Бусад / эргэлзээтэй» ангиллыг сонгоорой.</div>
+      </div>
+
+      <div class="card" id="descCard">
+        <div class="step-head"><span class="step-no mono">02</span><h3>Юу шийдвэрлүүлэх вэ?</h3></div>
+        <p class="step-sub">Аль заалт эргэлзээтэй, ямар шийдвэр гаргах вэ?</p>
+        <textarea id="desc" placeholder="Жишээ: Түншлэлийн гэрээний 5.2-т заасан торгуулийн хэмжээ манай стандартаас өндөр байна — хүлээн зөвшөөрөх боломжтой эсэх?"></textarea>
+        <div class="desc-foot">
+          <span class="hint">Эхний өгүүлбэрт нь асуудлаа нэг мөрөөр бичвэл хамгийн хурдан.</span>
+          <span class="count mono"><span id="descCnt">0</span> тэмдэгт</span>
+        </div>
+        <div class="chips">
+          <button class="chip" data-tpl="Ямар эрсдэлээс сэргийлэх: ">+ Ямар эрсдэлээс сэргийлэх</button>
+          <button class="chip" data-tpl="Хэзээ хэрэгтэй: ">+ Хэзээ хэрэгтэй</button>
+          <button class="chip" data-tpl="Харьцагч тал: ">+ Харьцагч тал</button>
+          <button class="chip" data-tpl="Өмнөх хүсэлт: ">+ Өмнөх хүсэлт</button>
+        </div>
+      </div>
+
+      <div class="card" id="linkCard">
+        <div class="step-head"><span class="step-no mono">03</span><h3>Баримтын линк</h3>
+          <span class="aside req-flag" id="linkReq" hidden>Энэ ангилалд линк заавал</span></div>
+        <div id="linkRows"></div>
+        <button class="add-link" id="btnAddLink">+ Линк нэмэх</button>
+        <p class="link-note">Google Drive / Docs линк. Илгээхийн өмнө линкээ «Хууль, комплаенсын газрын эрх зүйчид үзэх эрхтэй» болгож тохируулсан эсэхээ шалгана уу — эрхгүй линк ажлыг зогсооно.</p>
+        <div class="fmt-box">
+          <b>Ямар форматаар хавсаргах вэ</b><br>
+          · Батлагдаагүй, гарын үсэг/тамга байхгүй <b>төсөл</b> бол <b>Google Docs</b> эсвэл <b>Word</b>-ээр — эрх зүйч заалт дээр шууд засвар бичих боломжтой байх ёстой.<br>
+          · <b>PDF</b>-ийг зөвхөн гарын үсэгтэй, тамгатай <b>эцсийн хувилбарт</b>.
+        </div>
+      </div>
+
+      <div class="card" id="metaCard">
+        <div class="step-head"><span class="step-no mono">04</span><h3>Яаралтай байдал, нууцлал</h3></div>
+        <div class="seg-row">
+          <div class="seg-group">
+            <div class="lb">Яаралтай байдал</div>
+            <div class="seg" id="segUrg">
+              <button data-v="Энгийн" class="on">Энгийн</button>
+              <button data-v="Яаралтай">Яаралтай</button>
+            </div>
+          </div>
+          <div class="seg-group">
+            <div class="lb">Нууцлал</div>
+            <div class="seg" id="segConf">
+              <button data-v="Дотоод" class="on">Дотоод</button>
+              <button data-v="Нууц">Нууц</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-bar">
+        <button class="submit" id="btnSubmit" disabled>Хүсэлт илгээх</button>
+        <span class="submit-note" id="submitNote">Ангилал сонгож, тайлбараа бичсэний дараа идэвхжинэ.</span>
+      </div>
+    </div>
+
+    <!-- sidebar -->
+    <aside class="sidebar">
+      <div class="sum-card" id="sumCard">
+        <div class="sum-head">
+          <div class="ring">
+            <svg width="46" height="46" viewBox="0 0 46 46">
+              <circle cx="23" cy="23" r="19" fill="none" stroke="var(--border)" stroke-width="4"/>
+              <circle id="ringArc" cx="23" cy="23" r="19" fill="none" stroke="var(--accent)" stroke-width="4"
+                stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4"/>
+            </svg>
+            <div class="pc mono" id="ringPct">0%</div>
+          </div>
+          <div><div class="h1">Хүсэлтийн товч</div><div class="h2">Бөглөх тусам шинэчлэгднэ</div></div>
+        </div>
+        <div class="sum-rows">
+          <div class="srow"><span class="k">Ангилал</span><span class="v dim" id="sumCat">Сонгоогүй</span></div>
+          <div class="srow"><span class="k">Хүсэгч газар</span><span class="v" id="sumDept">—</span></div>
+          <div class="srow"><span class="k">Яаралтай байдал</span><span class="v good" id="sumUrg">Энгийн</span></div>
+          <div class="srow"><span class="k">Нууцлал</span><span class="v" id="sumConf">Дотоод</span></div>
+          <div class="srow"><span class="k">Хариуцагч</span><span class="v" id="sumOwner">Эрх зүйч</span></div>
+        </div>
+        <div class="checks">
+          <div class="c no" id="ckCat"><span class="m">✓</span> Ангилал сонгосон</div>
+          <div class="c no" id="ckDesc"><span class="m">✓</span> Тайлбар хангалттай (20+ тэмдэгт)</div>
+          <div class="c no" id="ckLink"><span class="m">✓</span> Баримтын линк</div>
+        </div>
+        <div class="sla">
+          <div class="t">Хариу өгөх хугацаа</div>
+          <div class="d" id="slaText">1–2 ажлын өдөр.</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ---- my requests view ---- -->
+  <main id="myview" style="grid-template-columns:1fr; max-width:860px">
+    <div>
+      <span class="crumb"><span class="dot"></span> Миний хүсэлтүүд</span>
+      <h2 class="page">Илгээсэн хүсэлтүүд</h2>
+      <p class="lede">Прототип горимд хүсэлтүүд зөвхөн энэ хөтөч дээр хадгалагдана. Production дээр серверт хадгалагдаж, эрх зүйчийн самбарт очно.</p>
+      <div id="reqList"></div>
+      <button class="ghost-btn" id="btnBack" style="margin-top:8px">← Шинэ хүсэлт рүү буцах</button>
+    </div>
+  </main>
+</div>
+
+<!-- tour -->
+<div id="tour" role="dialog" aria-label="Танилцуулга">
+  <div class="th"><span class="mono">Алхам <span id="tourNo">1</span> / 4</span><button id="tourSkip">Алгасах</button></div>
+  <div class="tt" id="tourTitle"></div>
+  <div class="td" id="tourDesc"></div>
+  <div class="bars" id="tourBars"><i></i><i></i><i></i><i></i></div>
+  <div class="tf">
+    <button class="b1" id="tourPrev">Буцах</button>
+    <button class="b2" id="tourNext">Дараагийнх</button>
+  </div>
+  <label class="never"><input type="checkbox" id="tourNever"> Дахиж харуулахгүй</label>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+
+/* ---------- data ---------- */
+const CATS = [
+  {c:'L01', t:'ГЗ-ийн тушаалын төсөл хянуулах',      k:'doc',   type:'Баримт хяналт'},
+  {c:'L02', t:'Гэрээний төсөл хянуулах',              k:'doc',   type:'Баримт хяналт'},
+  {c:'L03', t:'Заавар, журмын төсөл хянуулах',        k:'book',  type:'Баримт хяналт'},
+  {c:'L04', t:'Хуулийн дүгнэлт, зөвлөмж гаргуулах',   k:'scale', type:'Зөвлөгөө, маргаан'},
+  {c:'L05', t:'Компаниудын гэрчилгээ, дүрэм авах',    k:'badge', type:'Захиргааны үйлчилгээ'},
+  {c:'L06', t:'ТУЗ болон ХЭХ-ийн шийдвэрийн төсөл',   k:'users', type:'Баримт хяналт'},
+  {c:'L08', t:'Шүүхийн хэрэг маргаан',                k:'scale', type:'Зөвлөгөө, маргаан'},
+  {c:'L09', t:'Цахим гарын үсэг, E-Mongolia лавлагаа',k:'pen',   type:'Захиргааны үйлчилгээ'},
+  {c:'L10', t:'Албан бичгийн төсөл хянуулах',         k:'mail',  type:'Баримт хяналт'},
+  {c:'L11', t:'Компаниудын тамга даруулах',           k:'stamp', type:'Захиргааны үйлчилгээ'},
+  {c:'L12', t:'Зохицуулагч байгууллагын шаардлага',   k:'shield',type:'Зөвлөгөө, маргаан'},
+  {c:'L13', t:'Лиценз, тусгай зөвшөөрөл',             k:'key',   type:'Зөвлөгөө, маргаан'},
+  {c:'L14', t:'Бусад / эргэлзээтэй',                  k:'help',  type:'Зөвлөгөө, маргаан'},
+];
+const DEPTS = [
+  'Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар',
+  'Санхүү, бүртгэлийн газар','Эрсдэлийн удирдлагын газар','Мэдээллийн технологийн газар',
+  'Хүний нөөцийн газар','Маркетинг, олон нийттэй харилцах газар','Дотоод аудитын газар',
+];
+const ICONS = {
+  doc:'<path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 12h6M9 16h6"/>',
+  book:'<path d="M4 4a2 2 0 0 1 2-2h13v18H6a2 2 0 0 0-2 2z"/><path d="M4 20V4M8 6h8"/>',
+  scale:'<path d="M12 3v18M5 21h14M12 6l-6 2 2 6a4 4 0 0 1-4-1M12 6l6 2-2 6a4 4 0 0 0 4-1"/>',
+  badge:'<circle cx="12" cy="9" r="5"/><path d="M9 13l-2 8 5-3 5 3-2-8"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 5a3.5 3.5 0 0 1 0 7M17 14a6.5 6.5 0 0 1 4.5 6"/>',
+  pen:'<path d="M13 5l6 6L8 22H2v-6zM15 3l3-1 4 4-1 3"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  stamp:'<path d="M9 11V6a3 3 0 0 1 6 0v5M5 15a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2H5zM5 20h14"/>',
+  shield:'<path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/>',
+  key:'<circle cx="8" cy="15" r="4.5"/><path d="M11 12 21 2M16 7l3 3M13 10l2 2"/>',
+  help:'<circle cx="12" cy="12" r="9.5"/><path d="M9.5 9.5A2.6 2.6 0 0 1 14.5 10c0 1.8-2.5 2-2.5 3.6M12 17.2v.1"/>',
+};
+const svg = k => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round">${ICONS[k]||ICONS.doc}</svg>`;
+
+/* ---------- storage (best-effort) ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v===null ? d : JSON.parse(v);}catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+};
+
+/* ---------- state ---------- */
+const state = {
+  user:{name:'Алтанхуяг Лхагвадарь', email:'lkhagvadari.a@netgroup.mn'},
+  dept:DEPTS[0], cat:null, urg:'Энгийн', conf:'Дотоод',
+  reqs: store.get('hkg.reqs', []),
+};
+
+/* ---------- theme ---------- */
+function applyTheme(t){
+  if(t) document.documentElement.setAttribute('data-theme', t);
+  else document.documentElement.removeAttribute('data-theme');
+}
+applyTheme(store.get('hkg.theme', null));
+$('btnTheme').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const sysDark = !window.matchMedia('(prefers-color-scheme: light)').matches;
+  const next = cur ? (cur==='dark' ? 'light' : 'dark') : (sysDark ? 'light' : 'dark');
+  applyTheme(next); store.set('hkg.theme', next);
+});
+
+/* ---------- login / logout ---------- */
+function enterApp(){
+  $('login').style.display='none'; $('app').style.display='block';
+  $('uname').textContent = state.user.name;
+  $('uemail').textContent = state.user.email;
+  $('uav').textContent = state.user.name[0];
+  if(!store.get('hkg.tourDone', false)) setTimeout(()=>startTour(), 500);
+}
+$('btnLogin').addEventListener('click', enterApp);
+$('btnLogout').addEventListener('click', () => { $('app').style.display='none'; $('login').style.display='flex'; });
+
+/* ---------- dept menu ---------- */
+const deptMenu = $('deptMenu');
+function renderDeptMenu(){
+  deptMenu.innerHTML='';
+  DEPTS.forEach(d=>{
+    const b=document.createElement('button');
+    b.textContent=d; b.className = d===state.dept?'on':'';
+    b.addEventListener('click',()=>{ state.dept=d; $('deptName').textContent=d; deptMenu.classList.remove('open'); refresh(); });
+    deptMenu.appendChild(b);
+  });
+}
+$('btnDept').addEventListener('click', e=>{ e.stopPropagation(); renderDeptMenu(); deptMenu.classList.toggle('open'); });
+document.addEventListener('click', ()=>deptMenu.classList.remove('open'));
+
+/* ---------- categories ---------- */
+const catGrid=$('catGrid');
+function renderCats(filter=''){
+  const q=filter.trim().toLowerCase();
+  catGrid.innerHTML='';
+  let shown=0;
+  CATS.forEach(cat=>{
+    if(q && !(cat.t.toLowerCase().includes(q)||cat.c.toLowerCase().includes(q)||cat.type.toLowerCase().includes(q))) return;
+    shown++;
+    const b=document.createElement('button');
+    b.className='cat'+(state.cat&&state.cat.c===cat.c?' on':'');
+    b.innerHTML=`<span class="ic">${svg(cat.k)}</span><span><span class="tt">${cat.t}</span><br><span class="cd mono">${cat.c} · ${cat.type}</span></span>`;
+    b.addEventListener('click',()=>{ state.cat=cat; renderCats($('catSearch').value); refresh(); });
+    catGrid.appendChild(b);
+  });
+  $('catEmpty').style.display = shown? 'none':'block';
+}
+$('catSearch').addEventListener('input', e=>renderCats(e.target.value));
+renderCats();
+
+/* ---------- description ---------- */
+const desc=$('desc');
+desc.addEventListener('input', ()=>{ $('descCnt').textContent=desc.value.length; refresh(); });
+document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
+  const t=ch.dataset.tpl;
+  desc.value = desc.value ? desc.value.replace(/\s*$/,'\n')+t : t;
+  desc.focus(); $('descCnt').textContent=desc.value.length; refresh();
+}));
+
+/* ---------- links ---------- */
+const linkRows=$('linkRows');
+const validLink = v => /^https:\/\/(drive|docs)\.google\.com\/\S+/i.test(v.trim());
+function addLinkRow(){
+  const row=document.createElement('div'); row.className='link-row';
+  row.innerHTML=`<div class="li-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--faint);flex:none"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7L12.5 19"/></svg>
+      <input type="url" placeholder="https://drive.google.com/file/…" aria-label="Баримтын линк">
+      <span class="st"></span></div>
+    <button class="rm" title="Устгах" aria-label="Линк устгах">×</button>`;
+  const inp=row.querySelector('input'), st=row.querySelector('.st');
+  inp.addEventListener('input',()=>{
+    const v=inp.value.trim();
+    st.textContent = !v ? '' : validLink(v) ? 'зөв' : 'Drive/Docs линк биш';
+    st.className = 'st '+(!v?'':validLink(v)?'ok':'bad');
+    refresh();
+  });
+  row.querySelector('.rm').addEventListener('click',()=>{ if(linkRows.children.length>1){row.remove(); refresh();} else {inp.value=''; st.textContent=''; refresh();} });
+  linkRows.appendChild(row);
+}
+$('btnAddLink').addEventListener('click',()=>{ addLinkRow(); refresh(); });
+addLinkRow();
+const goodLinks = () => [...linkRows.querySelectorAll('input')].map(i=>i.value.trim()).filter(v=>validLink(v));
+
+/* ---------- segments ---------- */
+function bindSeg(id, key){
+  $(id).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); state[key]=b.dataset.v; refresh();
+  }));
+}
+bindSeg('segUrg','urg'); bindSeg('segConf','conf');
+
+/* ---------- summary / validation ---------- */
+function setCheck(id, ok){ const el=$(id); el.className='c '+(ok?'ok':'no'); }
+function refresh(){
+  const linkNeeded = !!(state.cat && state.cat.type==='Баримт хяналт');
+  $('linkReq').hidden = !linkNeeded;
+  const okCat=!!state.cat, okDesc=desc.value.trim().length>=20;
+  const okLink = linkNeeded ? goodLinks().length>0 : true;
+
+  $('sumCat').textContent = state.cat ? `${state.cat.c} · ${state.cat.t}` : 'Сонгоогүй';
+  $('sumCat').className = 'v'+(state.cat?'':' dim');
+  $('sumDept').textContent = state.dept;
+  $('sumUrg').textContent = state.urg;
+  $('sumUrg').className = 'v '+(state.urg==='Энгийн'?'good':'');
+  if(state.urg!=='Энгийн') $('sumUrg').style.color='var(--warn)'; else $('sumUrg').style.color='';
+  $('sumConf').textContent = state.conf;
+  $('sumOwner').textContent = state.cat && state.cat.type==='Зөвлөгөө, маргаан' ? 'Ахлах эрх зүйч' : 'Эрх зүйч';
+  setCheck('ckCat', okCat); setCheck('ckDesc', okDesc);
+  setCheck('ckLink', linkNeeded ? okLink : goodLinks().length>0);
+  $('ckLink').querySelector('.m').nextSibling.textContent = linkNeeded? ' Баримтын линк (заавал)':' Баримтын линк';
+
+  $('slaText').textContent = (state.urg==='Яаралтай' ? 'Ажлын 4 цагийн дотор эхний хариу. ' : '1–2 ажлын өдөр. ')
+    + (linkNeeded ? 'Энэ төрлийн хүсэлтэд баримтын линк ЗААВАЛ шаардлагатай — линкгүй илгээх боломжгүй.' : 'Баримтын линк нэмбэл шийдвэрлэлт хурдасна.');
+
+  let p=10; /* газар автоматаар танигдсан тул суурь 10% */
+  if(okCat)p+=30; if(okDesc)p+=35;
+  if(linkNeeded){ if(okLink)p+=25; } else { p+=15; if(goodLinks().length)p+=10; }
+  p=Math.min(p,100);
+  const off=119.4*(1-p/100);
+  $('ringArc').style.strokeDashoffset=off; $('ringPct').textContent=p+'%';
+
+  const ready = okCat&&okDesc&&okLink;
+  $('btnSubmit').disabled=!ready;
+  $('submitNote').textContent = ready ? 'Бүх шаардлага хангагдлаа — илгээхэд бэлэн.'
+    : !okCat ? 'Ангилал сонгоно уу.'
+    : !okDesc ? 'Тайлбараа дор хаяж 20 тэмдэгт бичнэ үү.'
+    : 'Энэ ангилалд Drive/Docs линк заавал шаардлагатай.';
+}
+
+/* ---------- submit + my requests ---------- */
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600); }
+function renderReqs(){
+  $('myCnt').textContent = state.reqs.length;
+  const list=$('reqList'); list.innerHTML='';
+  if(!state.reqs.length){ list.innerHTML='<div class="empty">Одоогоор илгээсэн хүсэлт алга. Форм бөглөж эхнийхээ илгээгээрэй.</div>'; return; }
+  [...state.reqs].reverse().forEach(r=>{
+    const d=document.createElement('div'); d.className='req-item';
+    d.innerHTML=`<span class="no mono">${r.id}</span>
+      <div class="bd"><div class="rt">${r.cat}</div><div class="rd">${r.desc.length>160?r.desc.slice(0,160)+'…':r.desc}</div>
+      <div class="rm2 mono">${r.dept} · ${r.urg} · ${r.conf} · ${r.links} линк · ${r.at}</div></div>
+      <span class="status wait">Хүлээгдэж байна</span>`;
+    list.appendChild(d);
+  });
+}
+$('btnSubmit').addEventListener('click',()=>{
+  const id='REQ-'+String(1000+state.reqs.length+1);
+  state.reqs.push({
+    id, cat:`${state.cat.c} · ${state.cat.t}`, desc:desc.value.trim(), dept:state.dept,
+    urg:state.urg, conf:state.conf, links:goodLinks().length,
+    at:new Date().toLocaleString('sv-SE').slice(0,16),
+  });
+  store.set('hkg.reqs', state.reqs);
+  state.cat=null; desc.value=''; $('descCnt').textContent='0';
+  linkRows.innerHTML=''; addLinkRow(); renderCats($('catSearch').value);
+  refresh(); renderReqs();
+  toast(`${id} — хүсэлт амжилттай илгээгдлээ`);
+});
+$('btnMy').addEventListener('click',()=>{ renderReqs(); $('formview').style.display='none'; $('myview').style.display='grid'; });
+$('btnBack').addEventListener('click',()=>{ $('myview').style.display='none'; $('formview').style.display='grid'; });
+
+/* ---------- tour ---------- */
+const TOUR=[
+  {el:'deptCard', t:'Газар тань автоматаар танигдана', d:'Нэвтэрсэн хаягаар тань ажилтны бүртгэлээс газрыг тодорхойлно. Буруу байвал «Өөрчлөх» дарж жагсаалтаас сонгоно.'},
+  {el:'catCard', t:'Ангиллаа сонго', d:'«Тамга», «гэрээ» гэх мэт бичвэл шууд шүүгдэнэ. Тохирохгүй бол «Бусад / эргэлзээтэй».'},
+  {el:'descCard', t:'Асуудлаа нэг мөрөөр', d:'Эхний өгүүлбэрт асуудлаа товч бичвэл эрх зүйч хамгийн хурдан ойлгоно. Доорх товчнуудаар нэмэлт мэдээллийн загвар оруулж болно.'},
+  {el:'sumCard', t:'Товч самбар', d:'Бөглөх тусам энд шаардлага, хариуцагч, хугацаа шинэчлэгдэнэ. 100% болмогц илгээх товч идэвхжинэ.'},
+];
+let tourI=0;
+function startTour(){ tourI=0; showTour(); }
+function showTour(){
+  const s=TOUR[tourI], el=$(s.el), tour=$('tour');
+  document.querySelectorAll('.card.flash,.sum-card.flash').forEach(x=>x.classList.remove('flash'));
+  el.classList.add('flash');
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  $('tourNo').textContent=tourI+1; $('tourTitle').textContent=s.t; $('tourDesc').textContent=s.d;
+  [...$('tourBars').children].forEach((b,i)=>b.className=i<=tourI?'on':'');
+  $('tourPrev').style.visibility = tourI? 'visible':'hidden';
+  $('tourNext').textContent = tourI===TOUR.length-1 ? 'Дуусгах' : 'Дараагийнх';
+  tour.style.display='block';
+  requestAnimationFrame(()=>{
+    const r=el.getBoundingClientRect(), tw=tour.offsetWidth;
+    let top=window.scrollY+r.bottom+10, left=window.scrollX+r.left+r.width/2-tw/2;
+    left=Math.max(16, Math.min(left, window.scrollX+document.documentElement.clientWidth-tw-16));
+    tour.style.top=top+'px'; tour.style.left=left+'px';
+  });
+}
+function endTour(){
+  $('tour').style.display='none';
+  document.querySelectorAll('.flash').forEach(x=>x.classList.remove('flash'));
+  if($('tourNever').checked) store.set('hkg.tourDone', true);
+}
+$('tourNext').addEventListener('click',()=>{ if(tourI<TOUR.length-1){tourI++; showTour();} else {store.set('hkg.tourDone', true); endTour();} });
+$('tourPrev').addEventListener('click',()=>{ if(tourI>0){tourI--; showTour();} });
+$('tourSkip').addEventListener('click',endTour);
+$('btnHelp').addEventListener('click',()=>{ if($('formview').style.display!=='none') startTour(); });
+
+refresh(); renderReqs();
+</script>
