@@ -39,7 +39,8 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   await page.click('.cat:has-text("буцаалтын")');
   R.prodVisible = await page.isVisible('#fldProduct');
   R.linkReq = await page.isVisible('#linkReq');
-  await page.selectOption('#product', { label: 'Итгэлцэл — 12 сар' });
+  await page.selectOption('#ptype', { label: 'Итгэлцэл ₮' });
+  await page.selectOption('#term', { label: '12 сар' });
   await page.fill('#amount', '250000000');
   R.amountFmt = await page.inputValue('#amount');
   await page.fill('#desc', 'Харилцагч эмнэлгийн шалтгаанаар 250 сая ₮-ийн итгэлцлээ хугацаанаас өмнө буцаах хүсэлт гаргасан — торгуульгүй зөвшөөрөх боломж?');
@@ -62,6 +63,27 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   R.mTitle = await page.textContent('#mTitle');
   R.mBodyHasAtt = (await page.textContent('#mBody')).includes('[Дэлгэцийн зураг]');
   await shot('v4-05-modal.png');
+  await page.click('#mOk'); await page.waitForTimeout(200);
+
+  // UC5b: F01 rate order — base auto-fill, matrix verdict, block over limit
+  await page.fill('#catSearch', ''); await page.waitForTimeout(100);
+  await page.click('.cat:has-text("Хүүгийн тохируулгын")'); await page.waitForTimeout(150);
+  await page.selectOption('#ptype', { label: 'Итгэлцэл ₮' });
+  await page.selectOption('#term', { label: '12 сар' }); await page.waitForTimeout(100);
+  R.baseAuto = await page.inputValue('#rateNow');
+  await page.fill('#amount', '250000000');
+  await page.fill('#desc', 'Байнгын харилцагч 250 сая ₮-ийн итгэлцэлдээ 18.5% хүсэж байна, өрсөлдөгчийн саналтай.');
+  await page.fill('#rateAsk', '18.5');
+  await page.setInputFiles('#fileR', require('path').join(__dirname, 'shot.png')); await page.waitForTimeout(300);
+  R.verdict185 = await page.textContent('#rateVerdict');
+  R.enabled185 = !(await page.isDisabled('#btnSubmit'));
+  await page.fill('#rateAsk', '25'); await page.waitForTimeout(100);
+  R.blocked25 = await page.isDisabled('#btnSubmit');
+  R.verdict25 = (await page.textContent('#rateVerdict')).slice(0, 40);
+  await page.fill('#rateAsk', '18.0'); await page.waitForTimeout(100);
+  await page.click('#btnSubmit'); await page.waitForTimeout(300);
+  R.mailHasOrder = (await page.textContent('#mBody')).includes('NC-01/54-2025');
+  await shot('v5-order.png');
   await page.click('#mOk'); await page.waitForTimeout(200);
 
   // UC6: feedback flow — G05 bug, severity critical

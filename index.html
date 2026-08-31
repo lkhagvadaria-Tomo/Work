@@ -14,64 +14,64 @@
 
     --bg:#f3f4f0;
     --bg-glow:radial-gradient(1100px 540px at 88% -10%, rgba(20,74,143,.06), transparent 62%),
-              radial-gradient(760px 460px at -4% 112%, rgba(143,111,31,.05), transparent 60%);
+              radial-gradient(760px 460px at -4% 112%, rgba(10,125,114,.05), transparent 60%);
     --surface:#ffffff; --surface-2:#f6f7f3; --surface-3:#ebede6;
     --border:#e1e3da; --border-strong:#c6cabb;
     --text:#1a2531; --muted:#5b6774; --faint:#8d97a2;
-    --brand:#14498f; --brand-strong:#0d3569; --brand-soft:rgba(20,73,143,.08);
-    --gold:#8f6f1f; --gold-soft:rgba(143,111,31,.10);
+    --brand:#2e3192; --brand-strong:#232577; --brand-soft:rgba(46,49,146,.08);
+    --gold:#0a7d72; --gold-soft:rgba(10,125,114,.10);
     --good:#1c7a52; --good-soft:rgba(28,122,82,.10);
     --warn:#93621a; --warn-soft:rgba(147,98,26,.12);
     --danger:#b3362c; --danger-soft:rgba(179,54,44,.08);
-    --btn-primary:#14498f; --btn-primary-hover:#0d3569; --btn-primary-text:#fff;
-    --ring:rgba(20,73,143,.35);
+    --btn-primary:#2e3192; --btn-primary-hover:#232577; --btn-primary-text:#fff;
+    --ring:rgba(46,49,146,.35);
     --shadow:0 10px 32px rgba(24,36,48,.09);
     --shadow-lg:0 24px 64px rgba(24,36,48,.16);
     /* chart colors (validated) */
-    --ch-bar:#1450a0; --ch-area:rgba(20,80,160,.12);
-    --st-new:#1450a0; --st-review:#b7791f; --st-done:#0ca30c; --st-rej:#d03b3b;
+    --ch-bar:#3d40b0; --ch-area:rgba(46,49,146,.12);
+    --st-new:#3d40b0; --st-review:#b7791f; --st-done:#0ca30c; --st-rej:#d03b3b;
     color-scheme:light;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
       --bg:#0c131d;
       --bg-glow:radial-gradient(1100px 540px at 88% -10%, rgba(143,180,220,.06), transparent 62%),
-                radial-gradient(760px 460px at -4% 112%, rgba(201,166,72,.05), transparent 60%);
+                radial-gradient(760px 460px at -4% 112%, rgba(63,198,183,.05), transparent 60%);
       --surface:#111b28; --surface-2:#0e1622; --surface-3:#182434;
       --border:#223041; --border-strong:#33455b;
       --text:#e8ecf0; --muted:#96a3b2; --faint:#5f6d7d;
-      --brand:#8fb4dc; --brand-strong:#b6d1ec; --brand-soft:rgba(143,180,220,.12);
-      --gold:#c9a648; --gold-soft:rgba(201,166,72,.13);
+      --brand:#9da3f2; --brand-strong:#c0c4f7; --brand-soft:rgba(157,163,242,.13);
+      --gold:#3fc6b7; --gold-soft:rgba(63,198,183,.13);
       --good:#4cc491; --good-soft:rgba(76,196,145,.12);
       --warn:#d9a94a; --warn-soft:rgba(217,169,74,.13);
       --danger:#e0796f; --danger-soft:rgba(224,121,111,.12);
-      --btn-primary:#2c66a8; --btn-primary-hover:#3878bf; --btn-primary-text:#fff;
-      --ring:rgba(143,180,220,.4);
+      --btn-primary:#4d53c4; --btn-primary-hover:#5f65d6; --btn-primary-text:#fff;
+      --ring:rgba(157,163,242,.4);
       --shadow:0 14px 40px rgba(0,0,0,.45);
       --shadow-lg:0 28px 72px rgba(0,0,0,.55);
-      --ch-bar:#4a86d4; --ch-area:rgba(74,134,212,.16);
-      --st-new:#4a86d4; --st-review:#fab219; --st-done:#0ca30c; --st-rej:#d03b3b;
+      --ch-bar:#6b70d8; --ch-area:rgba(107,112,216,.16);
+      --st-new:#6b70d8; --st-review:#b8860c; --st-done:#0ca30c; --st-rej:#d03b3b;
       color-scheme:dark;
     }
   }
   :root[data-theme="dark"]{
     --bg:#0c131d;
     --bg-glow:radial-gradient(1100px 540px at 88% -10%, rgba(143,180,220,.06), transparent 62%),
-              radial-gradient(760px 460px at -4% 112%, rgba(201,166,72,.05), transparent 60%);
+              radial-gradient(760px 460px at -4% 112%, rgba(63,198,183,.05), transparent 60%);
     --surface:#111b28; --surface-2:#0e1622; --surface-3:#182434;
     --border:#223041; --border-strong:#33455b;
     --text:#e8ecf0; --muted:#96a3b2; --faint:#5f6d7d;
-    --brand:#8fb4dc; --brand-strong:#b6d1ec; --brand-soft:rgba(143,180,220,.12);
-    --gold:#c9a648; --gold-soft:rgba(201,166,72,.13);
+    --brand:#9da3f2; --brand-strong:#c0c4f7; --brand-soft:rgba(157,163,242,.13);
+    --gold:#3fc6b7; --gold-soft:rgba(63,198,183,.13);
     --good:#4cc491; --good-soft:rgba(76,196,145,.12);
     --warn:#d9a94a; --warn-soft:rgba(217,169,74,.13);
     --danger:#e0796f; --danger-soft:rgba(224,121,111,.12);
-    --btn-primary:#2c66a8; --btn-primary-hover:#3878bf; --btn-primary-text:#fff;
-    --ring:rgba(143,180,220,.4);
+    --btn-primary:#4d53c4; --btn-primary-hover:#5f65d6; --btn-primary-text:#fff;
+    --ring:rgba(157,163,242,.4);
     --shadow:0 14px 40px rgba(0,0,0,.45);
     --shadow-lg:0 28px 72px rgba(0,0,0,.55);
-    --ch-bar:#4a86d4; --ch-area:rgba(74,134,212,.16);
-    --st-new:#4a86d4; --st-review:#fab219; --st-done:#0ca30c; --st-rej:#d03b3b;
+    --ch-bar:#6b70d8; --ch-area:rgba(107,112,216,.16);
+    --st-new:#6b70d8; --st-review:#b8860c; --st-done:#0ca30c; --st-rej:#d03b3b;
     color-scheme:dark;
   }
 
@@ -94,24 +94,24 @@
   #login{min-height:100vh; display:grid; grid-template-columns:1.08fr 1fr}
   @media (max-width:880px){ #login{grid-template-columns:1fr} .login-brand{min-height:0!important; padding:34px 30px!important} .login-brand .vals{display:none} }
   .login-brand{
-    background-image:radial-gradient(900px 480px at 110% -14%, rgba(201,166,72,.14), transparent 55%),
+    background-image:radial-gradient(900px 480px at 110% -14%, rgba(0,167,157,.16), transparent 55%),
                      radial-gradient(700px 520px at -12% 116%, rgba(255,255,255,.05), transparent 55%),
-                     linear-gradient(158deg,#0a2547 0%, #103a6b 56%, #0c2f58 100%);
+                     linear-gradient(158deg,#1d1f66 0%, #2e3192 56%, #232577 100%);
     color:#eef3f8; padding:clamp(38px,6vw,84px); display:flex; flex-direction:column; justify-content:space-between; gap:40px;
   }
   .lb-top{display:flex; align-items:center; gap:13px}
   .lb-top .mark{width:42px; height:42px; border-radius:11px; background:rgba(255,255,255,.1);
     border:1px solid rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center;
-    font-family:var(--font-display); font-weight:700; font-size:21px; color:#e8d9a8}
+    font-family:var(--font-display); font-weight:700; font-size:21px; color:#6fdccf}
   .lb-top .w1{font-size:13.5px; font-weight:700; letter-spacing:.04em}
   .lb-top .w2{font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:rgba(238,243,248,.55); margin-top:2px}
-  .lb-mid .eyebrow{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#d9c583; margin-bottom:18px; font-weight:600}
+  .lb-mid .eyebrow{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#56d6c8; margin-bottom:18px; font-weight:600}
   .lb-mid h1{font-family:var(--font-display); font-weight:600; font-size:clamp(28px,3.4vw,42px); line-height:1.18;
     margin:0 0 16px; letter-spacing:-.01em; text-wrap:balance}
   .lb-mid p{color:rgba(238,243,248,.72); font-size:15px; line-height:1.7; max-width:44ch; margin:0}
   .vals{display:flex; flex-direction:column; gap:13px}
   .vals .v{display:flex; gap:12px; align-items:center; font-size:13.5px; color:rgba(238,243,248,.8)}
-  .vals .v .tick{color:#d9c583; flex:none}
+  .vals .v .tick{color:#56d6c8; flex:none}
   .vals .v b{color:#fff; font-weight:600}
   .lb-foot{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(238,243,248,.42)}
 
@@ -153,8 +153,8 @@
     padding:12px clamp(18px,4vw,44px); background:color-mix(in srgb, var(--bg) 86%, transparent);
     backdrop-filter:blur(14px); border-bottom:1px solid var(--border)}
   .brand{display:flex; align-items:center; gap:12px; min-width:0}
-  .brand .logo{width:38px; height:38px; border-radius:10px; flex:none; background:linear-gradient(150deg,#0a2547,#14498f);
-    display:flex; align-items:center; justify-content:center; color:#e8d9a8; font-family:var(--font-display); font-weight:700; font-size:18px}
+  .brand .logo{width:38px; height:38px; border-radius:10px; flex:none; background:linear-gradient(150deg,#1d1f66,#2e3192);
+    display:flex; align-items:center; justify-content:center; color:#6fdccf; font-family:var(--font-display); font-weight:700; font-size:18px}
   .brand .t1{font-size:14.5px; font-weight:700}
   .brand .t2{font-size:9.5px; color:var(--faint); letter-spacing:.2em; text-transform:uppercase; margin-top:1px}
   nav.views{display:flex; gap:2px; margin-left:16px; background:var(--surface-2); border:1px solid var(--border); border-radius:11px; padding:3px}
@@ -582,14 +582,21 @@
 
         <div class="fgrid" id="fldProduct" hidden>
           <div class="field"><div class="lb">Бүтээгдэхүүн</div>
-            <div class="in"><select id="product">
+            <div class="in"><select id="ptype">
               <option value="">Сонгох…</option>
-              <option>Итгэлцэл — 3 сар</option><option>Итгэлцэл — 6 сар</option>
-              <option>Итгэлцэл — 12 сар</option><option>Итгэлцэл — 24 сар</option>
-              <option>Урьдчилсан хүүт итгэлцэл</option><option>Бусад</option>
+              <option>Итгэлцэл ₮</option>
+              <option>Өрийн хэрэгсэл ₮</option>
+              <option>Итгэлцэл $</option>
+            </select></div></div>
+          <div class="field"><div class="lb">Хугацаа</div>
+            <div class="in"><select id="term"><option value="">Сонгох…</option></select></div></div>
+          <div class="field"><div class="lb">Хүү зарлагадах нөхцөл</div>
+            <div class="in"><select id="payout">
+              <option>Хугацааны эцэст</option>
+              <option>Улирал, сар бүр</option>
             </select></div></div>
           <div class="field"><div class="lb">Дүн</div>
-            <div class="in"><input id="amount" inputmode="numeric" placeholder="50,000,000" class="num"><span class="sfx">₮</span></div></div>
+            <div class="in"><input id="amount" inputmode="numeric" placeholder="50,000,000" class="num"><span class="sfx" id="curSfx">₮</span></div></div>
           <div class="field"><div class="lb">Харилцагчийн төрөл</div>
             <div class="seg" id="segClient" style="width:100%">
               <button data-v="Иргэн" class="on" style="flex:1">Иргэн</button>
@@ -597,11 +604,18 @@
             </div></div>
         </div>
 
-        <div class="fgrid" id="fldRates" hidden>
-          <div class="field"><div class="lb">Одоогийн хүү (жилийн)</div>
-            <div class="in"><input id="rateNow" inputmode="decimal" placeholder="14.4" class="num"><span class="sfx">%</span></div></div>
-          <div class="field"><div class="lb">Хүсэж буй хүү (жилийн)</div>
-            <div class="in"><input id="rateAsk" inputmode="decimal" placeholder="15.0" class="num"><span class="sfx">%</span></div></div>
+        <div id="fldRates" hidden>
+          <div class="fgrid">
+            <div class="field"><div class="lb">Мөрдөж буй хүү (тушаалаар)</div>
+              <div class="in"><input id="rateNow" readonly placeholder="—" class="num" aria-label="Тушаалаар мөрдөж буй хүү"><span class="sfx">%</span></div></div>
+            <div class="field"><div class="lb">Хүсэж буй хүү (жилийн)</div>
+              <div class="in"><input id="rateAsk" inputmode="decimal" placeholder="—" class="num"><span class="sfx">%</span></div></div>
+          </div>
+          <div class="drive-preview" style="margin:0 0 16px">
+            <b>Мөрдөж буй тушаал — NC-01/54-2025</b> · Актив, пассивын хорооны шийдвэр, 2025.04.07-оос мөрдөнө. Хүсэлт илгээхэд энэ тушаал и-мэйлд автоматаар хавсаргагдана.<br>
+            <span id="orderRates">Бүтээгдэхүүн, хугацаа, зарлагадах нөхцөлөө сонговол мөрдөж буй хүү автоматаар гарна.</span>
+            <div id="rateVerdict" style="margin-top:7px; font-weight:600"></div>
+          </div>
         </div>
 
         <div class="fgrid" id="fldSupport" hidden>
@@ -886,7 +900,7 @@
     </div>
     <div class="mailcard">
       <div class="mc-h"><span>И-мэйл баталгаажуулалт</span><span class="sim">Прототип — урьдчилсан харагдац</span></div>
-      <div class="mrow"><span class="k">Хэнд</span><span class="mono">hobpkhg@netgroup.mn</span></div>
+      <div class="mrow"><span class="k">Хэнд</span><span class="mono">lkhagvadari.a@netgroup.mn</span></div>
       <div class="mrow"><span class="k">Cc</span><span class="mono" id="mCc">—</span></div>
       <div class="mrow"><span class="k">Гарчиг</span><span id="mSubj">—</span></div>
       <div class="mbody" id="mBody"></div>
@@ -929,7 +943,40 @@ const EMPLOYEES = {
   'baterdene.b@netgroup.mn':{name:'Бат-Эрдэнэ Б.', unit:'Хан-Уул салбар', unitFull:'Хан-Уул салбар', pos:'Санхүүгийн зөвлөх', role:'user'},
   'sarnai.d@netgroup.mn':{name:'Сарнай Д.', unit:'Дархан салбар', unitFull:'Дархан салбар', pos:'Салбарын захирал', role:'user'},
 };
-const HANDLER_MAIL='hobpkhg@netgroup.mn';
+const HANDLER_MAIL='lkhagvadari.a@netgroup.mn';
+/* Мөрдөж буй хүүгийн тушаал — NC-01/54-2025 (2025.04.07-оос).
+   [хугацааны эцэст, улирал/сар бүр] — жилийн хувь; null = тухайн нөхцөл байхгүй. */
+const ORDER={
+  no:'NC-01/54-2025', effective:'2025.04.07',
+  products:{
+    'Итгэлцэл ₮':{cur:'₮', brk:2.4, terms:{'6 сар':[15.0,14.0],'9 сар':[16.0,15.0],'12 сар':[17.5,16.5]}},
+    'Өрийн хэрэгсэл ₮':{cur:'₮', brk:2.4, terms:{'1 сар':[10.0,null],'2 сар':[12.0,null],'3 сар':[14.0,null],'6 сар':[16.0,15.0],'9 сар':[17.0,16.0],'12 сар':[18.0,17.0]}},
+    'Итгэлцэл $':{cur:'$', brk:0.5, terms:{'6 сар':[3.0,null],'9 сар':[3.5,null],'12 сар':[4.0,null]}},
+  },
+  /* Хавсралт №2: хүү нэмэгдүүлэх матриц (₮, сая) */
+  step(amtM){ return amtM<50?0 : amtM<200?0.5 : amtM<500?1.0 : 1.5; },
+};
+function baseRate(){
+  const p=ORDER.products[$('ptype').value], t=$('term').value;
+  if(!p||!t||!p.terms[t]) return null;
+  const pair=p.terms[t];
+  return $('payout').value==='Улирал, сар бүр' ? pair[1] : pair[0];
+}
+function rateRule(){ /* {level:'base'|'dir'|'ceo'|'block'|null, text, max} */
+  const p=$('ptype').value, base=baseRate();
+  const ask=parseFloat($('rateAsk').value);
+  if(base===null||isNaN(ask)) return {level:null, text:'', max:null};
+  const isMNT=p!=='Итгэлцэл $';
+  const amtM=Number($('amount').value.replace(/,/g,''))/1e6||0;
+  if(ask<=base) return {level:'base', text:`Ерөнхий нөхцөл (${base}%) дотор — нэмэлт зөвшөөрөл шаардахгүй.`, max:base};
+  if(!isMNT) return {level:'dir', text:'Ерөнхий нөхцөлөөс дээш — ам.долларын нэмэгдүүлэлтийг ХОБПХГ шийдвэрлэнэ.', max:null};
+  const step=ORDER.step(amtM);
+  const dirMax=base+step, ceoMax=dirMax+(amtM>=100?1.0:0);
+  if(step===0&&ask>base) return {level:'block', text:'49 сая ₮ хүртэлх эх үүсвэрт хүү нэмэгдүүлэхгүй (Хавсралт №2).', max:base};
+  if(ask<=dirMax) return {level:'dir', text:`Хөрөнгө оруулалтын удирдлагын газрын захирлын зөвшөөрлөөр боломжтой (дээд ${dirMax.toFixed(1)}%).`, max:dirMax};
+  if(ask<=ceoMax) return {level:'ceo', text:`Гүйцэтгэх захирлын зөвшөөрөл шаардлагатай (дээд ${ceoMax.toFixed(1)}%).`, max:ceoMax};
+  return {level:'block', text:`Тушаалын дээд хязгаараас (${ceoMax.toFixed(1)}%) хэтэрсэн — «Онцгой нөхцөлийн зөвшөөрөл» (F07) ангиллаар илгээнэ үү.`, max:ceoMax};
+}
 const CATS = [
   {c:'F01', t:'Хүүгийн тохируулгын хүсэлт', k:'percent', type:'Шийдвэр', folder:'F01 Хүүгийн тохируулга', fields:['product','rates'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
   {c:'F02', t:'Борлуулалтын дэмжлэг хүсэх', k:'chart', type:'Дэмжлэг', folder:'F02 Борлуулалтын дэмжлэг', fields:['support'], link:false, sla:['Ажлын 2–3 өдөр','Ажлын 1 өдөр']},
@@ -1122,8 +1169,23 @@ document.querySelectorAll('#chipsReq .chip').forEach(ch=>ch.addEventListener('cl
 }));
 const fmtAmt = v => { const d=v.replace(/[^\d]/g,''); return d? Number(d).toLocaleString('en-US'):''; };
 $('amount').addEventListener('input',e=>{ e.target.value=fmtAmt(e.target.value); refresh(); });
-['rateNow','rateAsk'].forEach(id=>$(id).addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,5); refresh(); }));
-$('product').addEventListener('change',refresh);
+$('rateAsk').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,5); refresh(); });
+$('ptype').addEventListener('change',()=>{
+  const p=ORDER.products[$('ptype').value];
+  const term=$('term'); term.innerHTML='<option value="">Сонгох…</option>';
+  if(p) Object.keys(p.terms).forEach(t=>{ const o=document.createElement('option'); o.textContent=t; term.appendChild(o); });
+  $('curSfx').textContent=p?p.cur:'₮';
+  syncPayout(); refresh();
+});
+$('term').addEventListener('change',()=>{ syncPayout(); refresh(); });
+$('payout').addEventListener('change',refresh);
+function syncPayout(){
+  const p=ORDER.products[$('ptype').value], t=$('term').value;
+  const per=p&&t&&p.terms[t]?p.terms[t][1]:null;
+  const opt=$('payout').options[1];
+  opt.disabled=per===null;
+  if(per===null) $('payout').value='Хугацааны эцэст';
+}
 $('supportType').addEventListener('change',refresh);
 $('area').addEventListener('change',refreshF);
 function bindSeg(id,key,cb){
@@ -1229,8 +1291,22 @@ const rateOk=v=>{ const n=parseFloat(v); return !isNaN(n)&&n>0&&n<=30; };
 function refresh(){
   const okCat=!!state.cat;
   const okDesc=desc.value.trim().length>=20;
-  const okProd=!needProduct()||($('product').value && $('amount').value.replace(/,/g,'').length>0);
-  const okRates=!needRates()||(rateOk($('rateNow').value)&&rateOk($('rateAsk').value));
+  const okProd=!needProduct()||($('ptype').value && $('term').value && $('amount').value.replace(/,/g,'').length>0);
+  const base=baseRate();
+  $('rateNow').value = base===null ? '' : String(base);
+  const rule=rateRule();
+  if(needRates()){
+    $('orderRates').textContent = base===null
+      ? 'Бүтээгдэхүүн, хугацаа, зарлагадах нөхцөлөө сонговол мөрдөж буй хүү автоматаар гарна.'
+      : `${$('ptype').value} · ${$('term').value} · ${$('payout').value}: ерөнхий нөхцөл ${base}% (данс хаах/цуцлахад ${ORDER.products[$('ptype').value].brk}%).`;
+    const rv=$('rateVerdict');
+    rv.textContent=rule.text;
+    rv.style.color = rule.level==='block' ? 'var(--danger)'
+      : rule.level==='ceo' ? 'var(--warn)'
+      : rule.level==='dir' ? 'var(--gold)'
+      : rule.level==='base' ? 'var(--good)' : 'var(--muted)';
+  }
+  const okRates=!needRates()||(base!==null && rateOk($('rateAsk').value) && rule.level!==null && rule.level!=='block');
   const okSupport=!needSupport()||!!$('supportType').value;
   const atts=attReq.valid();
   const okLink=!needLink()||atts.length>0;
@@ -1242,11 +1318,11 @@ function refresh(){
   $('sumCat').className='v'+(state.cat?'':' dim');
   $('sumDept').textContent=state.dept||'—';
   $('sumProdRow').hidden=!needProduct();
-  $('sumProd').textContent=$('product').value||'—';
+  $('sumProd').textContent=$('ptype').value?`${$('ptype').value}${$('term').value?' · '+$('term').value:''}`:'—';
   $('sumAmtRow').hidden=!needProduct();
-  $('sumAmt').textContent=$('amount').value?$('amount').value+' ₮':'—';
+  $('sumAmt').textContent=$('amount').value?$('amount').value+' '+$('curSfx').textContent:'—';
   $('sumRateRow').hidden=!needRates();
-  $('sumRate').textContent=(rateOk($('rateNow').value)&&rateOk($('rateAsk').value))?`${$('rateNow').value}% → ${$('rateAsk').value}%`:'—';
+  $('sumRate').textContent=(base!==null&&rateOk($('rateAsk').value))?`${base}% → ${$('rateAsk').value}%`:'—';
   $('sumAtt').textContent=attSummary(attReq.items);
   $('sumUrg').textContent=state.urg;
   $('sumUrg').className='v '+(state.urg==='Энгийн'?'good':'warn');
@@ -1256,7 +1332,7 @@ function refresh(){
 
   const items=[['Ангилал сонгосон',okCat],['Тайлбар хангалттай (20+ тэмдэгт)',okDesc]];
   if(needProduct()) items.push(['Бүтээгдэхүүн, дүн',okProd]);
-  if(needRates()) items.push(['Хүүгийн утга зөв (0–30%)',okRates]);
+  if(needRates()) items.push(['Хүү тушаалын хязгаарт багтсан',okRates]);
   if(needSupport()) items.push(['Дэмжлэгийн төрөл',okSupport]);
   items.push([needLink()?'Хавсралт (заавал)':'Хавсралт (сайн дурын)', needLink()?okLink:atts.length>0]);
   $('checks').innerHTML=items.map(([t,ok])=>`<div class="c ${ok?'ok':'no'}"><span class="m">✓</span> ${t}</div>`).join('');
@@ -1281,8 +1357,8 @@ function refresh(){
   $('submitNote').textContent = ready?'Бүх шаардлага хангагдлаа — илгээхэд бэлэн.'
     : !okCat?'Ангилал сонгоно уу.'
     : !okDesc?'Тайлбараа дор хаяж 20 тэмдэгт бичнэ үү.'
-    : !okProd?'Бүтээгдэхүүн болон дүнгээ оруулна уу.'
-    : !okRates?'Одоогийн болон хүсэж буй хүүгээ зөв оруулна уу (0–30%).'
+    : !okProd?'Бүтээгдэхүүн, хугацаа, дүнгээ оруулна уу.'
+    : !okRates?(rateRule().level==='block'?rateRule().text:'Хүсэж буй хүүгээ оруулна уу (0–30%).')
     : !okSupport?'Дэмжлэгийн төрлөө сонгоно уу.'
     : 'Энэ ангилалд хавсралт (Drive линк эсвэл зураг) заавал.';
 }
@@ -1321,11 +1397,15 @@ function packAtts(items){ return items.filter(i=>i.kind==='img'||(i.kind==='link
 
 $('btnSubmit').addEventListener('click',()=>{
   const id=nextIdR();
+  const rule=needRates()?rateRule():null;
   const rec={
     kind:'REQ', id, at:nowStr(), ts:Date.now(), dept:state.dept,
     cat:state.cat.c, catName:state.cat.t, type:state.cat.type, folder:state.cat.folder,
-    product:$('product').value||'', amount:$('amount').value||'', client:state.client,
-    rateNow:$('rateNow').value||'', rateAsk:$('rateAsk').value||'', support:$('supportType').value||'',
+    product:$('ptype').value?`${$('ptype').value} · ${$('term').value} · ${$('payout').value}`:'',
+    amount:$('amount').value||'', cur:$('curSfx').textContent, client:state.client,
+    rateNow:$('rateNow').value||'', rateAsk:$('rateAsk').value||'',
+    order:rule&&rule.level?{no:ORDER.no, verdict:rule.text}:null,
+    support:$('supportType').value||'',
     desc:desc.value.trim(), urg:state.urg, atts:packAtts(attReq.items),
     drive:drivePath('REQ',state.cat.folder,id),
     by:state.user.name, byEmail:state.user.email,
@@ -1336,7 +1416,9 @@ $('btnSubmit').addEventListener('click',()=>{
   store.set('nc2.recs',state.recs); store.set('nc2.seqR',store.get('nc2.seqR',0)+1);
   showConfirm(rec);
   state.cat=null; desc.value=''; $('descCnt').textContent='0';
-  ['product','supportType'].forEach(i=>$(i).value='');
+  ['ptype','term','supportType'].forEach(i=>$(i).value='');
+  $('term').innerHTML='<option value="">Сонгох…</option>';
+  $('payout').selectedIndex=0; $('curSfx').textContent='₮';
   ['amount','rateNow','rateAsk'].forEach(i=>$(i).value='');
   state.urg='Энгийн'; state.client='Иргэн';
   ['segUrg','segClient'].forEach(id2=>$(id2).querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===0)));
@@ -1369,15 +1451,17 @@ function mailBody(r){
   const L=[`Бүртгэлийн дугаар: ${r.id}`,`Огноо, цаг: ${r.at}`,`Илгээгч: ${r.by} (${r.byEmail})`,`Нэгж: ${r.dept}`,
     `Ангилал: ${r.cat} · ${r.catName}`];
   if(r.product) L.push(`Бүтээгдэхүүн: ${r.product} · ${r.client}`);
-  if(r.amount) L.push(`Дүн: ${r.amount} ₮`);
-  if(r.rateNow) L.push(`Хүү: ${r.rateNow}% → ${r.rateAsk}%`);
+  if(r.amount) L.push(`Дүн: ${r.amount} ${r.cur||'₮'}`);
+  if(r.rateNow) L.push(`Хүү: мөрдөж буй ${r.rateNow}% → хүсэж буй ${r.rateAsk}%`);
+  if(r.order){ L.push(`Мөрдөж буй тушаал: ${r.order.no}`); L.push(`Тушаалын дүгнэлт: ${r.order.verdict}`); }
   if(r.support) L.push(`Дэмжлэгийн төрөл: ${r.support}`);
   if(r.area) L.push(`Холбогдох хүрээ: ${r.area}`);
   if(r.sev) L.push(`Ноцтой байдал: ${r.sev}`);
   if(r.urg) L.push(`Яаралтай байдал: ${r.urg}`);
   L.push('','Тайлбар:',r.desc);
-  if(r.atts.length){ L.push('','Хавсралт:');
-    r.atts.forEach(a=>L.push(`· [${a.type}] `+(a.kind==='link'?a.url:a.name))); }
+  if(r.atts.length||r.order){ L.push('','Хавсралт:');
+    r.atts.forEach(a=>L.push(`· [${a.type}] `+(a.kind==='link'?a.url:a.name)));
+    if(r.order) L.push(`· [Тушаал] ${r.order.no} — систем автоматаар хавсаргав`); }
   return L.join('\n');
 }
 function showConfirm(r){
@@ -1402,7 +1486,7 @@ function renderReqs(){
   if(!mine.length){ list.innerHTML='<div class="empty">Одоогоор илгээсэн бүртгэл алга. «Шинэ бүртгэл» хэсгээс эхнийхээ илгээгээрэй.</div>'; return; }
   [...mine].reverse().forEach(r=>{
     const d=document.createElement('div'); d.className='req-item';
-    const detail=[r.product&&`${r.product} · ${r.client}`, r.amount&&r.amount+' ₮',
+    const detail=[r.product&&`${r.product} · ${r.client}`, r.amount&&r.amount+' '+(r.cur||'₮'),
       r.rateNow&&`${r.rateNow}% → ${r.rateAsk}%`, r.support, r.area, r.sev&&('Ноцтой байдал: '+r.sev)].filter(Boolean).join(' · ');
     const thumbs=r.atts.filter(a=>a.kind==='img').slice(0,4).map(a=>`<img src="${a.thumb}" alt="${a.name}">`).join('');
     d.innerHTML=`<div class="req-top">
@@ -1437,7 +1521,7 @@ function renderRegistry(filter=''){
   [...rows].sort((a,b)=>b.ts-a.ts).forEach(r=>{
     const tr=document.createElement('tr');
     const det=r.kind==='REQ'
-      ? (r.product?`${r.product}<div class="sub">${r.amount?r.amount+' ₮':''}${r.rateNow?` · ${r.rateNow}%→${r.rateAsk}%`:''}</div>`:'—')
+      ? (r.product?`${r.product}<div class="sub">${r.amount?r.amount+' '+(r.cur||'₮'):''}${r.rateNow?` · ${r.rateNow}%→${r.rateAsk}%`:''}</div>`:'—')
       : `${r.area||'—'}`;
     tr.innerHTML=`<td class="mono"><span class="kind-badge ${r.kind==='REQ'?'req':'fbk'}">${r.kind==='REQ'?'ЭҮ':'СГ'}</span> ${r.id}</td>
       <td class="mono num">${r.at}</td>
@@ -1561,10 +1645,10 @@ $('btnSeed').addEventListener('click',()=>{
       const c=rnd(CATS);
       const id='ЭҮ-'+YEAR+'-'+pad4(store.get('nc2.seqR',0)+1); store.set('nc2.seqR',store.get('nc2.seqR',0)+1);
       state.recs.push({kind:'REQ', id, at, ts, dept:rnd(units), cat:c.c, catName:c.t, type:c.type, folder:c.folder,
-        product:c.fields.includes('product')?rnd(['Итгэлцэл — 6 сар','Итгэлцэл — 12 сар','Итгэлцэл — 24 сар']):'',
-        amount:c.fields.includes('product')?rnd(['50,000,000','120,000,000','250,000,000','480,000,000']):'',
+        product:c.fields.includes('product')?rnd(['Итгэлцэл ₮ · 6 сар · Хугацааны эцэст','Итгэлцэл ₮ · 12 сар · Хугацааны эцэст','Өрийн хэрэгсэл ₮ · 12 сар · Улирал, сар бүр']):'',
+        amount:c.fields.includes('product')?rnd(['50,000,000','120,000,000','250,000,000','480,000,000']):'', cur:'₮',
         client:rnd(['Иргэн','Байгууллага']),
-        rateNow:c.fields.includes('rates')?'14.4':'', rateAsk:c.fields.includes('rates')?rnd(['15.0','15.4','14.8']):'',
+        rateNow:c.fields.includes('rates')?'17.5':'', rateAsk:c.fields.includes('rates')?rnd(['18.0','18.5','17.8']):'',
         support:'', desc:'Жишээ бүртгэл — дашбоард турших зориулалттай.', urg:Math.random()<0.2?'Яаралтай':'Энгийн',
         atts:[], drive:drivePath('REQ',c.folder,id), by:rnd(names), byEmail:'demo@netgroup.mn',
         mail:{to:HANDLER_MAIL, at, status:'Илгээгдсэн (прототип)'}, status:st, statusAt:at, demo:true});
