@@ -2,9 +2,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
 <style>
   /* ============================================================
-     Design system — international NBFI / investment-grade
-     Type:  Source Serif 4 (display) · Golos Text (UI) · JetBrains Mono (data)
-     Color: marine navy + brass on warm stone; navy-night dark theme
+     Нэткапитал Санхүүгийн Групп — Эх үүсвэрийн портал (прототип)
+     Type:  Source Serif 4 · Golos Text · JetBrains Mono
+     Brand tokens: --brand / --gold блокийг группийн албан ёсны
+     hex кодоор солиход бүх интерфэйс дагаж өөрчлөгдөнө.
      ============================================================ */
   :root{
     --font-body:"Golos Text",system-ui,"Segoe UI",sans-serif;
@@ -12,20 +13,23 @@
     --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
 
     --bg:#f3f4f0;
-    --bg-glow:radial-gradient(1100px 540px at 88% -10%, rgba(23,63,102,.06), transparent 62%),
+    --bg-glow:radial-gradient(1100px 540px at 88% -10%, rgba(20,74,143,.06), transparent 62%),
               radial-gradient(760px 460px at -4% 112%, rgba(143,111,31,.05), transparent 60%);
     --surface:#ffffff; --surface-2:#f6f7f3; --surface-3:#ebede6;
     --border:#e1e3da; --border-strong:#c6cabb;
     --text:#1a2531; --muted:#5b6774; --faint:#8d97a2;
-    --brand:#173f66; --brand-strong:#0f2f4f; --brand-soft:rgba(23,63,102,.08);
+    --brand:#14498f; --brand-strong:#0d3569; --brand-soft:rgba(20,73,143,.08);
     --gold:#8f6f1f; --gold-soft:rgba(143,111,31,.10);
     --good:#1c7a52; --good-soft:rgba(28,122,82,.10);
     --warn:#93621a; --warn-soft:rgba(147,98,26,.12);
     --danger:#b3362c; --danger-soft:rgba(179,54,44,.08);
-    --btn-primary:#173f66; --btn-primary-hover:#0f2f4f; --btn-primary-text:#fff;
-    --ring:rgba(23,63,102,.35);
+    --btn-primary:#14498f; --btn-primary-hover:#0d3569; --btn-primary-text:#fff;
+    --ring:rgba(20,73,143,.35);
     --shadow:0 10px 32px rgba(24,36,48,.09);
     --shadow-lg:0 24px 64px rgba(24,36,48,.16);
+    /* chart colors (validated) */
+    --ch-bar:#1450a0; --ch-area:rgba(20,80,160,.12);
+    --st-new:#1450a0; --st-review:#b7791f; --st-done:#0ca30c; --st-rej:#d03b3b;
     color-scheme:light;
   }
   @media (prefers-color-scheme: dark){
@@ -45,6 +49,8 @@
       --ring:rgba(143,180,220,.4);
       --shadow:0 14px 40px rgba(0,0,0,.45);
       --shadow-lg:0 28px 72px rgba(0,0,0,.55);
+      --ch-bar:#4a86d4; --ch-area:rgba(74,134,212,.16);
+      --st-new:#4a86d4; --st-review:#fab219; --st-done:#0ca30c; --st-rej:#d03b3b;
       color-scheme:dark;
     }
   }
@@ -64,31 +70,33 @@
     --ring:rgba(143,180,220,.4);
     --shadow:0 14px 40px rgba(0,0,0,.45);
     --shadow-lg:0 28px 72px rgba(0,0,0,.55);
+    --ch-bar:#4a86d4; --ch-area:rgba(74,134,212,.16);
+    --st-new:#4a86d4; --st-review:#fab219; --st-done:#0ca30c; --st-rej:#d03b3b;
     color-scheme:dark;
   }
 
   *{box-sizing:border-box}
   [hidden]{display:none!important}
-  body{
-    margin:0; background:var(--bg); background-image:var(--bg-glow); background-attachment:fixed;
-    color:var(--text); font:15px/1.6 var(--font-body);
-    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; min-height:100vh;
-  }
+  body{margin:0; background:var(--bg); background-image:var(--bg-glow); background-attachment:fixed;
+    color:var(--text); font:15px/1.6 var(--font-body); -webkit-font-smoothing:antialiased; min-height:100vh}
   .mono{font-family:var(--font-mono)}
   .num{font-variant-numeric:tabular-nums}
   button{font:inherit; color:inherit; cursor:pointer}
   input,textarea,select{font:inherit; color:var(--text)}
   :is(button,input,textarea,select,a):focus-visible{outline:2px solid var(--ring); outline-offset:2px; border-radius:8px}
+  svg.i{flex:none; display:block}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+  @keyframes popIn{from{opacity:0; transform:scale(.97) translateY(6px)} to{opacity:1; transform:none}}
+  .anim{animation:fadeUp .28s ease both}
   @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation:none!important; transition:none!important} }
 
-  /* ---------- login: split brand panel + form ---------- */
+  /* ---------- login ---------- */
   #login{min-height:100vh; display:grid; grid-template-columns:1.08fr 1fr}
   @media (max-width:880px){ #login{grid-template-columns:1fr} .login-brand{min-height:0!important; padding:34px 30px!important} .login-brand .vals{display:none} }
   .login-brand{
-    background:linear-gradient(158deg,#0c2946 0%, #12385d 56%, #0e3050 100%);
     background-image:radial-gradient(900px 480px at 110% -14%, rgba(201,166,72,.14), transparent 55%),
                      radial-gradient(700px 520px at -12% 116%, rgba(255,255,255,.05), transparent 55%),
-                     linear-gradient(158deg,#0c2946 0%, #12385d 56%, #0e3050 100%);
+                     linear-gradient(158deg,#0a2547 0%, #103a6b 56%, #0c2f58 100%);
     color:#eef3f8; padding:clamp(38px,6vw,84px); display:flex; flex-direction:column; justify-content:space-between; gap:40px;
   }
   .lb-top{display:flex; align-items:center; gap:13px}
@@ -102,37 +110,56 @@
     margin:0 0 16px; letter-spacing:-.01em; text-wrap:balance}
   .lb-mid p{color:rgba(238,243,248,.72); font-size:15px; line-height:1.7; max-width:44ch; margin:0}
   .vals{display:flex; flex-direction:column; gap:13px}
-  .vals .v{display:flex; gap:12px; align-items:baseline; font-size:13.5px; color:rgba(238,243,248,.8)}
-  .vals .v .tick{color:#d9c583; font-weight:700; flex:none}
+  .vals .v{display:flex; gap:12px; align-items:center; font-size:13.5px; color:rgba(238,243,248,.8)}
+  .vals .v .tick{color:#d9c583; flex:none}
   .vals .v b{color:#fff; font-weight:600}
   .lb-foot{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(238,243,248,.42)}
 
   .login-side{display:flex; align-items:center; justify-content:center; padding:40px clamp(24px,5vw,72px)}
-  .login-card{width:min(400px,100%)}
+  .login-card{width:min(420px,100%)}
   .login-card .domain{font-size:12px; color:var(--faint); letter-spacing:.06em}
-  .login-card h2{font-family:var(--font-display); font-size:26px; font-weight:600; margin:10px 0 8px; letter-spacing:-.01em; text-wrap:balance}
-  .login-card .sub{color:var(--muted); font-size:14px; line-height:1.65; margin:0 0 30px; max-width:38ch}
+  .login-card h2{font-family:var(--font-display); font-size:26px; font-weight:600; margin:10px 0 8px; letter-spacing:-.01em}
+  .login-card .sub{color:var(--muted); font-size:14px; line-height:1.65; margin:0 0 28px; max-width:40ch}
   .g-btn{width:100%; display:flex; align-items:center; justify-content:center; gap:11px; background:var(--surface);
     border:1px solid var(--border-strong); border-radius:11px; padding:14px 18px; font-weight:600; font-size:15px;
     box-shadow:0 1px 2px rgba(24,36,48,.05); transition:border-color .15s, box-shadow .15s}
   .g-btn:hover{border-color:var(--brand); box-shadow:var(--shadow)}
-  .login-card .foot{margin-top:26px; font-size:12px; color:var(--faint)}
-  .proto-badge{display:inline-block; margin-bottom:26px; padding:4px 12px; border-radius:99px; font-size:10.5px; letter-spacing:.16em;
+  .login-card .foot{margin-top:24px; font-size:12px; color:var(--faint)}
+  .proto-badge{display:inline-block; margin-bottom:24px; padding:4px 12px; border-radius:99px; font-size:10.5px; letter-spacing:.16em;
     color:var(--gold); background:var(--gold-soft); border:1px solid var(--border); text-transform:uppercase; font-weight:600}
+  /* account picker (demonstrates email → identity resolution) */
+  #acctPicker{margin-top:16px; border:1px solid var(--border); border-radius:13px; background:var(--surface); overflow:hidden; animation:popIn .25s ease both}
+  #acctPicker .ph{padding:11px 16px; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:600;
+    color:var(--faint); background:var(--surface-2); border-bottom:1px solid var(--border)}
+  .acct{display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:none; border:none;
+    padding:12px 16px; border-bottom:1px solid var(--border); transition:background .12s}
+  .acct:last-child{border-bottom:none}
+  .acct:hover{background:var(--brand-soft)}
+  .acct .av{width:34px; height:34px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:700; font-size:14px; background:var(--brand)}
+  .acct.adm .av{background:var(--gold)}
+  .acct .an{font-size:13.5px; font-weight:600}
+  .acct .ae{font-size:11px; color:var(--faint)}
+  .acct .meta2{margin-left:auto; text-align:right}
+  .acct .au{font-size:11px; color:var(--muted)}
+  .acct .role{font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; border-radius:99px; padding:2px 9px}
+  .acct .role.a{color:var(--gold); background:var(--gold-soft)}
+  .acct .role.u{color:var(--brand); background:var(--brand-soft)}
+  .picker-note{font-size:11.5px; color:var(--faint); line-height:1.6; padding:11px 16px; background:var(--surface-2)}
 
   /* ---------- shell ---------- */
   #app{display:none; min-height:100vh}
   header.top{position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:14px;
-    padding:13px clamp(18px,4vw,44px); background:color-mix(in srgb, var(--bg) 86%, transparent);
+    padding:12px clamp(18px,4vw,44px); background:color-mix(in srgb, var(--bg) 86%, transparent);
     backdrop-filter:blur(14px); border-bottom:1px solid var(--border)}
   .brand{display:flex; align-items:center; gap:12px; min-width:0}
-  .brand .logo{width:38px; height:38px; border-radius:10px; flex:none; background:linear-gradient(150deg,#0c2946,#173f66);
+  .brand .logo{width:38px; height:38px; border-radius:10px; flex:none; background:linear-gradient(150deg,#0a2547,#14498f);
     display:flex; align-items:center; justify-content:center; color:#e8d9a8; font-family:var(--font-display); font-weight:700; font-size:18px}
-  .brand .t1{font-size:14.5px; font-weight:700; letter-spacing:.01em}
+  .brand .t1{font-size:14.5px; font-weight:700}
   .brand .t2{font-size:9.5px; color:var(--faint); letter-spacing:.2em; text-transform:uppercase; margin-top:1px}
-  nav.views{display:flex; gap:2px; margin-left:18px; background:var(--surface-2); border:1px solid var(--border); border-radius:11px; padding:3px}
-  nav.views button{border:none; background:none; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; color:var(--muted);
-    transition:color .12s, background .12s}
+  nav.views{display:flex; gap:2px; margin-left:16px; background:var(--surface-2); border:1px solid var(--border); border-radius:11px; padding:3px}
+  nav.views button{display:flex; align-items:center; gap:7px; border:none; background:none; border-radius:8px; padding:8px 14px;
+    font-size:13px; font-weight:600; color:var(--muted); transition:color .12s, background .12s}
   nav.views button:hover{color:var(--text)}
   nav.views button.on{background:var(--surface); color:var(--brand); box-shadow:0 1px 3px rgba(24,36,48,.1); font-weight:700}
   nav.views button .cnt{opacity:.7; font-size:11.5px}
@@ -142,46 +169,63 @@
     display:flex; align-items:center; justify-content:center}
   .userchip .un{font-size:12.5px; font-weight:600; line-height:1.2}
   .userchip .ue{font-size:10px; color:var(--faint)}
+  .admin-tag{font-size:9.5px; font-weight:700; letter-spacing:.1em; color:var(--gold); background:var(--gold-soft);
+    border-radius:99px; padding:3px 9px; text-transform:uppercase}
   .icon-btn{width:35px; height:35px; border-radius:99px; border:1px solid var(--border); background:var(--surface);
     display:flex; align-items:center; justify-content:center; color:var(--muted); flex:none; transition:color .12s, border-color .12s}
   .icon-btn:hover{color:var(--text); border-color:var(--border-strong)}
   .ghost-btn{display:flex; align-items:center; gap:7px; padding:8px 14px; border-radius:99px; border:1px solid var(--border);
     background:var(--surface); color:var(--muted); font-size:13px; font-weight:600; transition:color .12s, border-color .12s}
   .ghost-btn:hover{color:var(--text); border-color:var(--border-strong)}
-  @media (max-width:1100px){ .userchip .meta{display:none} }
-  @media (max-width:860px){ nav.views button .lbl{display:none} nav.views button{padding:8px 12px} }
+  @media (max-width:1150px){ .userchip .meta{display:none} }
+  @media (max-width:940px){ nav.views button .lbl{display:none} nav.views button{padding:8px 11px} }
 
   main{display:grid; grid-template-columns:minmax(0,1fr) 344px; gap:36px; align-items:start;
-    padding:42px clamp(18px,4vw,44px) 110px; max-width:1290px; margin:0 auto}
+    padding:40px clamp(18px,4vw,44px) 110px; max-width:1290px; margin:0 auto}
   @media (max-width:1020px){ main{grid-template-columns:1fr} .sidebar{position:static; order:-1} }
-  .single{grid-template-columns:1fr!important; max-width:1120px}
+  .single{grid-template-columns:1fr!important; max-width:1160px}
 
   .crumb{display:inline-flex; align-items:center; gap:10px; font-size:10.5px; font-weight:600; letter-spacing:.2em;
     text-transform:uppercase; color:var(--gold); margin-bottom:16px}
-  .crumb .dot{width:22px; height:1px; background:var(--gold); border-radius:0}
-  h2.page{font-family:var(--font-display); font-size:clamp(26px,3.4vw,36px); font-weight:600; letter-spacing:-.01em;
+  .crumb .dot{width:22px; height:1px; background:var(--gold)}
+  h2.page{font-family:var(--font-display); font-size:clamp(25px,3.2vw,34px); font-weight:600; letter-spacing:-.01em;
     margin:0 0 12px; text-wrap:balance; line-height:1.16}
-  .lede{color:var(--muted); font-size:15px; line-height:1.7; max-width:62ch; margin:0 0 30px}
+  .lede{color:var(--muted); font-size:15px; line-height:1.7; max-width:64ch; margin:0 0 28px}
 
-  .card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:26px 28px; margin-bottom:22px;
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px 26px; margin-bottom:20px;
     box-shadow:0 1px 2px rgba(24,36,48,.04)}
   .card.flash{border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft)}
   .step-head{display:flex; align-items:baseline; gap:13px; margin-bottom:5px; flex-wrap:wrap}
-  .step-no{font-family:var(--font-mono); font-size:10.5px; color:var(--gold); border:1px solid var(--border); border-radius:7px; padding:2px 8px; letter-spacing:.06em}
-  .step-head h3{font-family:var(--font-display); font-size:19px; font-weight:600; margin:0; letter-spacing:-.005em}
+  .step-no{font-family:var(--font-mono); font-size:10.5px; color:var(--gold); border:1px solid var(--border); border-radius:7px; padding:2px 8px}
+  .step-head h3{font-family:var(--font-display); font-size:18.5px; font-weight:600; margin:0}
   .step-head .aside{margin-left:auto; font-size:12px; color:var(--faint)}
-  .step-sub{font-size:13.5px; color:var(--muted); margin:0 0 18px; line-height:1.6}
+  .step-sub{font-size:13.5px; color:var(--muted); margin:0 0 16px; line-height:1.6}
   .req-flag{font-size:12px; font-weight:600; color:var(--warn)}
 
-  /* branch bar */
-  .dept-bar{display:flex; align-items:center; gap:14px; padding:18px 24px; flex-wrap:wrap}
+  /* ---------- flow chooser ---------- */
+  .flow-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px}
+  .flow-card{text-align:left; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px;
+    display:flex; flex-direction:column; gap:14px; transition:border-color .15s, box-shadow .15s, transform .15s}
+  .flow-card:hover{border-color:var(--brand); box-shadow:var(--shadow); transform:translateY(-2px)}
+  .flow-card .fi{width:48px; height:48px; border-radius:13px; display:flex; align-items:center; justify-content:center}
+  .flow-card.f1 .fi{background:var(--brand-soft); color:var(--brand)}
+  .flow-card.f2 .fi{background:var(--gold-soft); color:var(--gold)}
+  .flow-card h3{font-family:var(--font-display); font-size:21px; font-weight:600; margin:0}
+  .flow-card p{font-size:13.5px; color:var(--muted); line-height:1.65; margin:0}
+  .flow-card .ex{font-size:12px; color:var(--faint); line-height:1.7}
+  .flow-card .go{margin-top:auto; display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:var(--brand)}
+  .flow-card.f2 .go{color:var(--gold)}
+
+  /* dept bar */
+  .dept-bar{display:flex; align-items:center; gap:14px; padding:17px 24px; flex-wrap:wrap}
   .dept-bar .k{font-family:var(--font-mono); font-size:10px; letter-spacing:.18em; color:var(--faint)}
-  .dept-bar .v{font-weight:700; font-size:15.5px}
-  .tag-auto{font-size:10.5px; font-weight:600; letter-spacing:.06em; color:var(--good); background:var(--good-soft); border-radius:99px; padding:4px 11px}
+  .dept-bar .v{font-weight:700; font-size:15px}
+  .dept-bar .pos{font-size:12px; color:var(--faint)}
+  .tag-auto{font-size:10.5px; font-weight:600; color:var(--good); background:var(--good-soft); border-radius:99px; padding:4px 11px}
   .dept-wrap{margin-left:auto; position:relative}
-  .dept-menu{position:absolute; right:0; top:calc(100% + 8px); z-index:30; min-width:270px; max-height:300px; overflow:auto;
+  .dept-menu{position:absolute; right:0; top:calc(100% + 8px); z-index:30; min-width:280px; max-height:300px; overflow:auto;
     background:var(--surface); border:1px solid var(--border-strong); border-radius:12px; box-shadow:var(--shadow-lg); padding:6px; display:none}
-  .dept-menu.open{display:block}
+  .dept-menu.open{display:block; animation:popIn .18s ease both}
   .dept-menu button{display:block; width:100%; text-align:left; background:none; border:none; border-radius:8px; padding:10px 12px; font-size:13.5px}
   .dept-menu button:hover{background:var(--brand-soft)}
   .dept-menu button.on{color:var(--brand); font-weight:700}
@@ -192,20 +236,20 @@
   .search:focus-within{border-color:var(--brand)}
   .search input{flex:1; background:none; border:none; outline:none; font-size:14px}
   .search input::placeholder{color:var(--faint)}
-  .search svg{color:var(--faint); flex:none}
+  .search svg{color:var(--faint)}
   .cat-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(244px,1fr)); gap:11px}
   .cat{display:flex; align-items:center; gap:13px; text-align:left; background:var(--surface); border:1px solid var(--border);
-    border-radius:12px; padding:15px 16px; transition:border-color .12s, background .12s, box-shadow .12s}
-  .cat:hover{border-color:var(--border-strong); box-shadow:0 2px 8px rgba(24,36,48,.06)}
+    border-radius:12px; padding:14px 15px; transition:border-color .12s, background .12s, box-shadow .12s, transform .12s}
+  .cat:hover{border-color:var(--border-strong); box-shadow:0 2px 8px rgba(24,36,48,.06); transform:translateY(-1px)}
   .cat.on{border-color:var(--brand); background:var(--brand-soft); box-shadow:0 0 0 3px var(--brand-soft)}
   .cat .ic{width:38px; height:38px; flex:none; border-radius:10px; background:var(--surface-2); border:1px solid var(--border);
     display:flex; align-items:center; justify-content:center; color:var(--muted)}
   .cat.on .ic{color:var(--brand); border-color:var(--brand); background:var(--surface)}
   .cat .tt{font-size:13.5px; font-weight:600; line-height:1.35}
-  .cat .cd{font-family:var(--font-mono); font-size:10px; color:var(--faint); margin-top:3px; letter-spacing:.04em}
+  .cat .cd{font-family:var(--font-mono); font-size:10px; color:var(--faint); margin-top:3px}
   .cat-empty{color:var(--faint); font-size:13.5px; padding:16px 4px; display:none}
 
-  /* detail fields */
+  /* fields */
   .fgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:16px; margin-bottom:18px}
   .field .lb{font-size:10.5px; letter-spacing:.14em; color:var(--faint); text-transform:uppercase; margin-bottom:7px; font-weight:600}
   .field .in{display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--border);
@@ -214,10 +258,10 @@
   .field input,.field select{width:100%; background:none; border:none; outline:none; padding:11px 0; font-size:14.5px}
   .field select{appearance:auto}
   .field .sfx{color:var(--faint); font-size:12.5px; flex:none}
-  textarea#desc{width:100%; min-height:140px; resize:vertical; background:var(--surface-2); border:1px solid var(--border);
+  textarea.ta{width:100%; min-height:130px; resize:vertical; background:var(--surface-2); border:1px solid var(--border);
     border-radius:12px; padding:14px 16px; font-size:14.5px; line-height:1.65; transition:border-color .12s}
-  textarea#desc:focus{border-color:var(--brand); outline:none}
-  textarea#desc::placeholder{color:var(--faint)}
+  textarea.ta:focus{border-color:var(--brand); outline:none}
+  textarea.ta::placeholder{color:var(--faint)}
   .desc-foot{display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap}
   .desc-foot .hint{font-size:12px; color:var(--faint)}
   .desc-foot .count{margin-left:auto; font-size:11px; color:var(--faint)}
@@ -226,43 +270,51 @@
     font-size:12.5px; font-weight:500; transition:color .12s, border-color .12s}
   .chip:hover{color:var(--brand); border-color:var(--brand)}
   .seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden; background:var(--surface-2)}
-  .seg button{border:none; background:none; padding:9px 18px; font-size:13px; font-weight:600; color:var(--muted); transition:background .12s, color .12s}
+  .seg button{border:none; background:none; padding:9px 17px; font-size:13px; font-weight:600; color:var(--muted); transition:background .12s, color .12s}
   .seg button.on{background:var(--brand); color:#fff}
-  .seg-row{display:flex; gap:24px; flex-wrap:wrap}
+  .seg-row{display:flex; gap:24px; flex-wrap:wrap; align-items:flex-end}
   .seg-group .lb{font-size:10.5px; letter-spacing:.14em; color:var(--faint); text-transform:uppercase; margin-bottom:8px; font-weight:600}
 
-  /* links */
-  .link-row{display:flex; align-items:center; gap:10px; margin-bottom:10px}
-  .link-row .li-wrap{flex:1; display:flex; align-items:center; gap:10px; background:var(--surface-2); border:1px solid var(--border);
-    border-radius:10px; padding:11px 14px; transition:border-color .12s}
-  .link-row .li-wrap:focus-within{border-color:var(--brand)}
-  .link-row input{flex:1; background:none; border:none; outline:none; font-size:13.5px}
-  .link-row input::placeholder{color:var(--faint)}
-  .link-row .st{font-size:11px; font-weight:600; flex:none}
-  .link-row .st.ok{color:var(--good)} .link-row .st.bad{color:var(--danger)}
-  .link-row .rm{border:none; background:none; color:var(--faint); font-size:17px; line-height:1; padding:4px}
-  .add-link{width:100%; border:1px dashed var(--border-strong); background:none; border-radius:10px; padding:12px;
+  /* attachments */
+  .att-row{display:flex; align-items:center; gap:10px; margin-bottom:10px}
+  .att-row .type{flex:none; width:172px; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 10px; font-size:12.5px}
+  .att-row .body{flex:1; display:flex; align-items:center; gap:10px; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:10px; padding:9px 13px; min-width:0}
+  .att-row .body:focus-within{border-color:var(--brand)}
+  .att-row input[type=url]{flex:1; background:none; border:none; outline:none; font-size:13.5px; min-width:0}
+  .att-row .thumb{width:34px; height:34px; border-radius:7px; object-fit:cover; border:1px solid var(--border); flex:none}
+  .att-row .fname{flex:1; font-size:12.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .att-row .fsize{font-size:11px; color:var(--faint); flex:none}
+  .att-row .st{font-size:11px; font-weight:600; flex:none}
+  .att-row .st.ok{color:var(--good)} .att-row .st.bad{color:var(--danger)}
+  .att-row .rm{border:none; background:none; color:var(--faint); font-size:17px; line-height:1; padding:4px; flex:none}
+  .att-row .rm:hover{color:var(--danger)}
+  .att-btns{display:flex; gap:10px; flex-wrap:wrap}
+  .add-att{flex:1; min-width:180px; display:flex; align-items:center; justify-content:center; gap:9px;
+    border:1px dashed var(--border-strong); background:none; border-radius:10px; padding:12px;
     color:var(--muted); font-size:13.5px; font-weight:500; transition:color .12s, border-color .12s}
-  .add-link:hover{color:var(--brand); border-color:var(--brand)}
+  .add-att:hover{color:var(--brand); border-color:var(--brand)}
   .link-note{font-size:12.5px; color:var(--muted); margin-top:13px; line-height:1.65}
   .drive-preview{margin-top:15px; background:var(--surface-2); border:1px solid var(--border); border-left:3px solid var(--gold);
     border-radius:10px; padding:14px 18px; font-size:12.5px; color:var(--muted); line-height:1.75}
   .drive-preview b{color:var(--text); font-weight:600}
   .drive-preview .path{color:var(--gold); font-weight:500; word-break:break-all}
 
-  .submit-bar{display:flex; align-items:center; gap:16px; margin-top:10px; flex-wrap:wrap}
-  .submit{background:var(--btn-primary); color:var(--btn-primary-text); border:none; border-radius:11px; padding:15px 34px;
-    font-size:15px; font-weight:700; letter-spacing:.01em; box-shadow:0 2px 8px rgba(23,63,102,.25); transition:background .15s, box-shadow .15s}
-  .submit:hover:not(:disabled){background:var(--btn-primary-hover); box-shadow:0 4px 14px rgba(23,63,102,.3)}
+  .submit-bar{display:flex; align-items:center; gap:16px; margin-top:8px; flex-wrap:wrap}
+  .submit{display:flex; align-items:center; gap:10px; background:var(--btn-primary); color:var(--btn-primary-text); border:none;
+    border-radius:11px; padding:14px 30px; font-size:15px; font-weight:700; box-shadow:0 2px 8px rgba(20,73,143,.25);
+    transition:background .15s, box-shadow .15s}
+  .submit:hover:not(:disabled){background:var(--btn-primary-hover); box-shadow:0 4px 14px rgba(20,73,143,.3)}
   .submit:disabled{opacity:.4; cursor:not-allowed; box-shadow:none}
   .submit-note{font-size:12.5px; color:var(--faint)}
 
-  /* ---------- sidebar ---------- */
-  .sidebar{position:sticky; top:84px}
+  /* sidebar */
+  .sidebar{position:sticky; top:82px}
   .sum-card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:22px 24px; box-shadow:0 1px 2px rgba(24,36,48,.04)}
   .sum-head{display:flex; align-items:center; gap:14px; margin-bottom:16px}
   .ring{width:48px; height:48px; flex:none; position:relative}
   .ring svg{transform:rotate(-90deg)}
+  .ring circle{transition:stroke-dashoffset .35s ease}
   .ring .pc{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:600}
   .sum-head .h1{font-family:var(--font-display); font-size:16.5px; font-weight:600}
   .sum-head .h2{font-size:11.5px; color:var(--faint); margin-top:1px}
@@ -284,48 +336,84 @@
   .after .a .ic{color:var(--gold); flex:none; font-weight:700}
   .after .a b{color:var(--text); font-weight:600}
 
-  /* ---------- my requests ---------- */
-  .req-item{background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:20px 24px; margin-bottom:13px;
+  /* my requests */
+  .kind-badge{font-family:var(--font-mono); flex:none; font-size:10px; font-weight:600; letter-spacing:.08em; border-radius:6px; padding:3px 8px}
+  .kind-badge.req{color:var(--brand); background:var(--brand-soft)}
+  .kind-badge.fbk{color:var(--gold); background:var(--gold-soft)}
+  .req-item{background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:19px 23px; margin-bottom:13px;
     box-shadow:0 1px 2px rgba(24,36,48,.04)}
-  .req-top{display:flex; gap:13px; align-items:center; flex-wrap:wrap}
-  .req-top .no{font-family:var(--font-mono); font-size:12px; color:var(--gold); font-weight:600; letter-spacing:.03em}
-  .req-top .rt{font-family:var(--font-display); font-weight:600; font-size:16px}
+  .req-top{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+  .req-top .no{font-family:var(--font-mono); font-size:12px; color:var(--gold); font-weight:600}
+  .req-top .rt{font-family:var(--font-display); font-weight:600; font-size:15.5px}
   .req-top .sp{flex:1}
-  .status{flex:none; font-size:11px; font-weight:600; letter-spacing:.04em; border-radius:99px; padding:4px 12px}
-  .status.reg{color:var(--brand); background:var(--brand-soft)}
+  .status{flex:none; font-size:11px; font-weight:600; letter-spacing:.03em; border-radius:99px; padding:4px 12px}
+  .status.s-new{color:var(--brand); background:var(--brand-soft)}
+  .status.s-rev{color:var(--warn); background:var(--warn-soft)}
+  .status.s-done{color:var(--good); background:var(--good-soft)}
+  .status.s-rej{color:var(--danger); background:var(--danger-soft)}
   .status.mail{color:var(--good); background:var(--good-soft)}
   .req-body{font-size:13.5px; color:var(--muted); margin-top:8px; max-width:78ch; line-height:1.6}
-  .req-meta{display:flex; gap:18px; flex-wrap:wrap; font-size:11px; color:var(--faint); margin-top:11px}
-  .req-drive{font-size:11.5px; margin-top:8px; color:var(--gold); word-break:break-all}
+  .req-meta{display:flex; gap:18px; flex-wrap:wrap; font-size:11px; color:var(--faint); margin-top:10px}
+  .req-drive{font-size:11.5px; margin-top:7px; color:var(--gold); word-break:break-all}
+  .req-thumbs{display:flex; gap:8px; margin-top:10px}
+  .req-thumbs img{width:44px; height:44px; border-radius:8px; object-fit:cover; border:1px solid var(--border)}
   .empty{color:var(--faint); text-align:center; padding:52px 20px; border:1px dashed var(--border-strong); border-radius:14px; font-size:14px}
 
-  /* ---------- registry ---------- */
-  .reg-tools{display:flex; gap:14px; align-items:center; margin-bottom:16px; flex-wrap:wrap}
-  .reg-tools .search{flex:1; min-width:220px; margin:0}
+  /* dashboard */
+  .dash-tools{display:flex; gap:12px; align-items:center; margin-bottom:20px; flex-wrap:wrap}
+  .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:22px}
+  .tile{background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:18px 20px}
+  .tile .tk{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; color:var(--faint)}
+  .tile .tv{font-size:30px; font-weight:700; margin-top:6px; line-height:1.1; font-variant-numeric:tabular-nums}
+  .tile .ts{font-size:11.5px; color:var(--faint); margin-top:4px}
+  .tile.warn .tv{color:var(--warn)} .tile.good .tv{color:var(--good)}
+  .charts{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px}
+  .chart-card{background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:20px 22px; min-width:0}
+  .chart-card .ct{font-family:var(--font-display); font-size:15.5px; font-weight:600; margin-bottom:2px}
+  .chart-card .cs{font-size:11.5px; color:var(--faint); margin-bottom:16px}
+  .chart-card.wide{grid-column:1/-1}
+  .hbar{display:flex; align-items:center; gap:10px; margin-bottom:9px; font-size:12.5px}
+  .hbar .hl{flex:none; width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--muted)}
+  .hbar .track{flex:1; display:flex; align-items:center; gap:8px}
+  .hbar .bar{height:10px; border-radius:0 4px 4px 0; background:var(--ch-bar); min-width:2px; transition:width .4s ease}
+  .hbar .hv{font-size:12px; font-weight:600; font-variant-numeric:tabular-nums}
+  .donut-wrap{display:flex; gap:20px; align-items:center; flex-wrap:wrap}
+  .dlegend{display:flex; flex-direction:column; gap:8px; font-size:12.5px}
+  .dlegend .dl{display:flex; align-items:center; gap:9px}
+  .dlegend .sw{width:11px; height:11px; border-radius:3px; flex:none}
+  .dlegend .dv{margin-left:auto; font-weight:600; font-variant-numeric:tabular-nums; padding-left:14px}
+  #chTrendSvg{width:100%; height:auto; display:block}
+  .chart-empty{color:var(--faint); font-size:13px; padding:14px 0}
+  #tooltip{position:fixed; z-index:90; pointer-events:none; background:var(--text); color:var(--bg);
+    font-size:12px; font-weight:600; border-radius:8px; padding:6px 11px; opacity:0; transition:opacity .12s; white-space:nowrap}
+
+  /* registry */
+  .reg-tools{display:flex; gap:12px; align-items:center; margin-bottom:16px; flex-wrap:wrap}
+  .reg-tools .search{flex:1; min-width:200px; margin:0}
   .reg-count{font-size:12.5px; color:var(--muted)}
   .table-wrap{overflow-x:auto; background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:0 1px 2px rgba(24,36,48,.04)}
-  table.reg{width:100%; border-collapse:collapse; font-size:12.5px; min-width:940px}
+  table.reg{width:100%; border-collapse:collapse; font-size:12.5px; min-width:1000px}
   table.reg th{position:sticky; top:0; text-align:left; font-size:10px; letter-spacing:.14em; text-transform:uppercase;
-    color:var(--faint); font-weight:600; background:var(--surface-2); padding:12px 16px; border-bottom:1px solid var(--border); white-space:nowrap}
-  table.reg td{padding:13px 16px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5}
-  table.reg tbody tr{transition:background .1s}
+    color:var(--faint); font-weight:600; background:var(--surface-2); padding:12px 15px; border-bottom:1px solid var(--border); white-space:nowrap}
+  table.reg td{padding:12px 15px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5}
   table.reg tbody tr:hover{background:var(--surface-2)}
   table.reg tr:last-child td{border-bottom:none}
   table.reg td .sub{color:var(--faint); font-size:11px; margin-top:2px}
+  .st-select{background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:5px 8px; font-size:12px}
   .integrity{margin-top:16px; font-size:12.5px; color:var(--muted); line-height:1.75; background:var(--surface); border:1px solid var(--border);
     border-left:3px solid var(--gold); border-radius:10px; padding:15px 20px}
   .integrity b{color:var(--text); font-weight:600}
 
-  /* ---------- modal ---------- */
+  /* modal */
   #modalWrap{position:fixed; inset:0; z-index:70; background:rgba(10,18,28,.6); backdrop-filter:blur(3px);
     display:none; align-items:center; justify-content:center; padding:20px}
   #modalWrap.open{display:flex}
   .modal{width:min(660px,100%); max-height:88vh; overflow:auto; background:var(--surface); border:1px solid var(--border-strong);
-    border-radius:18px; box-shadow:var(--shadow-lg)}
+    border-radius:18px; box-shadow:var(--shadow-lg); animation:popIn .25s ease both}
   .modal .mh{padding:26px 28px 0; text-align:center}
   .modal .okmark{width:54px; height:54px; margin:0 auto 14px; border-radius:50%; background:var(--good-soft); color:var(--good);
-    display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700}
-  .modal h3{font-family:var(--font-display); margin:0 0 5px; font-size:22px; font-weight:600; letter-spacing:-.01em}
+    display:flex; align-items:center; justify-content:center}
+  .modal h3{font-family:var(--font-display); margin:0 0 5px; font-size:22px; font-weight:600}
   .modal .mh p{color:var(--muted); font-size:13.5px; line-height:1.6; margin:0 auto 20px; max-width:52ch}
   .mailcard{margin:0 24px 16px; border:1px solid var(--border); border-radius:12px; overflow:hidden}
   .mailcard .mc-h{background:var(--surface-2); padding:10px 18px; font-size:10px; letter-spacing:.16em; text-transform:uppercase;
@@ -334,14 +422,14 @@
   .mailcard .mrow{display:flex; gap:12px; padding:9px 18px; border-top:1px solid var(--border); font-size:12.5px}
   .mailcard .mrow .k{color:var(--faint); width:64px; flex:none}
   .mailcard .mbody{border-top:1px solid var(--border); padding:14px 18px; font-size:12.5px; color:var(--muted); line-height:1.8; white-space:pre-wrap}
-  .modal .mf{padding:4px 24px 24px; display:flex; gap:10px; justify-content:flex-end}
+  .modal .mf{padding:4px 24px 24px; display:flex; justify-content:flex-end}
   .modal .mf .b2{background:var(--btn-primary); color:var(--btn-primary-text); border:none; border-radius:10px; padding:12px 26px; font-size:14px; font-weight:600}
   .modal .mf .b2:hover{background:var(--btn-primary-hover)}
 
   /* tour */
   #tour{position:absolute; z-index:60; width:min(336px, calc(100vw - 32px)); background:var(--surface); border:1px solid var(--border-strong);
-    border-radius:14px; box-shadow:var(--shadow-lg); padding:18px 20px; display:none}
-  #tour .th{display:flex; justify-content:space-between; font-size:10.5px; color:var(--faint); margin-bottom:9px; letter-spacing:.06em}
+    border-radius:14px; box-shadow:var(--shadow-lg); padding:18px 20px; display:none; animation:popIn .2s ease both}
+  #tour .th{display:flex; justify-content:space-between; font-size:10.5px; color:var(--faint); margin-bottom:9px}
   #tour .th button{background:none; border:none; color:var(--faint); font-size:11px; padding:0}
   #tour .tt{font-family:var(--font-display); font-weight:600; font-size:15.5px; margin-bottom:6px}
   #tour .td{font-size:12.5px; color:var(--muted); line-height:1.6}
@@ -365,33 +453,39 @@
     <div class="lb-top">
       <div class="mark" aria-hidden="true">N</div>
       <div>
-        <div class="w1">Нэткапитал Санхүүгийн Корпораци</div>
+        <div class="w1">Нэткапитал Санхүүгийн Групп</div>
         <div class="w2">Банк бус санхүүгийн байгууллага</div>
       </div>
     </div>
     <div class="lb-mid">
       <div class="eyebrow">Эх үүсвэрийн дэмжлэгийн портал</div>
       <h1>Салбарын хүсэлт бүр — бүртгэлтэй, баталгаатай, мөрдөгдөхүйц.</h1>
-      <p>Эх үүсвэрийн бүтээгдэхүүнтэй холбоотой хүсэлтээ нэг цэгээс илгээж, шийдвэрлэлтийг нь эхнээс нь дуустал хянана.</p>
+      <p>Эх үүсвэрийн бүтээгдэхүүнтэй холбоотой хүсэлт, санал, гомдлоо нэг цэгээс илгээж, шийдвэрлэлтийг нь эхнээс нь дуустал хянана.</p>
     </div>
     <div class="vals">
-      <div class="v"><span class="tick">—</span><span><b>Дараалсан дугаарлалт</b> · хүсэлт бүр ЭҮ дугаартай бүртгэлд орно</span></div>
-      <div class="v"><span class="tick">—</span><span><b>И-мэйл баталгаажуулалт</b> · эх үүсвэрийн алба руу автоматаар</span></div>
+      <div class="v"><span class="tick">—</span><span><b>Дараалсан дугаарлалт</b> · бүртгэл бүр ЭҮ / СГ дугаартай</span></div>
+      <div class="v"><span class="tick">—</span><span><b>И-мэйл баталгаажуулалт</b> · хариуцсан газар руу автоматаар</span></div>
       <div class="v"><span class="tick">—</span><span><b>Drive архив</b> · хавсралт он, сар, ангиллаар цэгцлэгдэнэ</span></div>
+      <div class="v"><span class="tick">—</span><span><b>Дашбоард</b> · үр дүнг ХОБПХГ-ын багт нэгтгэн харуулна</span></div>
     </div>
-    <div class="lb-foot">funding.netcapital.mn</div>
+    <div class="lb-foot">Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар</div>
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v0.3</span>
+      <span class="proto-badge">Прототип v0.4</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
-      <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Салбар, нэрийг тань ажилтны бүртгэлээс автоматаар таних тул гараар бөглөх шаардлагагүй.</p>
+      <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
       <button class="g-btn" id="btnLogin">
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.3-2.2H12v4.1h6.5c-.1 1.1-.8 2.7-2.4 3.8l3.7 2.9c2.2-2.1 3.7-5.1 3.7-8.6z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.7-2.9c-1 .7-2.4 1.2-4.2 1.2-3.2 0-6-2.2-7-5.1l-3.8 3C3.2 21.3 7.3 24 12 24z"/><path fill="#FBBC05" d="M5 14.3c-.2-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3l-3.9-3C.4 8.3 0 10.1 0 12s.4 3.7 1.2 5.3l3.8-3z"/><path fill="#EA4335" d="M12 4.7c2.3 0 3.8 1 4.7 1.8l3.4-3.3C18 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.7l3.9 3c1-2.9 3.7-5 6.9-5z"/></svg>
         Google хаягаар нэвтрэх
       </button>
-      <div class="foot mono">@netcapital.mn хаягтай ажилтан</div>
+      <div id="acctPicker" hidden>
+        <div class="ph">Бүртгэл сонгох — прототипийн жишээ данснууд</div>
+        <div id="acctList"></div>
+        <div class="picker-note">Ажилтны бүртгэлээс и-мэйл хаягаар нь нэр, газар/салбар, албан тушаал, эрхийн түвшинг автоматаар таньж байгааг харуулж байна. Production дээр Google Workspace-ийн жинхэнэ нэвтрэлт холбогдоно.</div>
+      </div>
+      <div class="foot mono">@netgroup.mn хаягтай ажилтан</div>
     </div>
   </div>
 </section>
@@ -403,36 +497,66 @@
       <div class="logo" aria-hidden="true">N</div>
       <div>
         <div class="t1">Эх үүсвэрийн портал</div>
-        <div class="t2">Нэткапитал СК · ББСБ</div>
+        <div class="t2">Нэткапитал Санхүүгийн Групп</div>
       </div>
     </div>
     <nav class="views" aria-label="Хэсгүүд">
-      <button data-view="formview" class="on"><span class="lbl">Шинэ хүсэлт</span></button>
-      <button data-view="myview"><span class="lbl">Миний хүсэлтүүд</span> <span class="cnt num" id="myCnt">0</span></button>
-      <button data-view="regview"><span class="lbl">Бүртгэлийн сан</span></button>
+      <button data-view="newview" class="on" id="navNew"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">Шинэ бүртгэл</span></button>
+      <button data-view="myview" id="navMy"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span class="lbl">Миний бүртгэлүүд</span> <span class="cnt num" id="myCnt">0</span></button>
+      <button data-view="dashview" id="navDash" hidden><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7.5" height="9" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="5.5" rx="1.5"/><rect x="13.5" y="12" width="7.5" height="9" rx="1.5"/><rect x="3" y="15.5" width="7.5" height="5.5" rx="1.5"/></svg><span class="lbl">Дашбоард</span></button>
+      <button data-view="regview" id="navReg" hidden><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="lbl">Бүртгэлийн сан</span></button>
     </nav>
     <div class="spacer"></div>
     <div class="userchip">
-      <div class="uav" id="uav">А</div>
+      <div class="uav" id="uav">·</div>
       <div class="meta"><div class="un" id="uname">—</div><div class="ue mono" id="uemail">—</div></div>
+      <span class="admin-tag" id="adminTag" hidden>Админ</span>
     </div>
     <button class="icon-btn" id="btnTheme" title="Гэрэлтэй / харанхуй горим" aria-label="Гэрэлтэй / харанхуй горим солих">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M19.4 4.6l-1.8 1.8M6.4 17.6l-1.8 1.8"/></svg>
+      <svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M19.4 4.6l-1.8 1.8M6.4 17.6l-1.8 1.8"/></svg>
     </button>
-    <button class="icon-btn" id="btnHelp" title="Танилцуулга дахин үзэх" aria-label="Танилцуулга дахин үзэх">?</button>
-    <button class="ghost-btn" id="btnLogout"><span aria-hidden="true">⎋</span><span class="lbl">Гарах</span></button>
+    <button class="icon-btn" id="btnHelp" title="Танилцуулга дахин үзэх" aria-label="Танилцуулга дахин үзэх">
+      <svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9.5"/><path d="M9.5 9.5A2.6 2.6 0 0 1 14.5 10c0 1.8-2.5 2-2.5 3.6M12 17.2v.1"/></svg>
+    </button>
+    <button class="ghost-btn" id="btnLogout"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="lbl">Гарах</span></button>
   </header>
 
-  <!-- ---- form ---- -->
-  <main id="formview">
-    <div>
-      <span class="crumb"><span class="dot"></span> Шинэ хүсэлт</span>
+  <!-- ---- flow chooser ---- -->
+  <main id="newview" class="single">
+    <div class="anim">
+      <span class="crumb"><span class="dot"></span> Шинэ бүртгэл</span>
+      <h2 class="page">Юу бүртгүүлэх вэ?</h2>
+      <p class="lede">Хоёр төрлийн бүртгэл тус тусдаа урсгалаар явна — аль нь тохирохоо сонгоно уу. Аль аль нь дугаарлагдан бүртгэгдэж, Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газарт очно.</p>
+      <div class="flow-grid">
+        <button class="flow-card f1" id="cardGoReq">
+          <span class="fi"><svg class="i" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></span>
+          <h3>Хүсэлт илгээх</h3>
+          <p>Эх үүсвэрийн бүтээгдэхүүнтэй холбоотой шийдвэр, дэмжлэг, лавлагааны хүсэлт.</p>
+          <span class="ex">Жишээ: хүүгийн тохируулга · борлуулалтын дэмжлэг · зааварчилгаа · сунгалт · онцгой нөхцөл</span>
+          <span class="go">Хүсэлт эхлүүлэх <svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="flow-card f2" id="cardGoFbk">
+          <span class="fi"><svg class="i" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1L3 20l1-5.4a8.4 8.4 0 0 1-1-4.1A8.5 8.5 0 0 1 11.5 2a8.5 8.5 0 0 1 9.5 9.5z"/><path d="M12 8v4M12 15.5v.1"/></svg></span>
+          <h3>Санал, гомдол, асуудал мэдэгдэх</h3>
+          <p>Бүтээгдэхүүн, процесс, системтэй холбоотой санал, талархал, гомдол, асуудал, алдаа.</p>
+          <span class="ex">Жишээ: процессын саад · системийн алдаа · сайжруулах санал · харилцагчийн гомдол</span>
+          <span class="go">Мэдэгдэл эхлүүлэх <svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ---- request form ---- -->
+  <main id="reqview" style="display:none">
+    <div class="anim">
+      <span class="crumb"><span class="dot"></span> Шинэ бүртгэл · Хүсэлт</span>
       <h2 class="page">Эх үүсвэрийн хүсэлт илгээх</h2>
-      <p class="lede">Салбар нэгжээс эх үүсвэрийн бүтээгдэхүүнтэй холбоотой хүсэлтээ эндээс илгээнэ. Хүсэлт бүр дугаарлагдан бүртгэгдэж, төв рүү и-мэйлээр баталгаажин, хавсралт нь Google Drive-д ангилагдан хадгалагдана.</p>
+      <p class="lede">Хүсэлт бүр дугаарлагдан бүртгэгдэж, Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар руу и-мэйлээр баталгаажин, хавсралт нь Google Drive-д ангилагдан хадгалагдана.</p>
 
       <div class="card dept-bar" id="deptCard">
-        <span class="k">ХҮСЭГЧ САЛБАР</span>
-        <span class="v" id="deptName">Хан-Уул салбар</span>
+        <span class="k">ИЛГЭЭГЧ</span>
+        <span class="v" id="deptName">—</span>
+        <span class="pos" id="deptPos"></span>
         <span class="tag-auto">Автоматаар</span>
         <div class="dept-wrap">
           <button class="ghost-btn" id="btnDept">Өөрчлөх ▾</button>
@@ -445,8 +569,8 @@
           <span class="aside">Тохирохгүй бол «Бусад / эргэлзээтэй»</span></div>
         <p class="step-sub">Ангилал сонгосноор шаардлагатай талбар, хугацаа, Drive-ын хавтас автоматаар тодорхойлогдоно.</p>
         <div class="search">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="catSearch" type="search" placeholder="Хайх — «хүү», «борлуулалт», «зааварчилгаа»…" aria-label="Ангилал хайх">
+          <svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="catSearch" type="search" placeholder="Хайх — «хүү», «буцаалт», «кампанит»…" aria-label="Ангилал хайх">
         </div>
         <div class="cat-grid" id="catGrid"></div>
         <div class="cat-empty" id="catEmpty">Илэрц олдсонгүй — «Бусад / эргэлзээтэй» ангиллыг сонгоорой.</div>
@@ -492,12 +616,12 @@
             </select></div></div>
         </div>
 
-        <textarea id="desc" placeholder="Жишээ: 3 жил хамтарсан харилцагч 250 сая ₮-ийн итгэлцлээ сунгах хүсэлтэй ба өрсөлдөгчийн 15.2%-ийн саналтай харьцуулж хүү нэмэх боломж байгаа эсэх?"></textarea>
+        <textarea id="desc" class="ta" placeholder="Жишээ: 3 жил хамтарсан харилцагч 250 сая ₮-ийн итгэлцлээ сунгах хүсэлтэй ба өрсөлдөгчийн 15.2%-ийн саналтай харьцуулж хүү нэмэх боломж байгаа эсэх?"></textarea>
         <div class="desc-foot">
           <span class="hint">Эхний өгүүлбэрт нь хүсэлтээ нэг мөрөөр бичвэл хамгийн хурдан.</span>
           <span class="count mono num"><span id="descCnt">0</span> тэмдэгт</span>
         </div>
-        <div class="chips">
+        <div class="chips" id="chipsReq">
           <button class="chip" data-tpl="Харилцагчийн түүх: ">+ Харилцагчийн түүх</button>
           <button class="chip" data-tpl="Өрсөлдөгчийн санал: ">+ Өрсөлдөгчийн санал</button>
           <button class="chip" data-tpl="Хэзээ хэрэгтэй: ">+ Хэзээ хэрэгтэй</button>
@@ -508,39 +632,38 @@
       <div class="card" id="linkCard">
         <div class="step-head"><span class="step-no">03</span><h3>Хавсралт</h3>
           <span class="aside req-flag" id="linkReq" hidden>Энэ ангилалд хавсралт заавал</span></div>
-        <p class="step-sub">Google Drive / Docs линк — харилцагчийн хүсэлт, тооцоолол, гэрээний хуулбар гэх мэт.</p>
-        <div id="linkRows"></div>
-        <button class="add-link" id="btnAddLink">+ Линк нэмэх</button>
-        <p class="link-note">Илгээхийн өмнө линкээ «Эх үүсвэрийн алба үзэх эрхтэй» болгож тохируулсан эсэхээ шалгана уу — эрхгүй линк шийдвэрлэлтийг зогсооно.</p>
+        <p class="step-sub">Google Drive / Docs линк эсвэл зураг — харилцагчийн хүсэлт, тооцоолол, гэрээний хуулбар, дэлгэцийн зураг гэх мэт. Хавсралт бүрд төрлөө сонгоно.</p>
+        <div id="attReq"></div>
+        <div class="att-btns">
+          <button class="add-att" id="btnAddLinkR"><svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7L12.5 19"/></svg> Линк нэмэх</button>
+          <button class="add-att" id="btnAddImgR"><svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L7 20"/></svg> Зураг хавсаргах</button>
+          <input type="file" id="fileR" accept="image/*" multiple hidden>
+        </div>
+        <p class="link-note">Drive линкээ «ХОБПХГ үзэх эрхтэй» болгож тохируулсан эсэхээ шалгана уу — эрхгүй линк шийдвэрлэлтийг зогсооно.</p>
         <div class="drive-preview">
           <b>Drive-д хадгалагдах байрлал</b> — илгээмэгц хавсралтууд дараах хавтаст автоматаар ангилагдана:<br>
-          <span class="path mono" id="drivePath">Эх үүсвэрийн хүсэлтүүд / 2026 / …</span>
+          <span class="path mono" id="drivePath">Эх үүсвэрийн хүсэлтүүд / …</span>
         </div>
       </div>
 
       <div class="card" id="metaCard">
         <div class="step-head"><span class="step-no">04</span><h3>Яаралтай байдал</h3></div>
         <div class="seg-row">
-          <div class="seg-group">
-            <div class="seg" id="segUrg">
-              <button data-v="Энгийн" class="on">Энгийн</button>
-              <button data-v="Яаралтай">Яаралтай</button>
-            </div>
+          <div class="seg" id="segUrg">
+            <button data-v="Энгийн" class="on">Энгийн</button>
+            <button data-v="Яаралтай">Яаралтай</button>
           </div>
-          <div class="seg-group" style="align-self:center">
-            <span style="font-size:12.5px;color:var(--faint)" id="urgHint">Энгийн хүсэлтэд ажлын 1–2 өдөрт хариу өгнө.</span>
-          </div>
+          <span style="font-size:12.5px;color:var(--faint);padding-bottom:9px" id="urgHint">Энгийн хүсэлтэд ажлын 1–2 өдөрт хариу өгнө.</span>
         </div>
       </div>
 
       <div class="submit-bar">
-        <button class="submit" id="btnSubmit" disabled>Хүсэлт илгээх</button>
+        <button class="submit" id="btnSubmit" disabled><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-11 11M22 2 15 22l-4-9-9-4z"/></svg> Хүсэлт илгээх</button>
         <span class="submit-note" id="submitNote">Ангилал сонгож, мэдээллээ бөглөсний дараа идэвхжинэ.</span>
       </div>
     </div>
 
-    <!-- sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar anim">
       <div class="sum-card" id="sumCard">
         <div class="sum-head">
           <div class="ring">
@@ -555,12 +678,13 @@
         </div>
         <div class="sum-rows">
           <div class="srow"><span class="k">Ангилал</span><span class="v dim" id="sumCat">Сонгоогүй</span></div>
-          <div class="srow"><span class="k">Салбар</span><span class="v" id="sumDept">—</span></div>
+          <div class="srow"><span class="k">Илгээгч</span><span class="v" id="sumDept">—</span></div>
           <div class="srow" id="sumProdRow" hidden><span class="k">Бүтээгдэхүүн</span><span class="v" id="sumProd">—</span></div>
           <div class="srow" id="sumAmtRow" hidden><span class="k">Дүн</span><span class="v num" id="sumAmt">—</span></div>
           <div class="srow" id="sumRateRow" hidden><span class="k">Хүү</span><span class="v num" id="sumRate">—</span></div>
+          <div class="srow"><span class="k">Хавсралт</span><span class="v num" id="sumAtt">—</span></div>
           <div class="srow"><span class="k">Яаралтай байдал</span><span class="v good" id="sumUrg">Энгийн</span></div>
-          <div class="srow"><span class="k">Хариуцагч</span><span class="v" id="sumOwner">Эх үүсвэрийн алба</span></div>
+          <div class="srow"><span class="k">Хариуцагч</span><span class="v">ХОБПХГ</span></div>
         </div>
         <div class="checks" id="checks"></div>
         <div class="sla">
@@ -569,33 +693,169 @@
         </div>
         <div class="after">
           <div class="t">Илгээсний дараа автоматаар</div>
-          <div class="a"><span class="ic">—</span><span>Хүсэлт дугаарлагдан <b>ЭҮ-2026-XXXX</b> бүртгэлд орно</span></div>
-          <div class="a"><span class="ic">—</span><span>Эх үүсвэрийн албаны и-мэйл рүү баталгаажуулалт очно</span></div>
+          <div class="a"><span class="ic">—</span><span>Хүсэлт <b>ЭҮ-2026-XXXX</b> дугаартай бүртгэлд орно</span></div>
+          <div class="a"><span class="ic">—</span><span>ХОБПХГ-ын и-мэйл рүү баталгаажуулалт очно</span></div>
           <div class="a"><span class="ic">—</span><span>Хавсралт Drive-ын ангилсан хавтаст хадгалагдана</span></div>
         </div>
       </div>
     </aside>
   </main>
 
-  <!-- ---- my requests ---- -->
+  <!-- ---- feedback form ---- -->
+  <main id="fbkview" style="display:none">
+    <div class="anim">
+      <span class="crumb"><span class="dot"></span> Шинэ бүртгэл · Санал, гомдол</span>
+      <h2 class="page">Санал, гомдол, асуудал мэдэгдэх</h2>
+      <p class="lede">Мэдэгдэл бүр СГ дугаартай бүртгэгдэж, ХОБПХГ-ын багт очно. Алдаа, асуудлыг дэлгэцийн зурагтай нь хавсаргавал шийдвэрлэлт эрс хурдасна.</p>
+
+      <div class="card" id="gtypeCard">
+        <div class="step-head"><span class="step-no">01</span><h3>Мэдэгдлийн төрөл</h3></div>
+        <div class="cat-grid" id="gtypeGrid"></div>
+      </div>
+
+      <div class="card" id="fdCard">
+        <div class="step-head"><span class="step-no">02</span><h3>Дэлгэрэнгүй мэдээлэл</h3></div>
+        <div class="fgrid">
+          <div class="field"><div class="lb">Холбогдох хүрээ</div>
+            <div class="in"><select id="area">
+              <option value="">Сонгох…</option>
+              <option>Итгэлцэл бүтээгдэхүүн</option>
+              <option>Борлуулалтын процесс</option>
+              <option>Систем, аппликэйшн</option>
+              <option>Үйлчилгээ, харилцаа</option>
+              <option>Бусад</option>
+            </select></div></div>
+          <div class="field" id="sevRow" hidden><div class="lb">Ноцтой байдал</div>
+            <div class="seg" id="segSev" style="width:100%">
+              <button data-v="Бага" class="on" style="flex:1">Бага</button>
+              <button data-v="Дунд" style="flex:1">Дунд</button>
+              <button data-v="Өндөр" style="flex:1">Өндөр</button>
+              <button data-v="Критик" style="flex:1">Критик</button>
+            </div></div>
+        </div>
+        <textarea id="fdesc" class="ta" placeholder="Жишээ: Итгэлцлийн гэрээ хэвлэхэд системийн тооцоолсон хүү гараар оруулсан хүүгээс зөрж гарч байна — алхам алхмаар: …"></textarea>
+        <div class="desc-foot">
+          <span class="hint">Асуудал, алдааг: юу хийсэн → юу болсон → юу болох ёстой байсан дарааллаар бичвэл ойлгомжтой.</span>
+          <span class="count mono num"><span id="fdescCnt">0</span> тэмдэгт</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="step-head"><span class="step-no">03</span><h3>Хавсралт</h3>
+          <span class="aside" style="font-size:12px;color:var(--faint)">Сайн дурын — алдаанд дэлгэцийн зураг зөвлөнө</span></div>
+        <div id="attFbk"></div>
+        <div class="att-btns">
+          <button class="add-att" id="btnAddLinkF"><svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7L12.5 19"/></svg> Линк нэмэх</button>
+          <button class="add-att" id="btnAddImgF"><svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L7 20"/></svg> Зураг хавсаргах</button>
+          <input type="file" id="fileF" accept="image/*" multiple hidden>
+        </div>
+      </div>
+
+      <div class="submit-bar">
+        <button class="submit" id="btnSubmitF" disabled><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-11 11M22 2 15 22l-4-9-9-4z"/></svg> Мэдэгдэл илгээх</button>
+        <span class="submit-note" id="submitNoteF">Төрөл, хүрээгээ сонгож, тайлбараа бичсэний дараа идэвхжинэ.</span>
+      </div>
+    </div>
+
+    <aside class="sidebar anim">
+      <div class="sum-card">
+        <div class="sum-head">
+          <div><div class="h1">Мэдэгдлийн товч</div><div class="h2">Бөглөх тусам шинэчлэгднэ</div></div>
+        </div>
+        <div class="sum-rows">
+          <div class="srow"><span class="k">Төрөл</span><span class="v dim" id="sumGtype">Сонгоогүй</span></div>
+          <div class="srow"><span class="k">Илгээгч</span><span class="v" id="sumDeptF">—</span></div>
+          <div class="srow"><span class="k">Хүрээ</span><span class="v dim" id="sumArea">—</span></div>
+          <div class="srow" id="sumSevRow" hidden><span class="k">Ноцтой байдал</span><span class="v" id="sumSev">—</span></div>
+          <div class="srow"><span class="k">Хавсралт</span><span class="v num" id="sumAttF">—</span></div>
+          <div class="srow"><span class="k">Хариуцагч</span><span class="v">ХОБПХГ</span></div>
+        </div>
+        <div class="checks" id="checksF"></div>
+        <div class="sla">
+          <div class="t">Хариу өгөх хугацаа</div>
+          <div class="d" id="slaTextF">Ажлын 1–3 өдөр. Критик алдаанд ажлын 4 цагийн дотор.</div>
+        </div>
+        <div class="after">
+          <div class="t">Илгээсний дараа автоматаар</div>
+          <div class="a"><span class="ic">—</span><span>Мэдэгдэл <b>СГ-2026-XXXX</b> дугаартай бүртгэлд орно</span></div>
+          <div class="a"><span class="ic">—</span><span>ХОБПХГ-ын и-мэйл рүү баталгаажуулалт очно</span></div>
+          <div class="a"><span class="ic">—</span><span>Хавсралт Drive-ын ангилсан хавтаст хадгалагдана</span></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ---- my records ---- -->
   <main id="myview" class="single" style="display:none">
-    <div>
-      <span class="crumb"><span class="dot"></span> Миний хүсэлтүүд</span>
-      <h2 class="page">Илгээсэн хүсэлтүүд</h2>
-      <p class="lede">Прототип горимд хүсэлтүүд зөвхөн энэ хөтөч дээр хадгалагдана. Production дээр серверт бүртгэгдэж, эх үүсвэрийн албаны самбарт очно.</p>
+    <div class="anim">
+      <span class="crumb"><span class="dot"></span> Миний бүртгэлүүд</span>
+      <h2 class="page">Илгээсэн бүртгэлүүд</h2>
+      <p class="lede">Прототип горимд бүртгэлүүд зөвхөн энэ хөтөч дээр хадгалагдана. Production дээр серверт бүртгэгдэж, ХОБПХГ-ын самбарт очно.</p>
       <div id="reqList"></div>
     </div>
   </main>
 
-  <!-- ---- registry ---- -->
+  <!-- ---- dashboard (admin) ---- -->
+  <main id="dashview" class="single" style="display:none">
+    <div class="anim">
+      <span class="crumb"><span class="dot"></span> Дашбоард · ХОБПХГ</span>
+      <h2 class="page">Үр дүнгийн дашбоард</h2>
+      <p class="lede">Салбар нэгжээс ирсэн бүх хүсэлт, мэдэгдлийн нэгдсэн дүр зураг — ангилал, салбар, статус, хандлагаар.</p>
+      <div class="dash-tools">
+        <div class="seg" id="dashSeg">
+          <button data-v="all" class="on">Бүгд</button>
+          <button data-v="REQ">Хүсэлт</button>
+          <button data-v="FBK">Санал, гомдол</button>
+        </div>
+        <span class="spacer"></span>
+        <button class="ghost-btn" id="btnSeed">Жишээ өгөгдөл үүсгэх</button>
+        <button class="ghost-btn" id="btnClearDemo" hidden>Жишээ өгөгдөл арилгах</button>
+      </div>
+      <div class="tiles" id="dashTiles"></div>
+      <div class="charts">
+        <div class="chart-card wide">
+          <div class="ct">Сүүлийн 14 хоногийн урсгал</div>
+          <div class="cs">Өдөрт бүртгэгдсэн хүсэлт, мэдэгдлийн тоо</div>
+          <div id="chTrend"></div>
+        </div>
+        <div class="chart-card">
+          <div class="ct">Ангиллаар</div>
+          <div class="cs">Хамгийн олон бүртгэлтэй ангилалууд</div>
+          <div id="chCats"></div>
+        </div>
+        <div class="chart-card">
+          <div class="ct">Салбар, нэгжээр</div>
+          <div class="cs">Илгээгч нэгжийн идэвх</div>
+          <div id="chBranch"></div>
+        </div>
+        <div class="chart-card">
+          <div class="ct">Статусаар</div>
+          <div class="cs">Шийдвэрлэлтийн явц</div>
+          <div id="chStatus"></div>
+        </div>
+        <div class="chart-card">
+          <div class="ct">Мэдэгдлийн төрлөөр</div>
+          <div class="cs">Санал, гомдлын задаргаа</div>
+          <div id="chFbk"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ---- registry (admin) ---- -->
   <main id="regview" class="single" style="display:none">
-    <div>
-      <span class="crumb"><span class="dot"></span> Бүртгэлийн сан</span>
-      <h2 class="page">Хүсэлтийн нэгдсэн бүртгэл</h2>
-      <p class="lede">Аудитад зориулсан бүрэн бүртгэл: дугаар дараалсан, устгагдахгүй, огноо цаг, салбар, ангилал, дүн, и-мэйл баталгаажуулалт, Drive байрлал бүгд нэг мөрөнд.</p>
+    <div class="anim">
+      <span class="crumb"><span class="dot"></span> Бүртгэлийн сан · ХОБПХГ</span>
+      <h2 class="page">Нэгдсэн бүртгэл</h2>
+      <p class="lede">Аудитад зориулсан бүрэн бүртгэл: дугаар дараалсан, устгагдахгүй, огноо цаг, илгээгч, ангилал, дүн, и-мэйл баталгаажуулалт, Drive байрлал бүгд нэг мөрөнд. Статусыг эндээс шинэчилнэ.</p>
       <div class="reg-tools">
+        <div class="seg" id="regKind">
+          <button data-v="all" class="on">Бүгд</button>
+          <button data-v="REQ">Хүсэлт</button>
+          <button data-v="FBK">Санал, гомдол</button>
+        </div>
         <div class="search">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <input id="regSearch" type="search" placeholder="Шүүх — дугаар, салбар, ангилал…" aria-label="Бүртгэл шүүх">
         </div>
         <span class="reg-count num" id="regCount"></span>
@@ -603,30 +863,30 @@
       <div class="table-wrap">
         <table class="reg">
           <thead><tr>
-            <th>Дугаар</th><th>Огноо, цаг</th><th>Салбар</th><th>Ангилал</th>
-            <th>Бүтээгдэхүүн / Дүн</th><th>Яаралтай</th><th>Хавсралт</th><th>И-мэйл</th><th>Статус</th>
+            <th>Дугаар</th><th>Огноо, цаг</th><th>Илгээгч</th><th>Ангилал</th>
+            <th>Дэлгэрэнгүй</th><th>Зэрэглэл</th><th>Хавс.</th><th>И-мэйл</th><th>Статус</th>
           </tr></thead>
           <tbody id="regBody"></tbody>
         </table>
       </div>
       <div class="integrity">
-        <b>Бүрэн бүтэн байдлын зарчим.</b> Дугаар нь дараалсан бөгөөд алгасахгүй; бүртгэл үүссэний дараа засварлагдахгүй, устгагдахгүй; и-мэйл баталгаажуулалт бүрд илгээсэн цаг, хүлээн авагч хадгалагдана; хавсралт бүр Drive-ын нэг мөр байрлалд байрлана. Production дээр энэ бүртгэл сервер дээр хөтлөгдөж, аудитад шаардлагатай үед CSV/Excel-ээр татагдана.
+        <b>Бүрэн бүтэн байдлын зарчим.</b> Дугаар нь дараалсан бөгөөд алгасахгүй; бүртгэл үүссэний дараа агуулга нь засварлагдахгүй, устгагдахгүй — зөвхөн статус шинэчлэгдэж, түүх нь хадгалагдана; и-мэйл баталгаажуулалт бүрд илгээсэн цаг, хүлээн авагч бүртгэгдэнэ; хавсралт бүр Drive-ын нэг мөр байрлалтай. Production дээр энэ бүртгэл сервер дээр хөтлөгдөж, аудитад CSV/Excel-ээр татагдана.
       </div>
     </div>
   </main>
 </div>
 
 <!-- confirmation modal -->
-<div id="modalWrap" role="dialog" aria-modal="true" aria-label="Хүсэлт бүртгэгдлээ">
+<div id="modalWrap" role="dialog" aria-modal="true" aria-label="Бүртгэгдлээ">
   <div class="modal">
     <div class="mh">
-      <div class="okmark">✓</div>
-      <h3 id="mTitle">ЭҮ-2026-0001 бүртгэгдлээ</h3>
-      <p>Хүсэлт тань дугаарлагдан бүртгэлд орлоо. Доорх баталгаажуулалт эх үүсвэрийн алба болон танд и-мэйлээр очно.</p>
+      <div class="okmark"><svg class="i" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5.5 5.5L20 6.5"/></svg></div>
+      <h3 id="mTitle">—</h3>
+      <p>Бүртгэлд орлоо. Доорх баталгаажуулалт ХОБПХГ болон танд и-мэйлээр очно.</p>
     </div>
     <div class="mailcard">
       <div class="mc-h"><span>И-мэйл баталгаажуулалт</span><span class="sim">Прототип — урьдчилсан харагдац</span></div>
-      <div class="mrow"><span class="k">Хэнд</span><span class="mono">ehuusver@netcapital.mn</span></div>
+      <div class="mrow"><span class="k">Хэнд</span><span class="mono">hobpkhg@netgroup.mn</span></div>
       <div class="mrow"><span class="k">Cc</span><span class="mono" id="mCc">—</span></div>
       <div class="mrow"><span class="k">Гарчиг</span><span id="mSubj">—</span></div>
       <div class="mbody" id="mBody"></div>
@@ -653,32 +913,52 @@
 </div>
 
 <div id="toast" role="status"></div>
+<div id="tooltip"></div>
 
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
 
-/* ---------- data ---------- */
+/* ================= data ================= */
+/* Ажилтны бүртгэл (mock) — и-мэйл → нэр, нэгж, албан тушаал, эрх.
+   Production: Google Workspace Directory эсвэл HR бүртгэлээс татна. */
+const EMPLOYEES = {
+  'munkh-erdene.o@netgroup.mn':{name:'Мөнх-Эрдэнэ О.', unit:'ХОБПХГ', unitFull:'Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар', pos:'Газрын захирал', role:'admin'},
+  'onon.or@netgroup.mn':{name:'Онон О.', unit:'ХОБПХГ', unitFull:'Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар', pos:'Ахлах мэргэжилтэн', role:'admin'},
+  'lkhagvadari.a@netgroup.mn':{name:'Алтанхуяг Лхагвадарь', unit:'ХОБПХГ', unitFull:'Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар', pos:'Мэргэжилтэн', role:'admin'},
+  'baterdene.b@netgroup.mn':{name:'Бат-Эрдэнэ Б.', unit:'Хан-Уул салбар', unitFull:'Хан-Уул салбар', pos:'Санхүүгийн зөвлөх', role:'user'},
+  'sarnai.d@netgroup.mn':{name:'Сарнай Д.', unit:'Дархан салбар', unitFull:'Дархан салбар', pos:'Салбарын захирал', role:'user'},
+};
+const HANDLER_MAIL='hobpkhg@netgroup.mn';
 const CATS = [
-  {c:'F01', t:'Эх үүсвэрийн хүүгийн тохируулгын хүсэлт', k:'percent', type:'Шийдвэр шаардлагатай', folder:'F01 Хүүгийн тохируулга',
-   fields:['product','rates'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F02', t:'Эх үүсвэрийн борлуулалтын дэмжлэг хүсэх', k:'chart', type:'Дэмжлэг', folder:'F02 Борлуулалтын дэмжлэг',
-   fields:['support'], link:false, sla:['Ажлын 2–3 өдөр','Ажлын 1 өдөр']},
-  {c:'F03', t:'Зааварчилгаа, аргачлал хүсэх', k:'book', type:'Лавлагаа', folder:'F03 Зааварчилгаа',
-   fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F04', t:'Бүтээгдэхүүний нөхцөлийн лавлагаа', k:'doc', type:'Лавлагаа', folder:'F04 Нөхцөлийн лавлагаа',
-   fields:['product'], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F05', t:'Гэрээ, маягтын загвар авах', k:'copy', type:'Лавлагаа', folder:'F05 Гэрээ, маягт',
-   fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F06', t:'Хугацааны сунгалт, нөхцөлийн өөрчлөлт', k:'clock', type:'Шийдвэр шаардлагатай', folder:'F06 Сунгалт, өөрчлөлт',
-   fields:['product'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F07', t:'Онцгой нөхцөлийн зөвшөөрөл', k:'shield', type:'Шийдвэр шаардлагатай', folder:'F07 Онцгой нөхцөл',
-   fields:['product','rates'], link:true, sla:['Ажлын 1–2 өдөр','Ажлын 4 цаг']},
-  {c:'F08', t:'Бусад / эргэлзээтэй', k:'help', type:'Лавлагаа', folder:'F08 Бусад',
-   fields:[], link:false, sla:['Ажлын 1–2 өдөр','Ажлын 1 өдөр']},
+  {c:'F01', t:'Хүүгийн тохируулгын хүсэлт', k:'percent', type:'Шийдвэр', folder:'F01 Хүүгийн тохируулга', fields:['product','rates'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
+  {c:'F02', t:'Борлуулалтын дэмжлэг хүсэх', k:'chart', type:'Дэмжлэг', folder:'F02 Борлуулалтын дэмжлэг', fields:['support'], link:false, sla:['Ажлын 2–3 өдөр','Ажлын 1 өдөр']},
+  {c:'F03', t:'Зааварчилгаа, аргачлал хүсэх', k:'book', type:'Лавлагаа', folder:'F03 Зааварчилгаа', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
+  {c:'F04', t:'Бүтээгдэхүүний нөхцөлийн лавлагаа', k:'doc', type:'Лавлагаа', folder:'F04 Нөхцөлийн лавлагаа', fields:['product'], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
+  {c:'F05', t:'Гэрээ, маягтын загвар авах', k:'copy', type:'Лавлагаа', folder:'F05 Гэрээ, маягт', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
+  {c:'F06', t:'Хугацааны сунгалт, өөрчлөлт', k:'clock', type:'Шийдвэр', folder:'F06 Сунгалт, өөрчлөлт', fields:['product'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
+  {c:'F07', t:'Онцгой нөхцөлийн зөвшөөрөл', k:'shield', type:'Шийдвэр', folder:'F07 Онцгой нөхцөл', fields:['product','rates'], link:true, sla:['Ажлын 1–2 өдөр','Ажлын 4 цаг']},
+  {c:'F08', t:'Хугацаанаас өмнөх буцаалтын зөвшөөрөл', k:'undo', type:'Шийдвэр', folder:'F08 Өмнөх буцаалт', fields:['product'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
+  {c:'F09', t:'Кампанит ажил, урамшууллын зөвшөөрөл', k:'mega', type:'Шийдвэр', folder:'F09 Кампанит ажил', fields:[], link:false, sla:['Ажлын 2–3 өдөр','Ажлын 1 өдөр']},
+  {c:'F10', t:'Шинэ бүтээгдэхүүн, сайжруулалтын санал', k:'bulb', type:'Санал', folder:'F10 Бүтээгдэхүүний санал', fields:[], link:false, sla:['Ажлын 5 өдөр','Ажлын 2 өдөр']},
+  {c:'F11', t:'Сургалт, чадавхжуулалт хүсэх', k:'grad', type:'Дэмжлэг', folder:'F11 Сургалт', fields:[], link:false, sla:['Ажлын 3 өдөр','Ажлын 1 өдөр']},
+  {c:'F12', t:'Тайлан, мэдээллийн хүсэлт', k:'report', type:'Лавлагаа', folder:'F12 Тайлан, мэдээлэл', fields:[], link:false, sla:['Ажлын 2 өдөр','Ажлын 1 өдөр']},
+  {c:'F13', t:'Бусад / эргэлзээтэй', k:'help', type:'Лавлагаа', folder:'F13 Бусад', fields:[], link:false, sla:['Ажлын 1–2 өдөр','Ажлын 1 өдөр']},
 ];
-const DEPTS = ['Төв салбар','Хан-Уул салбар','Баянзүрх салбар','Сүхбаатар салбар','Чингэлтэй салбар',
+const GTYPES = [
+  {c:'G01', t:'Санал', d:'Сайжруулах санаа, шинэ боломж', k:'bulb', sev:false},
+  {c:'G02', t:'Талархал', d:'Сайн туршлага, магтаал', k:'heart', sev:false},
+  {c:'G03', t:'Гомдол', d:'Харилцагч болон дотоод гомдол', k:'frown', sev:true},
+  {c:'G04', t:'Процессын асуудал', d:'Урсгал дахь саад, удаашрал', k:'flow', sev:true},
+  {c:'G05', t:'Системийн алдаа', d:'Аппликэйшн, тооцооллын алдаа', k:'bug', sev:true},
+];
+const UNITS = ['ХОБПХГ','Төв салбар','Хан-Уул салбар','Баянзүрх салбар','Сүхбаатар салбар','Чингэлтэй салбар',
   'Сонгинохайрхан салбар','Дархан салбар','Эрдэнэт салбар','Мөрөн салбар','Ховд салбар','Чойбалсан салбар'];
+const ATT_TYPES=['Харилцагчийн хүсэлт','Тооцоолол','Гэрээ, баримт','Дэлгэцийн зураг','Бусад'];
+const STATUSES=['Бүртгэгдсэн','Хянагдаж байна','Шийдвэрлэсэн','Татгалзсан'];
+const ST_CLASS={'Бүртгэгдсэн':'s-new','Хянагдаж байна':'s-rev','Шийдвэрлэсэн':'s-done','Татгалзсан':'s-rej'};
+const ST_COLOR={'Бүртгэгдсэн':'var(--st-new)','Хянагдаж байна':'var(--st-review)','Шийдвэрлэсэн':'var(--st-done)','Татгалзсан':'var(--st-rej)'};
+
 const ICONS = {
   percent:'<circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M19 5 5 19"/>',
   chart:'<path d="M3 21h18M7 21V12M12 21V6M17 21v-8"/>',
@@ -687,67 +967,110 @@ const ICONS = {
   copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
   shield:'<path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/>',
+  undo:'<path d="M3 7v6h6"/><path d="M3 13a9 9 0 1 0 3-7.7L3 7"/>',
+  mega:'<path d="m3 11 15-6v14L3 13z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6M21 9v4"/>',
+  bulb:'<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.4 1 2.3h6c0-.9.4-1.8 1-2.3A7 7 0 0 0 12 2z"/>',
+  grad:'<path d="m12 3 10 5-10 5L2 8z"/><path d="M6 10.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.5M22 8v6"/>',
+  report:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 13h3M8 16.5h6"/>',
   help:'<circle cx="12" cy="12" r="9.5"/><path d="M9.5 9.5A2.6 2.6 0 0 1 14.5 10c0 1.8-2.5 2-2.5 3.6M12 17.2v.1"/>',
+  heart:'<path d="M12 21c-4.5-3.5-9-6.6-9-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 4.4-4.5 7.5-9 11z"/>',
+  frown:'<circle cx="12" cy="12" r="9.5"/><path d="M8.5 9.5h.01M15.5 9.5h.01M8.5 16.5s1.3-1.5 3.5-1.5 3.5 1.5 3.5 1.5"/>',
+  flow:'<rect x="2.5" y="3" width="7" height="6" rx="1.5"/><rect x="14.5" y="15" width="7" height="6" rx="1.5"/><path d="M6 9v4a3 3 0 0 0 3 3h5.5M17.5 15V9"/>',
+  bug:'<circle cx="12" cy="13" r="6"/><path d="M12 7V4M8.5 8 6 5.5M15.5 8 18 5.5M6 13H3M21 13h-3M7 18l-2.5 2.5M17 18l2.5 2.5"/>',
 };
-const svg = k => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round">${ICONS[k]||ICONS.doc}</svg>`;
+const svg=(k,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round">${ICONS[k]||ICONS.doc}</svg>`;
 
-/* ---------- storage ---------- */
+/* ================= storage / state ================= */
 const store = {
   get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
   set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
 };
-
-/* ---------- state ---------- */
 const state = {
-  user:{name:'Алтанхуяг Лхагвадарь', email:'lkhagvadari.a@netcapital.mn'},
-  dept:'Хан-Уул салбар', cat:null, urg:'Энгийн', client:'Иргэн',
-  reqs: store.get('nc.reqs', []),
+  user:null, dept:'', cat:null, urg:'Энгийн', client:'Иргэн',
+  gtype:null, sev:'Бага',
+  recs: store.get('nc2.recs', []),
 };
+const isAdmin=()=>state.user&&state.user.role==='admin';
 
-/* ---------- theme ---------- */
+/* ================= theme ================= */
 function applyTheme(t){ if(t) document.documentElement.setAttribute('data-theme',t); else document.documentElement.removeAttribute('data-theme'); }
-applyTheme(store.get('nc.theme', null));
+applyTheme(store.get('nc2.theme', null));
 $('btnTheme').addEventListener('click', ()=>{
   const cur=document.documentElement.getAttribute('data-theme');
   const sysDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
   const next=cur ? (cur==='dark'?'light':'dark') : (sysDark?'light':'dark');
-  applyTheme(next); store.set('nc.theme', next);
+  applyTheme(next); store.set('nc2.theme', next);
+  if($('dashview').style.display!=='none') renderDash();
 });
 
-/* ---------- login ---------- */
-function enterApp(){
-  $('login').style.display='none'; $('app').style.display='block';
-  $('uname').textContent=state.user.name; $('uemail').textContent=state.user.email; $('uav').textContent=state.user.name[0];
-  if(!store.get('nc.tourDone',false)) setTimeout(()=>startTour(),500);
-}
-$('btnLogin').addEventListener('click', enterApp);
-$('btnLogout').addEventListener('click', ()=>{ $('app').style.display='none'; $('login').style.display='grid'; });
-
-/* ---------- views ---------- */
-const VIEWS=['formview','myview','regview'];
-document.querySelectorAll('nav.views button').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('nav.views button').forEach(x=>x.classList.remove('on'));
-  b.classList.add('on');
-  VIEWS.forEach(v=>$(v).style.display = v===b.dataset.view ? 'grid':'none');
-  if(b.dataset.view==='myview') renderReqs();
-  if(b.dataset.view==='regview') renderRegistry();
-}));
-
-/* ---------- branch menu ---------- */
-const deptMenu=$('deptMenu');
-function renderDeptMenu(){
-  deptMenu.innerHTML='';
-  DEPTS.forEach(d=>{
+/* ================= login / roles ================= */
+function renderAcctPicker(){
+  const list=$('acctList'); list.innerHTML='';
+  Object.entries(EMPLOYEES).forEach(([email,e])=>{
     const b=document.createElement('button');
-    b.textContent=d; b.className=d===state.dept?'on':'';
-    b.addEventListener('click',()=>{ state.dept=d; $('deptName').textContent=d; deptMenu.classList.remove('open'); refresh(); });
-    deptMenu.appendChild(b);
+    b.className='acct'+(e.role==='admin'?' adm':''); b.dataset.email=email;
+    b.innerHTML=`<span class="av">${e.name[0]}</span>
+      <span><span class="an">${e.name}</span><br><span class="ae mono">${email}</span></span>
+      <span class="meta2"><span class="au">${e.unit} · ${e.pos}</span><br><span class="role ${e.role==='admin'?'a':'u'}">${e.role==='admin'?'Админ':'Ажилтан'}</span></span>`;
+    b.addEventListener('click',()=>loginAs(email));
+    list.appendChild(b);
   });
 }
-$('btnDept').addEventListener('click',e=>{ e.stopPropagation(); renderDeptMenu(); deptMenu.classList.toggle('open'); });
+$('btnLogin').addEventListener('click',()=>{ renderAcctPicker(); $('acctPicker').hidden=false; });
+function loginAs(email){
+  const e=EMPLOYEES[email];
+  state.user={email, ...e};
+  state.dept=e.unit;
+  $('login').style.display='none'; $('app').style.display='block';
+  $('uname').textContent=e.name; $('uemail').textContent=email; $('uav').textContent=e.name[0];
+  $('adminTag').hidden=e.role!=='admin';
+  $('navDash').hidden=!isAdmin(); $('navReg').hidden=!isAdmin();
+  $('deptName').textContent=e.unit; $('deptPos').textContent=e.pos;
+  $('sumDeptF').textContent=e.unit;
+  gotoView('newview');
+  refresh(); refreshF(); renderReqs();
+}
+$('btnLogout').addEventListener('click',()=>{
+  state.user=null; $('app').style.display='none'; $('login').style.display='grid'; $('acctPicker').hidden=true;
+});
+
+/* ================= views ================= */
+const VIEWS=['newview','reqview','fbkview','myview','dashview','regview'];
+function gotoView(v){
+  VIEWS.forEach(x=>$(x).style.display = x===v ? 'grid':'none');
+  document.querySelectorAll('nav.views button').forEach(b=>{
+    const navFor = (v==='reqview'||v==='fbkview') ? 'newview' : v;
+    b.classList.toggle('on', b.dataset.view===navFor);
+  });
+  const el=$(v).querySelector('.anim');
+  if(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }
+  if(v==='myview') renderReqs();
+  if(v==='dashview') renderDash();
+  if(v==='regview') renderRegistry();
+}
+document.querySelectorAll('nav.views button').forEach(b=>b.addEventListener('click',()=>gotoView(b.dataset.view)));
+$('cardGoReq').addEventListener('click',()=>{
+  gotoView('reqview');
+  if(!store.get('nc2.tourDone',false)) setTimeout(()=>startTour(),400);
+});
+$('cardGoFbk').addEventListener('click',()=>gotoView('fbkview'));
+
+/* ================= unit menu ================= */
+const deptMenu=$('deptMenu');
+$('btnDept').addEventListener('click',e=>{
+  e.stopPropagation();
+  deptMenu.innerHTML='';
+  UNITS.forEach(d=>{
+    const b=document.createElement('button');
+    b.textContent=d; b.className=d===state.dept?'on':'';
+    b.addEventListener('click',()=>{ state.dept=d; $('deptName').textContent=d; $('deptPos').textContent=''; deptMenu.classList.remove('open'); refresh(); });
+    deptMenu.appendChild(b);
+  });
+  deptMenu.classList.toggle('open');
+});
 document.addEventListener('click',()=>deptMenu.classList.remove('open'));
 
-/* ---------- categories ---------- */
+/* ================= categories (REQ) ================= */
 const catGrid=$('catGrid');
 function renderCats(filter=''){
   const q=filter.trim().toLowerCase();
@@ -765,7 +1088,6 @@ function renderCats(filter=''){
 }
 $('catSearch').addEventListener('input',e=>renderCats(e.target.value));
 renderCats();
-
 function applyCatFields(){
   const f=state.cat?state.cat.fields:[];
   $('fldProduct').hidden=!f.includes('product');
@@ -776,12 +1098,26 @@ function applyCatFields(){
     : 'Ангиллаа эхлээд сонговол шаардлагатай талбарууд энд гарч ирнэ.';
 }
 
-/* ---------- detail inputs ---------- */
-const desc=$('desc');
+/* ================= gtypes (FBK) ================= */
+const gtypeGrid=$('gtypeGrid');
+function renderGtypes(){
+  gtypeGrid.innerHTML='';
+  GTYPES.forEach(g=>{
+    const b=document.createElement('button');
+    b.className='cat'+(state.gtype&&state.gtype.c===g.c?' on':'');
+    b.innerHTML=`<span class="ic">${svg(g.k)}</span><span><span class="tt">${g.t}</span><br><span class="cd">${g.c} · ${g.d}</span></span>`;
+    b.addEventListener('click',()=>{ state.gtype=g; renderGtypes(); refreshF(); });
+    gtypeGrid.appendChild(b);
+  });
+}
+renderGtypes();
+
+/* ================= inputs ================= */
+const desc=$('desc'), fdesc=$('fdesc');
 desc.addEventListener('input',()=>{ $('descCnt').textContent=desc.value.length; refresh(); });
-document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
-  const t=ch.dataset.tpl;
-  desc.value = desc.value ? desc.value.replace(/\s*$/,'\n')+t : t;
+fdesc.addEventListener('input',()=>{ $('fdescCnt').textContent=fdesc.value.length; refreshF(); });
+document.querySelectorAll('#chipsReq .chip').forEach(ch=>ch.addEventListener('click',()=>{
+  desc.value = desc.value ? desc.value.replace(/\s*$/,'\n')+ch.dataset.tpl : ch.dataset.tpl;
   desc.focus(); $('descCnt').textContent=desc.value.length; refresh();
 }));
 const fmtAmt = v => { const d=v.replace(/[^\d]/g,''); return d? Number(d).toLocaleString('en-US'):''; };
@@ -789,105 +1125,153 @@ $('amount').addEventListener('input',e=>{ e.target.value=fmtAmt(e.target.value);
 ['rateNow','rateAsk'].forEach(id=>$(id).addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,5); refresh(); }));
 $('product').addEventListener('change',refresh);
 $('supportType').addEventListener('change',refresh);
-function bindSeg(id,key){
+$('area').addEventListener('change',refreshF);
+function bindSeg(id,key,cb){
   $(id).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
     $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on'); state[key]=b.dataset.v; refresh();
+    b.classList.add('on'); state[key]=b.dataset.v; cb();
   }));
 }
-bindSeg('segUrg','urg'); bindSeg('segClient','client');
+bindSeg('segUrg','urg',()=>refresh());
+bindSeg('segClient','client',()=>refresh());
+bindSeg('segSev','sev',()=>refreshF());
 
-/* ---------- links ---------- */
-const linkRows=$('linkRows');
+/* ================= attachments ================= */
 const validLink = v => /^https:\/\/(drive|docs)\.google\.com\/\S+/i.test(v.trim());
-function addLinkRow(){
-  const row=document.createElement('div'); row.className='link-row';
-  row.innerHTML=`<div class="li-wrap">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--faint);flex:none"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7L12.5 19"/></svg>
-      <input type="url" placeholder="https://drive.google.com/file/…" aria-label="Хавсралтын линк">
-      <span class="st"></span></div>
-    <button class="rm" title="Устгах" aria-label="Линк устгах">×</button>`;
-  const inp=row.querySelector('input'), st=row.querySelector('.st');
-  inp.addEventListener('input',()=>{
-    const v=inp.value.trim();
-    st.textContent=!v?'':validLink(v)?'зөв':'Drive/Docs линк биш';
-    st.className='st '+(!v?'':validLink(v)?'ok':'bad');
-    refresh();
-  });
-  row.querySelector('.rm').addEventListener('click',()=>{ if(linkRows.children.length>1){row.remove(); refresh();} else {inp.value=''; st.textContent=''; st.className='st'; refresh();} });
-  linkRows.appendChild(row);
+function makeAttach(rootId, onChange){
+  const root=$(rootId);
+  const items=[];
+  function row(item){
+    const div=document.createElement('div'); div.className='att-row';
+    const sel=document.createElement('select'); sel.className='type'; sel.setAttribute('aria-label','Хавсралтын төрөл');
+    ATT_TYPES.forEach(t=>{ const o=document.createElement('option'); o.textContent=t; sel.appendChild(o); });
+    sel.value=item.type; sel.addEventListener('change',()=>{ item.type=sel.value; onChange(); });
+    const body=document.createElement('div'); body.className='body';
+    if(item.kind==='link'){
+      body.innerHTML=`<svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--faint)"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7L12.5 19"/></svg>
+        <input type="url" placeholder="https://drive.google.com/file/…" aria-label="Хавсралтын линк"><span class="st"></span>`;
+      const inp=body.querySelector('input'), st=body.querySelector('.st');
+      inp.value=item.url||'';
+      inp.addEventListener('input',()=>{
+        item.url=inp.value.trim(); item.ok=validLink(item.url);
+        st.textContent=!item.url?'':item.ok?'зөв':'Drive/Docs линк биш';
+        st.className='st '+(!item.url?'':item.ok?'ok':'bad');
+        onChange();
+      });
+    } else {
+      body.innerHTML=`<img class="thumb" alt="Хавсаргасан зураг"><span class="fname"></span><span class="fsize num"></span>`;
+      body.querySelector('.thumb').src=item.thumb;
+      body.querySelector('.fname').textContent=item.name;
+      body.querySelector('.fsize').textContent=item.size;
+    }
+    const rm=document.createElement('button'); rm.className='rm'; rm.title='Устгах'; rm.setAttribute('aria-label','Хавсралт устгах'); rm.textContent='×';
+    rm.addEventListener('click',()=>{ items.splice(items.indexOf(item),1); div.remove(); onChange(); });
+    div.append(sel, body, rm);
+    root.appendChild(div);
+  }
+  return {
+    items,
+    addLink(){ const it={kind:'link',type:ATT_TYPES[0],url:'',ok:false}; items.push(it); row(it); onChange(); },
+    addImage(file){
+      const rd=new FileReader();
+      rd.onload=()=>{
+        const img=new Image();
+        img.onload=()=>{
+          const sc=Math.min(1, 900/Math.max(img.width,img.height));
+          const cv=document.createElement('canvas');
+          cv.width=Math.round(img.width*sc); cv.height=Math.round(img.height*sc);
+          cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+          const tsc=Math.min(1, 140/Math.max(img.width,img.height));
+          const tv=document.createElement('canvas');
+          tv.width=Math.round(img.width*tsc); tv.height=Math.round(img.height*tsc);
+          tv.getContext('2d').drawImage(img,0,0,tv.width,tv.height);
+          const it={kind:'img',type:'Дэлгэцийн зураг',name:file.name,
+            size:(file.size/1024).toFixed(0)+' KB', thumb:tv.toDataURL('image/jpeg',.75)};
+          items.push(it); row(it); onChange();
+        };
+        img.src=rd.result;
+      };
+      rd.readAsDataURL(file);
+    },
+    valid(){ return items.filter(i=>i.kind==='img'||(i.kind==='link'&&i.ok)); },
+    clear(){ items.length=0; root.innerHTML=''; onChange(); },
+  };
 }
-$('btnAddLink').addEventListener('click',()=>{ addLinkRow(); refresh(); });
-addLinkRow();
-const goodLinks=()=>[...linkRows.querySelectorAll('input')].map(i=>i.value.trim()).filter(v=>validLink(v));
+const attReq=makeAttach('attReq',()=>refresh());
+const attFbk=makeAttach('attFbk',()=>refreshF());
+$('btnAddLinkR').addEventListener('click',()=>attReq.addLink());
+$('btnAddLinkF').addEventListener('click',()=>attFbk.addLink());
+$('btnAddImgR').addEventListener('click',()=>$('fileR').click());
+$('btnAddImgF').addEventListener('click',()=>$('fileF').click());
+$('fileR').addEventListener('change',e=>{ [...e.target.files].forEach(f=>attReq.addImage(f)); e.target.value=''; });
+$('fileF').addEventListener('change',e=>{ [...e.target.files].forEach(f=>attFbk.addImage(f)); e.target.value=''; });
 
-/* ---------- id / drive path ---------- */
+/* ================= ids / drive ================= */
 const YEAR=new Date().getFullYear();
-const nextId=()=>'ЭҮ-'+YEAR+'-'+String(store.get('nc.seq',0)+1).padStart(4,'0');
-const MONTHS=['01','02','03','04','05','06','07','08','09','10','11','12'];
-function drivePath(id){
-  const m=MONTHS[new Date().getMonth()];
-  const folder=state.cat?state.cat.folder:'…';
-  return `Эх үүсвэрийн хүсэлтүүд / ${YEAR} / ${m}-сар / ${folder} / ${id||'ЭҮ-'+YEAR+'-XXXX'} /`;
+const pad4=n=>String(n).padStart(4,'0');
+const nextIdR=()=>'ЭҮ-'+YEAR+'-'+pad4(store.get('nc2.seqR',0)+1);
+const nextIdF=()=>'СГ-'+YEAR+'-'+pad4(store.get('nc2.seqF',0)+1);
+function drivePath(kind, folder, id){
+  const m=String(new Date().getMonth()+1).padStart(2,'0');
+  const rootF = kind==='REQ' ? 'Эх үүсвэрийн хүсэлтүүд' : 'Санал, гомдлын бүртгэл';
+  return `${rootF} / ${YEAR} / ${m}-сар / ${folder||'…'} / ${id||(kind==='REQ'?'ЭҮ':'СГ')+'-'+YEAR+'-XXXX'} /`;
 }
+function attSummary(a){ const L=a.filter(i=>i.kind==='link'&&i.ok).length, im=a.filter(i=>i.kind==='img').length;
+  return (L||im)? [L?L+' линк':'',im?im+' зураг':''].filter(Boolean).join(' · ') : '—'; }
 
-/* ---------- validation + summary ---------- */
-function needProduct(){ return state.cat && state.cat.fields.includes('product'); }
-function needRates(){ return state.cat && state.cat.fields.includes('rates'); }
-function needSupport(){ return state.cat && state.cat.fields.includes('support'); }
-function needLink(){ return !!(state.cat && state.cat.link); }
-const rateOk = v => { const n=parseFloat(v); return !isNaN(n)&&n>0&&n<=30; };
+/* ================= REQ validation / summary ================= */
+const needProduct=()=>state.cat&&state.cat.fields.includes('product');
+const needRates=()=>state.cat&&state.cat.fields.includes('rates');
+const needSupport=()=>state.cat&&state.cat.fields.includes('support');
+const needLink=()=>!!(state.cat&&state.cat.link);
+const rateOk=v=>{ const n=parseFloat(v); return !isNaN(n)&&n>0&&n<=30; };
 
 function refresh(){
   const okCat=!!state.cat;
   const okDesc=desc.value.trim().length>=20;
-  const okProd=!needProduct()||( $('product').value && $('amount').value.replace(/,/g,'').length>0 );
-  const okRates=!needRates()||( rateOk($('rateNow').value)&&rateOk($('rateAsk').value) );
+  const okProd=!needProduct()||($('product').value && $('amount').value.replace(/,/g,'').length>0);
+  const okRates=!needRates()||(rateOk($('rateNow').value)&&rateOk($('rateAsk').value));
   const okSupport=!needSupport()||!!$('supportType').value;
-  const okLink=!needLink()||goodLinks().length>0;
+  const atts=attReq.valid();
+  const okLink=!needLink()||atts.length>0;
 
   $('linkReq').hidden=!needLink();
-  $('drivePath').textContent=drivePath(null);
+  $('drivePath').textContent=drivePath('REQ', state.cat&&state.cat.folder, null);
 
-  /* summary */
   $('sumCat').textContent=state.cat?`${state.cat.c} · ${state.cat.t}`:'Сонгоогүй';
   $('sumCat').className='v'+(state.cat?'':' dim');
-  $('sumDept').textContent=state.dept;
+  $('sumDept').textContent=state.dept||'—';
   $('sumProdRow').hidden=!needProduct();
   $('sumProd').textContent=$('product').value||'—';
   $('sumAmtRow').hidden=!needProduct();
   $('sumAmt').textContent=$('amount').value?$('amount').value+' ₮':'—';
   $('sumRateRow').hidden=!needRates();
-  $('sumRate').textContent=(rateOk($('rateNow').value)&&rateOk($('rateAsk').value))
-    ? `${$('rateNow').value}% → ${$('rateAsk').value}%` : '—';
+  $('sumRate').textContent=(rateOk($('rateNow').value)&&rateOk($('rateAsk').value))?`${$('rateNow').value}% → ${$('rateAsk').value}%`:'—';
+  $('sumAtt').textContent=attSummary(attReq.items);
   $('sumUrg').textContent=state.urg;
   $('sumUrg').className='v '+(state.urg==='Энгийн'?'good':'warn');
-  $('sumOwner').textContent = state.cat&&state.cat.type==='Шийдвэр шаардлагатай' ? 'Эх үүсвэрийн алба · шийдвэр' : 'Эх үүсвэрийн алба';
   $('urgHint').textContent = state.urg==='Яаралтай'
     ? 'Яаралтай хүсэлт ээлж харгалзахгүй эхэлнэ — үндэслэлээ тайлбартаа бичнэ үү.'
     : 'Энгийн хүсэлтэд ажлын 1–2 өдөрт хариу өгнө.';
 
-  /* checks */
   const items=[['Ангилал сонгосон',okCat],['Тайлбар хангалттай (20+ тэмдэгт)',okDesc]];
   if(needProduct()) items.push(['Бүтээгдэхүүн, дүн',okProd]);
   if(needRates()) items.push(['Хүүгийн утга зөв (0–30%)',okRates]);
   if(needSupport()) items.push(['Дэмжлэгийн төрөл',okSupport]);
-  items.push([needLink()?'Хавсралт (заавал)':'Хавсралт (сайн дурын)', needLink()?okLink:goodLinks().length>0]);
+  items.push([needLink()?'Хавсралт (заавал)':'Хавсралт (сайн дурын)', needLink()?okLink:atts.length>0]);
   $('checks').innerHTML=items.map(([t,ok])=>`<div class="c ${ok?'ok':'no'}"><span class="m">✓</span> ${t}</div>`).join('');
 
-  /* sla */
   $('slaText').textContent = state.cat
     ? (state.urg==='Яаралтай'?state.cat.sla[1]:state.cat.sla[0])+'. '
       +(needLink()?'Энэ төрлийн хүсэлтэд хавсралт ЗААВАЛ шаардлагатай.':'Хавсралт нэмбэл шийдвэрлэлт хурдасна.')
     : '1–2 ажлын өдөр.';
 
-  /* progress */
   let p=10;
   if(okCat)p+=25; if(okDesc)p+=20;
   const extras=[needProduct()&&okProd, needRates()&&okRates, needSupport()&&okSupport].filter(x=>x===true).length;
   const extraNeeds=[needProduct(),needRates(),needSupport()].filter(Boolean).length;
   p += extraNeeds? Math.round(20*extras/extraNeeds) : 20;
-  if(needLink()){ if(okLink)p+=25; } else { p+=15; if(goodLinks().length)p+=10; }
+  if(needLink()){ if(okLink)p+=25; } else { p+=15; if(atts.length)p+=10; }
   p=Math.min(p,100);
   $('ringArc').style.strokeDashoffset=119.4*(1-p/100);
   $('ringPct').textContent=p+'%';
@@ -900,55 +1284,100 @@ function refresh(){
     : !okProd?'Бүтээгдэхүүн болон дүнгээ оруулна уу.'
     : !okRates?'Одоогийн болон хүсэж буй хүүгээ зөв оруулна уу (0–30%).'
     : !okSupport?'Дэмжлэгийн төрлөө сонгоно уу.'
-    : 'Энэ ангилалд Drive/Docs хавсралт заавал шаардлагатай.';
+    : 'Энэ ангилалд хавсралт (Drive линк эсвэл зураг) заавал.';
 }
 
-/* ---------- submit ---------- */
+/* ================= FBK validation / summary ================= */
+function refreshF(){
+  const okType=!!state.gtype;
+  const okArea=!!$('area').value;
+  const needSev=!!(state.gtype&&state.gtype.sev);
+  const okDesc=fdesc.value.trim().length>=20;
+  $('sevRow').hidden=!needSev; $('sumSevRow').hidden=!needSev;
+  $('sumGtype').textContent=state.gtype?`${state.gtype.c} · ${state.gtype.t}`:'Сонгоогүй';
+  $('sumGtype').className='v'+(state.gtype?'':' dim');
+  $('sumArea').textContent=$('area').value||'—';
+  $('sumArea').className='v'+($('area').value?'':' dim');
+  $('sumSev').textContent=state.sev;
+  $('sumSev').className='v '+(state.sev==='Критик'||state.sev==='Өндөр'?'warn':'');
+  $('sumAttF').textContent=attSummary(attFbk.items);
+  const items=[['Төрөл сонгосон',okType],['Холбогдох хүрээ',okArea],['Тайлбар хангалттай (20+ тэмдэгт)',okDesc]];
+  $('checksF').innerHTML=items.map(([t,ok])=>`<div class="c ${ok?'ok':'no'}"><span class="m">✓</span> ${t}</div>`).join('');
+  $('slaTextF').textContent = needSev&&state.sev==='Критик'
+    ? 'Критик алдаанд ажлын 4 цагийн дотор эхний хариу.' : 'Ажлын 1–3 өдөр.';
+  const ready=okType&&okArea&&okDesc;
+  $('btnSubmitF').disabled=!ready;
+  $('submitNoteF').textContent = ready?'Бүх шаардлага хангагдлаа — илгээхэд бэлэн.'
+    : !okType?'Мэдэгдлийн төрлөө сонгоно уу.'
+    : !okArea?'Холбогдох хүрээгээ сонгоно уу.'
+    : 'Тайлбараа дор хаяж 20 тэмдэгт бичнэ үү.';
+}
+
+/* ================= submit ================= */
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600); }
-function nowStr(){ return new Date().toLocaleString('sv-SE').slice(0,16); }
+function nowStr(d){ return (d||new Date()).toLocaleString('sv-SE').slice(0,16); }
+function packAtts(items){ return items.filter(i=>i.kind==='img'||(i.kind==='link'&&i.ok))
+  .map(i=>i.kind==='link'?{kind:'link',type:i.type,url:i.url}:{kind:'img',type:i.type,name:i.name,size:i.size,thumb:i.thumb}); }
 
 $('btnSubmit').addEventListener('click',()=>{
-  const id=nextId();
-  const links=goodLinks();
+  const id=nextIdR();
   const rec={
-    id, at:nowStr(), dept:state.dept,
+    kind:'REQ', id, at:nowStr(), ts:Date.now(), dept:state.dept,
     cat:state.cat.c, catName:state.cat.t, type:state.cat.type, folder:state.cat.folder,
     product:$('product').value||'', amount:$('amount').value||'', client:state.client,
     rateNow:$('rateNow').value||'', rateAsk:$('rateAsk').value||'', support:$('supportType').value||'',
-    desc:desc.value.trim(), urg:state.urg, links, drive:drivePath(id),
+    desc:desc.value.trim(), urg:state.urg, atts:packAtts(attReq.items),
+    drive:drivePath('REQ',state.cat.folder,id),
     by:state.user.name, byEmail:state.user.email,
-    mail:{to:'ehuusver@netcapital.mn', at:nowStr(), status:'Илгээгдсэн (прототип)'},
-    status:'Бүртгэгдсэн',
+    mail:{to:HANDLER_MAIL, at:nowStr(), status:'Илгээгдсэн (прототип)'},
+    status:'Бүртгэгдсэн', statusAt:nowStr(),
   };
-  state.reqs.push(rec);
-  store.set('nc.reqs',state.reqs); store.set('nc.seq',store.get('nc.seq',0)+1);
+  state.recs.push(rec);
+  store.set('nc2.recs',state.recs); store.set('nc2.seqR',store.get('nc2.seqR',0)+1);
   showConfirm(rec);
-  /* reset form */
   state.cat=null; desc.value=''; $('descCnt').textContent='0';
   ['product','supportType'].forEach(i=>$(i).value='');
   ['amount','rateNow','rateAsk'].forEach(i=>$(i).value='');
   state.urg='Энгийн'; state.client='Иргэн';
-  ['segUrg','segClient'].forEach(id=>$(id).querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===0)));
-  linkRows.innerHTML=''; addLinkRow();
-  renderCats($('catSearch').value); applyCatFields(); refresh(); renderReqs();
+  ['segUrg','segClient'].forEach(id2=>$(id2).querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===0)));
+  attReq.clear(); renderCats($('catSearch').value); applyCatFields(); refresh(); renderReqs();
+});
+
+$('btnSubmitF').addEventListener('click',()=>{
+  const id=nextIdF();
+  const g=state.gtype;
+  const rec={
+    kind:'FBK', id, at:nowStr(), ts:Date.now(), dept:state.dept||state.user.unit,
+    cat:g.c, catName:g.t, type:'Санал, гомдол', folder:g.c+' '+g.t,
+    area:$('area').value, sev:g.sev?state.sev:'', urg:g.sev&&state.sev==='Критик'?'Яаралтай':'Энгийн',
+    desc:fdesc.value.trim(), atts:packAtts(attFbk.items),
+    drive:drivePath('FBK',g.c+' '+g.t,id),
+    by:state.user.name, byEmail:state.user.email,
+    mail:{to:HANDLER_MAIL, at:nowStr(), status:'Илгээгдсэн (прототип)'},
+    status:'Бүртгэгдсэн', statusAt:nowStr(),
+  };
+  state.recs.push(rec);
+  store.set('nc2.recs',state.recs); store.set('nc2.seqF',store.get('nc2.seqF',0)+1);
+  showConfirm(rec);
+  state.gtype=null; fdesc.value=''; $('fdescCnt').textContent='0'; $('area').value='';
+  state.sev='Бага'; $('segSev').querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===0));
+  attFbk.clear(); renderGtypes(); refreshF(); renderReqs();
 });
 
 function mailSubject(r){ return `[${r.id}] ${r.cat} · ${r.catName} — ${r.dept}`; }
 function mailBody(r){
-  const L=[];
-  L.push(`Хүсэлтийн дугаар: ${r.id}`);
-  L.push(`Огноо, цаг: ${r.at}`);
-  L.push(`Салбар: ${r.dept}`);
-  L.push(`Илгээсэн: ${r.by} (${r.byEmail})`);
-  L.push(`Ангилал: ${r.cat} · ${r.catName}`);
+  const L=[`Бүртгэлийн дугаар: ${r.id}`,`Огноо, цаг: ${r.at}`,`Илгээгч: ${r.by} (${r.byEmail})`,`Нэгж: ${r.dept}`,
+    `Ангилал: ${r.cat} · ${r.catName}`];
   if(r.product) L.push(`Бүтээгдэхүүн: ${r.product} · ${r.client}`);
   if(r.amount) L.push(`Дүн: ${r.amount} ₮`);
   if(r.rateNow) L.push(`Хүү: ${r.rateNow}% → ${r.rateAsk}%`);
   if(r.support) L.push(`Дэмжлэгийн төрөл: ${r.support}`);
-  L.push(`Яаралтай байдал: ${r.urg}`);
-  L.push('');
-  L.push('Тайлбар:'); L.push(r.desc);
-  if(r.links.length){ L.push(''); L.push('Хавсралт:'); r.links.forEach(l=>L.push('· '+l)); }
+  if(r.area) L.push(`Холбогдох хүрээ: ${r.area}`);
+  if(r.sev) L.push(`Ноцтой байдал: ${r.sev}`);
+  if(r.urg) L.push(`Яаралтай байдал: ${r.urg}`);
+  L.push('','Тайлбар:',r.desc);
+  if(r.atts.length){ L.push('','Хавсралт:');
+    r.atts.forEach(a=>L.push(`· [${a.type}] `+(a.kind==='link'?a.url:a.name))); }
   return L.join('\n');
 }
 function showConfirm(r){
@@ -956,59 +1385,214 @@ function showConfirm(r){
   $('mCc').textContent=r.byEmail;
   $('mSubj').textContent=mailSubject(r);
   $('mBody').textContent=mailBody(r);
-  $('mDrive').textContent=r.drive+(r.links.length?'\n'+r.links.map((l,i)=>`  хавсралт-${i+1} ← ${l}`).join('\n'):'\n  (хавсралтгүй)');
+  $('mDrive').textContent=r.drive+(r.atts.length
+    ? '\n'+r.atts.map((a,i)=>`  хавсралт-${i+1} [${a.type}] ← `+(a.kind==='link'?a.url:a.name)).join('\n')
+    : '\n  (хавсралтгүй)');
   $('modalWrap').classList.add('open');
 }
-$('mOk').addEventListener('click',()=>{ $('modalWrap').classList.remove('open'); toast('Хүсэлт амжилттай бүртгэгдлээ'); });
+$('mOk').addEventListener('click',()=>{ $('modalWrap').classList.remove('open'); toast('Амжилттай бүртгэгдлээ'); });
 $('modalWrap').addEventListener('click',e=>{ if(e.target===$('modalWrap')) $('modalWrap').classList.remove('open'); });
 
-/* ---------- my requests ---------- */
+/* ================= my records ================= */
+function myRecs(){ return state.user? state.recs.filter(r=>r.byEmail===state.user.email || (isAdmin()&&r.demo&&false)) : []; }
 function renderReqs(){
-  $('myCnt').textContent=state.reqs.length;
+  const mine=myRecs();
+  $('myCnt').textContent=mine.length;
   const list=$('reqList'); list.innerHTML='';
-  if(!state.reqs.length){ list.innerHTML='<div class="empty">Одоогоор илгээсэн хүсэлт алга. «Шинэ хүсэлт» хэсгээс эхнийхээ илгээгээрэй.</div>'; return; }
-  [...state.reqs].reverse().forEach(r=>{
+  if(!mine.length){ list.innerHTML='<div class="empty">Одоогоор илгээсэн бүртгэл алга. «Шинэ бүртгэл» хэсгээс эхнийхээ илгээгээрэй.</div>'; return; }
+  [...mine].reverse().forEach(r=>{
     const d=document.createElement('div'); d.className='req-item';
-    const detail=[r.product&&`${r.product} · ${r.client}`, r.amount&&r.amount+' ₮', r.rateNow&&`${r.rateNow}% → ${r.rateAsk}%`, r.support].filter(Boolean).join(' · ');
+    const detail=[r.product&&`${r.product} · ${r.client}`, r.amount&&r.amount+' ₮',
+      r.rateNow&&`${r.rateNow}% → ${r.rateAsk}%`, r.support, r.area, r.sev&&('Ноцтой байдал: '+r.sev)].filter(Boolean).join(' · ');
+    const thumbs=r.atts.filter(a=>a.kind==='img').slice(0,4).map(a=>`<img src="${a.thumb}" alt="${a.name}">`).join('');
     d.innerHTML=`<div class="req-top">
+        <span class="kind-badge ${r.kind==='REQ'?'req':'fbk'}">${r.kind==='REQ'?'ЭҮ · Хүсэлт':'СГ · Санал, гомдол'}</span>
         <span class="no">${r.id}</span><span class="rt">${r.catName}</span><span class="sp"></span>
-        <span class="status reg">${r.status}</span><span class="status mail">И-мэйл баталгаажсан</span></div>
+        <span class="status ${ST_CLASS[r.status]}">${r.status}</span><span class="status mail">И-мэйл баталгаажсан</span></div>
       ${detail?`<div class="req-body num" style="font-weight:600;color:var(--text)">${detail}</div>`:''}
       <div class="req-body">${r.desc.length>180?r.desc.slice(0,180)+'…':r.desc}</div>
-      <div class="req-meta mono num"><span>${r.dept}</span><span>${r.urg}</span><span>${r.links.length} хавсралт</span><span>${r.at}</span></div>
+      ${thumbs?`<div class="req-thumbs">${thumbs}</div>`:''}
+      <div class="req-meta mono num"><span>${r.dept}</span><span>${r.atts.length} хавсралт</span><span>${r.at}</span></div>
       <div class="req-drive mono">${r.drive}</div>`;
     list.appendChild(d);
   });
 }
 
-/* ---------- registry ---------- */
+/* ================= registry (admin) ================= */
+let regKindV='all';
+bindSegLocal('regKind', v=>{ regKindV=v; renderRegistry($('regSearch').value); });
+function bindSegLocal(id, cb){
+  $(id).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); cb(b.dataset.v);
+  }));
+}
 function renderRegistry(filter=''){
-  const q=filter.trim().toLowerCase();
-  const rows=state.reqs.filter(r=>!q||[r.id,r.dept,r.cat,r.catName,r.product,r.by].join(' ').toLowerCase().includes(q));
-  $('regCount').textContent=`${rows.length} / ${state.reqs.length} бүртгэл`;
+  const q=(filter||'').trim().toLowerCase();
+  const rows=state.recs.filter(r=>(regKindV==='all'||r.kind===regKindV)
+    &&(!q||[r.id,r.dept,r.cat,r.catName,r.product||'',r.by,r.status].join(' ').toLowerCase().includes(q)));
+  $('regCount').textContent=`${rows.length} / ${state.recs.length} бүртгэл`;
   const tb=$('regBody'); tb.innerHTML='';
   if(!rows.length){ tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--faint);padding:32px">Бүртгэл алга.</td></tr>'; return; }
-  [...rows].reverse().forEach(r=>{
+  [...rows].sort((a,b)=>b.ts-a.ts).forEach(r=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="mono">${r.id}</td>
+    const det=r.kind==='REQ'
+      ? (r.product?`${r.product}<div class="sub">${r.amount?r.amount+' ₮':''}${r.rateNow?` · ${r.rateNow}%→${r.rateAsk}%`:''}</div>`:'—')
+      : `${r.area||'—'}`;
+    tr.innerHTML=`<td class="mono"><span class="kind-badge ${r.kind==='REQ'?'req':'fbk'}">${r.kind==='REQ'?'ЭҮ':'СГ'}</span> ${r.id}</td>
       <td class="mono num">${r.at}</td>
       <td>${r.dept}<div class="sub">${r.by}</div></td>
       <td>${r.cat} · ${r.catName}<div class="sub">${r.type}</div></td>
-      <td class="num">${r.product||'—'}${r.amount?`<div class="sub">${r.amount} ₮${r.rateNow?` · ${r.rateNow}%→${r.rateAsk}%`:''}</div>`:''}</td>
-      <td>${r.urg}</td>
-      <td class="num">${r.links.length}</td>
+      <td class="num">${det}</td>
+      <td>${r.sev||r.urg||'—'}</td>
+      <td class="num">${r.atts?r.atts.length:0}</td>
       <td>${r.mail.status}<div class="sub mono">${r.mail.to}</div></td>
-      <td><span class="status reg">${r.status}</span></td>`;
+      <td></td>`;
+    const td=tr.lastElementChild;
+    if(isAdmin()){
+      const sel=document.createElement('select'); sel.className='st-select'; sel.setAttribute('aria-label','Статус өөрчлөх');
+      STATUSES.forEach(s=>{ const o=document.createElement('option'); o.textContent=s; sel.appendChild(o); });
+      sel.value=r.status;
+      sel.addEventListener('change',()=>{ r.status=sel.value; r.statusAt=nowStr(); store.set('nc2.recs',state.recs); toast(r.id+' → '+r.status); });
+      td.appendChild(sel);
+    } else {
+      td.innerHTML=`<span class="status ${ST_CLASS[r.status]}">${r.status}</span>`;
+    }
     tb.appendChild(tr);
   });
 }
 $('regSearch').addEventListener('input',e=>renderRegistry(e.target.value));
 
-/* ---------- tour ---------- */
+/* ================= dashboard (admin) ================= */
+let dashKindV='all';
+bindSegLocal('dashSeg', v=>{ dashKindV=v; renderDash(); });
+const tipEl=$('tooltip');
+function showTip(e,text){ tipEl.textContent=text; tipEl.style.opacity=1;
+  tipEl.style.left=Math.min(e.clientX+14, innerWidth-tipEl.offsetWidth-10)+'px'; tipEl.style.top=(e.clientY-34)+'px'; }
+function hideTip(){ tipEl.style.opacity=0; }
+
+function dashRecs(){ return state.recs.filter(r=>dashKindV==='all'||r.kind===dashKindV); }
+function renderDash(){
+  const rs=dashRecs();
+  const total=rs.length;
+  const open=rs.filter(r=>r.status==='Бүртгэгдсэн'||r.status==='Хянагдаж байна').length;
+  const done=rs.filter(r=>r.status==='Шийдвэрлэсэн').length;
+  const urgent=rs.filter(r=>r.urg==='Яаралтай'||r.sev==='Критик').length;
+  const m=new Date().getMonth(), y=new Date().getFullYear();
+  const thisMonth=rs.filter(r=>{ const d=new Date(r.ts); return d.getMonth()===m&&d.getFullYear()===y; }).length;
+  $('dashTiles').innerHTML=`
+    <div class="tile"><div class="tk">Нийт бүртгэл</div><div class="tv">${total}</div><div class="ts">энэ сард ${thisMonth}</div></div>
+    <div class="tile warn"><div class="tk">Хүлээгдэж буй</div><div class="tv">${open}</div><div class="ts">шийдвэрлээгүй</div></div>
+    <div class="tile"><div class="tk">Яаралтай / Критик</div><div class="tv">${urgent}</div><div class="ts">эн тэргүүнд</div></div>
+    <div class="tile good"><div class="tk">Шийдвэрлэсэн</div><div class="tv">${total?Math.round(done/total*100):0}%</div><div class="ts">${done} бүртгэл</div></div>`;
+  $('btnClearDemo').hidden=!state.recs.some(r=>r.demo);
+
+  /* trend — сүүлийн 14 хоног */
+  const days=[]; const now=new Date(); now.setHours(0,0,0,0);
+  for(let i=13;i>=0;i--){ const d=new Date(now.getTime()-i*864e5); days.push({d, n:0}); }
+  rs.forEach(r=>{ const t=new Date(r.ts); t.setHours(0,0,0,0);
+    const idx=13-Math.round((now-t)/864e5); if(idx>=0&&idx<14) days[idx].n++; });
+  const W=860,H=180,P={l:26,r:10,t:10,b:24};
+  const maxN=Math.max(4,...days.map(x=>x.n));
+  const X=i=>P.l+i*(W-P.l-P.r)/13, Y=v=>H-P.b-(v/maxN)*(H-P.t-P.b);
+  let path='',area='';
+  days.forEach((x,i)=>{ const px=X(i),py=Y(x.n); path+=(i?'L':'M')+px+' '+py+' '; });
+  area=path+`L${X(13)} ${H-P.b} L${X(0)} ${H-P.b} Z`;
+  const glines=[0,Math.ceil(maxN/2),maxN].map(v=>`<line x1="${P.l}" x2="${W-P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--border)" stroke-width="1"/>
+    <text x="${P.l-6}" y="${Y(v)+3.5}" text-anchor="end" font-size="10" fill="var(--faint)" font-family="var(--font-mono)">${v}</text>`).join('');
+  const xlabels=days.map((x,i)=>i%2?'':`<text x="${X(i)}" y="${H-7}" text-anchor="middle" font-size="9.5" fill="var(--faint)" font-family="var(--font-mono)">${String(x.d.getMonth()+1).padStart(2,'0')}.${String(x.d.getDate()).padStart(2,'0')}</text>`).join('');
+  const dots=days.map((x,i)=>`<circle cx="${X(i)}" cy="${Y(x.n)}" r="8" fill="transparent" data-tip="${String(x.d.getMonth()+1).padStart(2,'0')}.${String(x.d.getDate()).padStart(2,'0')} — ${x.n} бүртгэл"/>
+    ${x.n?`<circle cx="${X(i)}" cy="${Y(x.n)}" r="3" fill="var(--ch-bar)" stroke="var(--surface)" stroke-width="2" pointer-events="none"/>`:''}`).join('');
+  $('chTrend').innerHTML=total
+    ? `<svg id="chTrendSvg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Сүүлийн 14 хоногийн бүртгэлийн тоо">
+        ${glines}<path d="${area}" fill="var(--ch-area)"/><path d="${path}" fill="none" stroke="var(--ch-bar)" stroke-width="2" stroke-linejoin="round"/>${dots}${xlabels}</svg>`
+    : '<div class="chart-empty">Өгөгдөл алга — «Жишээ өгөгдөл үүсгэх» дарж дашбоардыг туршиж болно.</div>';
+  $('chTrend').querySelectorAll('[data-tip]').forEach(el=>{
+    el.addEventListener('mousemove',e=>showTip(e,el.dataset.tip));
+    el.addEventListener('mouseleave',hideTip);
+  });
+
+  /* h-bars helper */
+  const hbars=(el,pairs)=>{
+    if(!pairs.length){ $(el).innerHTML='<div class="chart-empty">Өгөгдөл алга.</div>'; return; }
+    const mx=Math.max(...pairs.map(p=>p[1]));
+    $(el).innerHTML=pairs.map(([l,v])=>`<div class="hbar"><span class="hl" title="${l}">${l}</span>
+      <span class="track"><span class="bar" style="width:${Math.max(2,v/mx*100)}%"></span><span class="hv num">${v}</span></span></div>`).join('');
+  };
+  const cnt=(arr,key)=>{ const mmap={}; arr.forEach(r=>{ const k=key(r); mmap[k]=(mmap[k]||0)+1; });
+    return Object.entries(mmap).sort((a,b)=>b[1]-a[1]); };
+  hbars('chCats', cnt(rs, r=>r.cat+' · '+r.catName).slice(0,8));
+  hbars('chBranch', cnt(rs, r=>r.dept).slice(0,8));
+  hbars('chFbk', cnt(state.recs.filter(r=>r.kind==='FBK'), r=>r.catName));
+
+  /* status donut */
+  const stPairs=STATUSES.map(s=>[s, rs.filter(r=>r.status===s).length]).filter(p=>p[1]>0);
+  if(!stPairs.length){ $('chStatus').innerHTML='<div class="chart-empty">Өгөгдөл алга.</div>'; }
+  else{
+    const R=52, C=2*Math.PI*R, tot=stPairs.reduce((s,p)=>s+p[1],0);
+    let off=0;
+    const segs=stPairs.map(([s,v])=>{
+      const len=v/tot*C;
+      const seg=`<circle cx="70" cy="70" r="${R}" fill="none" stroke="${ST_COLOR[s]}" stroke-width="16"
+        stroke-dasharray="${Math.max(0,len-2)} ${C-len+2}" stroke-dashoffset="${-off}" data-tip="${s} — ${v} (${Math.round(v/tot*100)}%)"/>`;
+      off+=len; return seg;
+    }).join('');
+    $('chStatus').innerHTML=`<div class="donut-wrap">
+      <svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label="Статусын харьцаа" style="transform:rotate(-90deg)">${segs}</svg>
+      <div class="dlegend">${stPairs.map(([s,v])=>`<div class="dl"><span class="sw" style="background:${ST_COLOR[s]}"></span>${s}<span class="dv num">${v} · ${Math.round(v/tot*100)}%</span></div>`).join('')}</div></div>`;
+    $('chStatus').querySelectorAll('[data-tip]').forEach(el=>{
+      el.addEventListener('mousemove',e=>showTip(e,el.dataset.tip));
+      el.addEventListener('mouseleave',hideTip);
+    });
+  }
+}
+
+/* demo data */
+$('btnSeed').addEventListener('click',()=>{
+  const rnd=a=>a[Math.floor(Math.random()*a.length)];
+  const units=UNITS.slice(1);
+  const names=['Бат-Эрдэнэ Б.','Сарнай Д.','Тэмүүлэн Г.','Хулан С.','Мөнхжин Т.'];
+  for(let i=0;i<26;i++){
+    const isReq=Math.random()<0.7;
+    const ts=Date.now()-Math.floor(Math.random()*14)*864e5-Math.floor(Math.random()*8)*36e5;
+    const at=nowStr(new Date(ts));
+    const st=rnd(['Бүртгэгдсэн','Хянагдаж байна','Шийдвэрлэсэн','Шийдвэрлэсэн','Хянагдаж байна']);
+    if(isReq){
+      const c=rnd(CATS);
+      const id='ЭҮ-'+YEAR+'-'+pad4(store.get('nc2.seqR',0)+1); store.set('nc2.seqR',store.get('nc2.seqR',0)+1);
+      state.recs.push({kind:'REQ', id, at, ts, dept:rnd(units), cat:c.c, catName:c.t, type:c.type, folder:c.folder,
+        product:c.fields.includes('product')?rnd(['Итгэлцэл — 6 сар','Итгэлцэл — 12 сар','Итгэлцэл — 24 сар']):'',
+        amount:c.fields.includes('product')?rnd(['50,000,000','120,000,000','250,000,000','480,000,000']):'',
+        client:rnd(['Иргэн','Байгууллага']),
+        rateNow:c.fields.includes('rates')?'14.4':'', rateAsk:c.fields.includes('rates')?rnd(['15.0','15.4','14.8']):'',
+        support:'', desc:'Жишээ бүртгэл — дашбоард турших зориулалттай.', urg:Math.random()<0.2?'Яаралтай':'Энгийн',
+        atts:[], drive:drivePath('REQ',c.folder,id), by:rnd(names), byEmail:'demo@netgroup.mn',
+        mail:{to:HANDLER_MAIL, at, status:'Илгээгдсэн (прототип)'}, status:st, statusAt:at, demo:true});
+    } else {
+      const g=rnd(GTYPES);
+      const id='СГ-'+YEAR+'-'+pad4(store.get('nc2.seqF',0)+1); store.set('nc2.seqF',store.get('nc2.seqF',0)+1);
+      state.recs.push({kind:'FBK', id, at, ts, dept:rnd(units), cat:g.c, catName:g.t, type:'Санал, гомдол', folder:g.c+' '+g.t,
+        area:rnd(['Итгэлцэл бүтээгдэхүүн','Борлуулалтын процесс','Систем, аппликэйшн','Үйлчилгээ, харилцаа']),
+        sev:g.sev?rnd(['Бага','Дунд','Өндөр','Критик']):'', urg:'Энгийн',
+        desc:'Жишээ бүртгэл — дашбоард турших зориулалттай.', atts:[],
+        drive:drivePath('FBK',g.c+' '+g.t,id), by:rnd(names), byEmail:'demo@netgroup.mn',
+        mail:{to:HANDLER_MAIL, at, status:'Илгээгдсэн (прототип)'}, status:st, statusAt:at, demo:true});
+    }
+  }
+  store.set('nc2.recs',state.recs);
+  renderDash(); toast('26 жишээ бүртгэл нэмэгдлээ');
+});
+$('btnClearDemo').addEventListener('click',()=>{
+  state.recs=state.recs.filter(r=>!r.demo);
+  store.set('nc2.recs',state.recs);
+  renderDash(); renderReqs(); toast('Жишээ өгөгдөл арилгагдлаа');
+});
+
+/* ================= tour ================= */
 const TOUR=[
-  {el:'deptCard', t:'Салбар тань автоматаар танигдана', d:'Нэвтэрсэн хаягаар тань ажилтны бүртгэлээс салбарыг тодорхойлно. Буруу байвал «Өөрчлөх» дарж жагсаалтаас сонгоно.'},
-  {el:'catCard', t:'Ангиллаа сонго', d:'«Хүү», «борлуулалт» гэх мэт бичвэл шууд шүүгдэнэ. Ангилал бүр өөрийн шаардлагатай талбар, хугацаатай.'},
-  {el:'linkCard', t:'Хавсралт Drive-д цэгцтэй очно', d:'Оруулсан линк бүр он / сар / ангилал / дугаарын дарааллаар хавтаслагдан хадгалагдана — аудитад бэлэн.'},
+  {el:'deptCard', t:'Та автоматаар танигдана', d:'Нэвтэрсэн хаягаар тань ажилтны бүртгэлээс нэр, нэгж, албан тушаалыг тодорхойлно. Нэгж буруу байвал «Өөрчлөх» дарна.'},
+  {el:'catCard', t:'Ангиллаа сонго', d:'«Хүү», «буцаалт» гэх мэт бичвэл шууд шүүгдэнэ. Ангилал бүр өөрийн шаардлагатай талбар, хугацаатай.'},
+  {el:'linkCard', t:'Линк ба зураг хавсаргана', d:'Drive линк эсвэл зураг — хавсралт бүр төрөлтэйгөө он / сар / ангилал / дугаарын дарааллаар Drive-д хавтаслагдана.'},
   {el:'sumCard', t:'Товч самбар', d:'Бөглөх тусам шаардлага, хугацаа энд шинэчлэгдэнэ. 100% болмогц илгээх товч идэвхжиж, и-мэйл баталгаажуулалт автоматаар явна.'},
 ];
 let tourI=0;
@@ -1033,12 +1617,12 @@ function showTour(){
 function endTour(){
   $('tour').style.display='none';
   document.querySelectorAll('.flash').forEach(x=>x.classList.remove('flash'));
-  if($('tourNever').checked) store.set('nc.tourDone',true);
+  if($('tourNever').checked) store.set('nc2.tourDone',true);
 }
-$('tourNext').addEventListener('click',()=>{ if(tourI<TOUR.length-1){tourI++; showTour();} else {store.set('nc.tourDone',true); endTour();} });
+$('tourNext').addEventListener('click',()=>{ if(tourI<TOUR.length-1){tourI++; showTour();} else {store.set('nc2.tourDone',true); endTour();} });
 $('tourPrev').addEventListener('click',()=>{ if(tourI>0){tourI--; showTour();} });
 $('tourSkip').addEventListener('click',endTour);
-$('btnHelp').addEventListener('click',()=>{ if($('formview').style.display!=='none') startTour(); });
+$('btnHelp').addEventListener('click',()=>{ if($('reqview').style.display!=='none') startTour(); else toast('Танилцуулга хүсэлтийн форм дээр ажиллана'); });
 
-applyCatFields(); refresh(); renderReqs();
+applyCatFields(); refresh(); refreshF();
 </script>
