@@ -525,7 +525,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v0.8</span>
+      <span class="proto-badge">Прототип v0.9</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -721,8 +721,9 @@
         </div>
         <p class="link-note">Drive линкээ «ХОБПХГ үзэх эрхтэй» болгож тохируулсан эсэхээ шалгана уу — эрхгүй линк шийдвэрлэлтийг зогсооно. Зөвшөөрлийн G-Doc линк нэмбэл «Уншуулах» товчоор хүү, урамшуулал, зөвшөөрсөн хүмүүсийн жагсаалтыг автоматаар татна.</p>
         <div class="drive-preview">
-          <b>Drive-д хадгалагдах байрлал</b> — илгээмэгц хавсралтууд дараах хавтаст автоматаар ангилагдана:<br>
-          <span class="path mono" id="drivePath">Эх үүсвэрийн хүсэлтүүд / …</span>
+          <b>Drive-д хадгалагдах байрлал</b> — илгээмэгц хавсралтууд байгууллагын архивын дараах хавтаст автоматаар ангилагдана:<br>
+          <span class="path mono" id="drivePath">21. Funding Support Portal / …</span><br>
+          <span style="font-size:11.5px">Файлын нэршил (Naming Standard v1.0): <span class="mono">[Салбар]_[Дугаар]_[Төрөл]_[ОООО-СС-ӨӨ]_v1.0</span> — систем автоматаар нэрлэнэ.</span>
         </div>
       </div>
 
@@ -977,7 +978,7 @@
         </table>
       </div>
       <div class="integrity">
-        <b>Бүрэн бүтэн байдлын зарчим.</b> Дугаар нь дараалсан бөгөөд алгасахгүй; бүртгэл үүссэний дараа агуулга нь засварлагдахгүй, устгагдахгүй — зөвхөн статус шинэчлэгдэж, түүх нь хадгалагдана; и-мэйл баталгаажуулалт бүрд илгээсэн цаг, хүлээн авагч бүртгэгдэнэ; хавсралт бүр Drive-ын нэг мөр байрлалтай. Production дээр энэ бүртгэл сервер дээр хөтлөгдөж, аудитад CSV/Excel-ээр татагдана.
+        <b>Бүрэн бүтэн байдлын зарчим.</b> Дугаар нь дараалсан бөгөөд алгасахгүй; бүртгэл үүссэний дараа агуулга нь засварлагдахгүй, устгагдахгүй — зөвхөн статус шинэчлэгдэж, түүх нь хадгалагдана; и-мэйл баталгаажуулалт бүрд илгээсэн цаг, хүлээн авагч бүртгэгдэнэ; хавсралт бүр Drive-ын нэг мөр байрлалтай — байгууллагын архивын «21. Funding Support Portal» хавтаст Naming Standard v1.0-ийн дагуу нэрлэгдэж хадгалагдана. Production дээр энэ бүртгэл сервер дээр хөтлөгдөж, аудитад CSV/Excel-ээр татагдана.
       </div>
     </div>
   </main>
@@ -1014,7 +1015,7 @@
         </table>
       </div>
       <div class="integrity">
-        <b>Ажиллагаа.</b> Шийдвэр бүр даруй хадгалагдаж, ХОБПХГ-ын нэгтгэлд бодит цагаар тусна. «Сунгана» гэж сонгоход шинэ хугацаа, хүү, дүнгийн талбар нээгдэнэ; хүүг мөрдөж буй NC-01/54-2025 тушаалын хязгаартай харьцуулж шалгана. Production дээр дансны жагсаалт Нэткор системээс автоматаар татагдаж, сар хаагдахад нэгтгэл ХОБПХГ руу и-мэйлээр очно.
+        <b>Ажиллагаа.</b> Шийдвэр бүр даруй хадгалагдаж, ХОБПХГ-ын нэгтгэлд бодит цагаар тусна. «Сунгана» гэж сонгоход шинэ хугацаа, хүү, дүнгийн талбар нээгдэнэ; хүүг мөрдөж буй NC-01/54-2025 тушаалын хязгаартай харьцуулж шалгана. Production дээр дансны жагсаалт Нэткор системээс автоматаар татагдаж, сар хаагдахад нэгтгэл ХОБПХГ руу и-мэйлээр очиж, <b>21. Funding Support Portal / 3. Cashflow</b> хавтаст <span class="mono">HOBPHG_Cashflow_Summary_ОООО-СС-01_v1.0.xlsx</span> нэрээр хадгалагдана (Naming Standard v1.0).
       </div>
     </div>
   </main>
@@ -1498,10 +1499,21 @@ const YEAR=new Date().getFullYear();
 const pad4=n=>String(n).padStart(4,'0');
 const nextIdR=()=>'ЭҮ-'+YEAR+'-'+pad4(store.get('nc2.seqR',0)+1);
 const nextIdF=()=>'СГ-'+YEAR+'-'+pad4(store.get('nc2.seqF',0)+1);
+/* Хадгалалт: байгууллагын Drive → «21. Funding Support Portal» (Naming Standard v1.0) */
+const DRIVE_ROOT='21. Funding Support Portal';
+const DRIVE_URL='https://drive.google.com/drive/folders/1GtFQwGKhCoQLzetgkldSN-bVl7mDN0Tx';
+const DRIVE_SUB={REQ:'1. Funding Requests', FBK:'2. Feedback and Complaints', CF:'3. Cashflow'};
 function drivePath(kind, folder, id){
   const m=String(new Date().getMonth()+1).padStart(2,'0');
-  const rootF = kind==='REQ' ? 'Эх үүсвэрийн хүсэлтүүд' : 'Санал, гомдлын бүртгэл';
-  return `${rootF} / ${YEAR} / ${m}-сар / ${folder||'…'} / ${id||(kind==='REQ'?'ЭҮ':'СГ')+'-'+YEAR+'-XXXX'} /`;
+  return `${DRIVE_ROOT} / ${DRIVE_SUB[kind]} / ${YEAR} / ${YEAR}-${m} / ${folder||'…'} / ${id||(kind==='REQ'?'ЭҮ':'СГ')+'-'+YEAR+'-XXXX'} /`;
+}
+/* Файлын нэр: [Салбар]_[Дугаар]_[Төрөл]_[YYYY-MM-DD]_v1.0.ext */
+function stdFileName(id, type, orig){
+  const clean=x=>String(x).replace(/[\/\\?%*:|"<>]/g,'').replace(/\s+/g,'');
+  const dept=clean((state.dept||'').replace(' салбар',''));
+  const date=new Date().toISOString().slice(0,10);
+  const ext=orig&&orig.includes('.') ? orig.slice(orig.lastIndexOf('.')) : '';
+  return `${dept}_${id}_${clean(type)}_${date}_v1.0${ext}`;
 }
 function attSummary(a){ const L=a.filter(i=>i.kind==='link'&&i.ok).length, im=a.filter(i=>i.kind==='img').length;
   return (L||im)? [L?L+' линк':'',im?im+' зураг':''].filter(Boolean).join(' · ') : '—'; }
@@ -1745,8 +1757,9 @@ function showConfirm(r){
   $('mSubj').textContent=mailSubject(r);
   $('mBody').textContent=mailBody(r);
   $('mDrive').textContent=r.drive+(r.atts.length
-    ? '\n'+r.atts.map((a,i)=>`  хавсралт-${i+1} [${a.type}] ← `+(a.kind==='link'?a.url:a.name)).join('\n')
-    : '\n  (хавсралтгүй)');
+    ? '\n'+r.atts.map(a=>`  ${stdFileName(r.id,a.type,a.kind==='img'?a.name:'')}`+(a.kind==='link'?' ← (Drive линкээс хуулбарлана)':' ← '+a.name)).join('\n')
+    : '\n  (хавсралтгүй)')
+    +(r.order?`\n  ${stdFileName(r.id,'Тушаал','.pdf')} ← ${r.order.no}`:'');
   $('modalWrap').classList.add('open');
 }
 $('mOk').addEventListener('click',()=>{ $('modalWrap').classList.remove('open'); toast('Амжилттай бүртгэгдлээ'); });
