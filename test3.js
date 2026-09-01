@@ -24,9 +24,9 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
 
   // UC2: login as ADMIN (lkhagvadari) → admin nav visible
   await page.click('.acct[data-email="lkhagvadari.a@netgroup.mn"]'); await page.waitForTimeout(400);
-  R.adminTag = await page.isVisible('#adminTag');
-  R.navDash = await page.isVisible('#navDash');
-  R.navReg = await page.isVisible('#navReg');
+  R.adminTag = await page.isVisible('#sideNav');
+  R.navDash = await page.isVisible('#sideDash');
+  R.navReg = await page.isVisible('#sideReg');
   R.chooser = await page.isVisible('#cardGoReq');
   R.remindAdminHidden = (await page.evaluate(() => document.getElementById('cfRemindWrap').style.display)) !== 'flex';
   await shot('v4-03-chooser.png');
@@ -138,7 +138,7 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   });
 
   // UC6: feedback flow — G05 bug, severity critical
-  await page.click('nav.views button[data-view="newview"]'); await page.waitForTimeout(200);
+  await page.click('#sideNav .snav[data-view="newview"]'); await page.waitForTimeout(200);
   await page.click('#cardGoFbk'); await page.waitForTimeout(400);
   await page.click('#gtypeGrid .cat:has-text("Системийн алдаа")');
   R.sevVisible = await page.isVisible('#sevRow');
@@ -154,13 +154,13 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   await page.click('#mOk'); await page.waitForTimeout(200);
 
   // UC7: my records shows both kinds
-  await page.click('nav.views button[data-view="myview"]'); await page.waitForTimeout(300);
+  await page.click('#sideNav .snav[data-view="myview"]'); await page.waitForTimeout(300);
   R.myItems = await page.locator('.req-item').count();
   R.myBadges = await page.locator('.kind-badge').count();
   await shot('v4-07-my.png');
 
   // UC8: dashboard with seed data + filter
-  await page.click('nav.views button[data-view="dashview"]'); await page.waitForTimeout(300);
+  await page.click('#sideNav .snav[data-view="dashview"]'); await page.waitForTimeout(300);
   await page.click('#btnSeed'); await page.waitForTimeout(500);
   R.tiles = await page.locator('.tile').count();
   R.trendSvg = await page.isVisible('#chTrendSvg');
@@ -179,7 +179,7 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   await shot('v10-chat.png');
 
   // UC9: registry — admin status change
-  await page.click('nav.views button[data-view="regview"]'); await page.waitForTimeout(300);
+  await page.click('#sideNav .snav[data-view="regview"]'); await page.waitForTimeout(300);
   R.regRows = await page.locator('#regBody tr').count();
   R.stSelects = await page.locator('.st-select').count();
   await page.locator('.st-select').first().selectOption('Шийдвэрлэсэн'); await page.waitForTimeout(200);
@@ -193,32 +193,32 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   await page.fill('#cModalText', 'Гэрээний хуулбараа хавсаргаж өгнө үү.');
   await page.click('#cModalSend'); await page.waitForTimeout(300);
   R.clarifyStatus = await page.locator('#regBody tr', { hasText: 'ЭҮ-2026-0002' }).locator('select.st-select').inputValue();
-  await page.click('nav.views button[data-view="myview"]'); await page.waitForTimeout(300);
+  await page.click('#sideNav .snav[data-view="myview"]'); await page.waitForTimeout(300);
   R.clarifyBox = await page.isVisible('.cf-reply');
   await page.fill('.cf-reply', 'Хавсаргалаа, Drive линкийг шинэчилсэн.');
   await page.click('.cf-reply-btn'); await page.waitForTimeout(300);
   R.historyDetails = await page.locator('#reqList details').count();
   await shot('v7-clarify.png');
-  await page.click('nav.views button[data-view="regview"]'); await page.waitForTimeout(300);
+  await page.click('#sideNav .snav[data-view="regview"]'); await page.waitForTimeout(300);
   await shot('v4-09-reg.png');
 
   // UC10: logout → login as branch USER → no admin nav
-  await page.click('#btnLogout'); await page.waitForTimeout(200);
+  await page.click('#btnLogoutS'); await page.waitForTimeout(200);
   await page.click('#btnLogin'); await page.waitForTimeout(200);
   await page.click('.acct[data-email="baterdene.b@netgroup.mn"]'); await page.waitForTimeout(300);
-  R.userNavDash = await page.isVisible('#navDash');
-  R.userAdminTag = await page.isVisible('#adminTag');
+  R.userNavDash = await page.isVisible('#sideDash');
+  R.userAdminTag = await page.isVisible('#sideReg');
   R.userSender = await page.evaluate(() => document.getElementById('deptName').textContent);
 
   // UC11: persistence across reload
   await page.reload(); await page.waitForTimeout(400);
   await page.click('#btnLogin'); await page.waitForTimeout(200);
   await page.click('.acct[data-email="lkhagvadari.a@netgroup.mn"]'); await page.waitForTimeout(300);
-  await page.click('nav.views button[data-view="regview"]'); await page.waitForTimeout(300);
+  await page.click('#sideNav .snav[data-view="regview"]'); await page.waitForTimeout(300);
   R.regAfterReload = await page.locator('#regBody tr').count();
 
   // UC11b: cashflow — tiles, calendar, decision fill, persistence
-  await page.click('nav.views button[data-view="cfview"]'); await page.waitForTimeout(400);
+  await page.click('#sideNav .snav[data-view="cfview"]'); await page.waitForTimeout(400);
   R.cfTiles = await page.locator('#cfTiles .tile').count();
   R.cfCalDays = await page.locator('#cfCal .day.has').count();
   R.cfRows = await page.locator('#cfBody tr:not(.cf-det)').count();
@@ -238,11 +238,11 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   await page.click('#cfAllBtn'); await page.waitForTimeout(150);
   await shot('v6-cashflow.png');
   // branch user sees only own unit
-  await page.click('#btnLogout'); await page.waitForTimeout(150);
+  await page.click('#btnLogoutS'); await page.waitForTimeout(150);
   await page.click('#btnLogin'); await page.waitForTimeout(150);
   await page.click('.acct[data-email="sarnai.d@netgroup.mn"]'); await page.waitForTimeout(900);
   R.remindShown = (await page.evaluate(() => document.getElementById('cfRemindWrap').style.display)) === 'flex';
-  R.cfNavCnt = await page.textContent('#cfNavCnt');
+  R.cfNavCnt = await page.textContent('#cfNavCntS');
   await shot('v7-remind.png');
   await page.click('#cfRemindGo'); await page.waitForTimeout(300);
   R.remindGoesCf = await page.isVisible('#cfCal');
@@ -252,13 +252,13 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   await page.reload(); await page.waitForTimeout(400);
   await page.click('#btnLogin'); await page.waitForTimeout(150);
   await page.click('.acct[data-email="lkhagvadari.a@netgroup.mn"]'); await page.waitForTimeout(300);
-  await page.click('nav.views button[data-view="cfview"]'); await page.waitForTimeout(300);
+  await page.click('#sideNav .snav[data-view="cfview"]'); await page.waitForTimeout(300);
   R.cfDecPersist = await page.locator('#cfBody select.cf-dec').first().inputValue();
 
   // UC12: theme toggle
-  await page.click('#btnTheme'); await page.waitForTimeout(300);
+  await page.click('#btnThemeS'); await page.waitForTimeout(300);
   R.theme = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
-  await page.click('nav.views button[data-view="dashview"]'); await page.waitForTimeout(300);
+  await page.click('#sideNav .snav[data-view="dashview"]'); await page.waitForTimeout(300);
   await shot('v4-10-dark-dash.png');
 
   R.errors = errors;

@@ -491,6 +491,111 @@
     .mailcard{margin:0 14px 14px}
   }
 
+  /* ---------- left sidebar (desktop, international enterprise layout) ---------- */
+  #sideNav{display:none}
+  @media (min-width:1100px){
+    header.top{display:none}
+    #app{padding-left:232px}
+    #sideNav{display:flex; flex-direction:column; position:fixed; left:0; top:0; bottom:0; width:232px; z-index:45;
+      background:var(--surface); border-right:1px solid var(--border); padding:20px 14px 16px; gap:6px}
+    .sidebar{top:24px}
+  }
+  .sn-brand{display:flex; align-items:center; gap:11px; padding:0 8px 16px; border-bottom:1px solid var(--border); margin-bottom:12px}
+  .sn-brand .logo2{width:38px; height:38px; border-radius:10px; flex:none; background:linear-gradient(150deg,#1d1f66,#2e3192);
+    display:flex; align-items:center; justify-content:center; color:#6fdccf}
+  .sn-brand b{font-size:13.5px; display:block; line-height:1.25}
+  .sn-brand span{font-size:9.5px; color:var(--faint); letter-spacing:.12em; text-transform:uppercase}
+  .snav{display:flex; align-items:center; gap:11px; width:100%; text-align:left; border:none; background:none;
+    border-radius:10px; padding:11px 12px; font-size:14px; font-weight:600; color:var(--muted);
+    transition:background .12s, color .12s}
+  .snav:hover{background:var(--surface-2); color:var(--text)}
+  .snav.on{background:var(--brand-soft); color:var(--brand); font-weight:700}
+  .snav .sn-cnt{margin-left:auto; font-size:11.5px; color:var(--faint); font-variant-numeric:tabular-nums}
+  .snav .sn-alert{margin-left:6px; min-width:18px; height:18px; border-radius:99px; background:var(--danger); color:#fff;
+    font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; padding:0 5px}
+  .sn-foot{margin-top:auto; border-top:1px solid var(--border); padding-top:12px; display:flex; flex-direction:column; gap:10px}
+  .sn-user{display:flex; align-items:center; gap:10px; padding:0 6px}
+  .sn-user .uav2{width:30px; height:30px; border-radius:50%; background:var(--brand); color:#fff; font-size:13px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; flex:none}
+  .sn-user b{font-size:12.5px; display:block; line-height:1.2}
+  .sn-user span{font-size:10.5px; color:var(--faint)}
+  .sn-actions{display:flex; gap:8px; padding:0 4px}
+  .sn-actions button{flex:1; border:1px solid var(--border); background:var(--surface-2); border-radius:9px; padding:8px 0;
+    font-size:12px; font-weight:600; color:var(--muted); display:flex; align-items:center; justify-content:center; gap:6px}
+  .sn-actions button:hover{color:var(--text); border-color:var(--border-strong)}
+
+  /* ---------- mobile bottom tab bar ---------- */
+  @media (max-width:760px){
+    nav.views{position:fixed; left:0; right:0; bottom:0; top:auto; z-index:46; margin:0; border-radius:0;
+      border:none; border-top:1px solid var(--border); background:var(--surface); padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+      display:flex; justify-content:space-around; overflow:visible}
+    nav.views button{flex-direction:column; gap:3px; padding:5px 8px; font-size:9.5px}
+    nav.views button .lbl{display:block; font-size:9.5px}
+    nav.views button.on{background:none; box-shadow:none; color:var(--brand)}
+    nav.views button .cnt{position:absolute; transform:translate(14px,-4px); font-size:9px}
+    nav.views button{position:relative}
+    main{padding-bottom:96px}
+  }
+
+  /* ---------- home: search, service catalog, FAQ ---------- */
+  .home-search{position:relative; margin-bottom:24px}
+  .home-search .hs-in{display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border-strong);
+    border-radius:14px; padding:15px 20px; box-shadow:0 2px 10px rgba(24,36,48,.05); transition:border-color .15s}
+  .home-search .hs-in:focus-within{border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft)}
+  .home-search input{flex:1; border:none; background:none; outline:none; font-size:15.5px}
+  .home-search input::placeholder{color:var(--faint)}
+  .hs-results{position:absolute; left:0; right:0; top:calc(100% + 8px); z-index:35; background:var(--surface);
+    border:1px solid var(--border-strong); border-radius:14px; box-shadow:var(--shadow-lg); overflow:hidden; animation:popIn .15s ease both}
+  .hs-row{display:flex; align-items:center; gap:12px; width:100%; text-align:left; border:none; background:none;
+    padding:12px 18px; border-bottom:1px solid var(--border); font-size:13.5px}
+  .hs-row:last-child{border-bottom:none}
+  .hs-row:hover{background:var(--brand-soft)}
+  .hs-row .hk{flex:none; font-size:10px; font-weight:700; letter-spacing:.06em; border-radius:6px; padding:3px 8px}
+  .hs-row .hk.svc{color:var(--brand); background:var(--brand-soft)}
+  .hs-row .hk.rec{color:var(--gold); background:var(--gold-soft)}
+  .hs-row .hk.ans{color:var(--good); background:var(--good-soft)}
+  .hs-row .hs-sub{color:var(--faint); font-size:12px; margin-top:1px}
+  .hsec{font-family:var(--font-display); font-size:18px; font-weight:600; margin:26px 0 13px}
+  .svc-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:11px}
+  .svc{display:flex; flex-direction:column; gap:9px; text-align:left; background:var(--surface); border:1px solid var(--border);
+    border-radius:13px; padding:16px; transition:border-color .12s, transform .12s, box-shadow .12s}
+  .svc:hover{border-color:var(--brand); transform:translateY(-1px); box-shadow:0 3px 10px rgba(24,36,48,.07)}
+  .svc .ic{width:34px; height:34px; border-radius:9px; background:var(--brand-soft); color:var(--brand);
+    display:flex; align-items:center; justify-content:center}
+  .svc .st2{font-size:13px; font-weight:600; line-height:1.35}
+  .svc .ss{font-size:11px; color:var(--faint)}
+  .faq details{border-bottom:1px solid var(--border); padding:13px 4px}
+  .faq details:last-child{border-bottom:none}
+  .faq summary{cursor:pointer; font-weight:600; font-size:14px; list-style:none; display:flex; justify-content:space-between; align-items:center}
+  .faq summary::after{content:'+'; color:var(--faint); font-size:17px}
+  .faq details[open] summary::after{content:'–'}
+  .faq .fa{font-size:13.5px; color:var(--muted); line-height:1.7; padding-top:9px; max-width:75ch}
+
+  /* ---------- form stepper ---------- */
+  .stepper{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap}
+  .stepper button{display:flex; align-items:center; gap:8px; border:1px solid var(--border); background:var(--surface);
+    border-radius:99px; padding:7px 15px 7px 8px; font-size:12.5px; font-weight:600; color:var(--muted); transition:border-color .12s}
+  .stepper button:hover{border-color:var(--border-strong)}
+  .stepper button i{width:20px; height:20px; border-radius:50%; font-style:normal; font-size:11px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; background:var(--surface-3); color:var(--faint)}
+  .stepper button.done{color:var(--text)}
+  .stepper button.done i{background:var(--good); color:#fff}
+
+  /* ---------- record progress tracker ---------- */
+  .tracker{display:flex; align-items:center; margin:12px 0 2px; max-width:520px}
+  .tracker .tst{display:flex; flex-direction:column; align-items:center; gap:4px; flex:none; width:86px}
+  .tracker .tdot{width:14px; height:14px; border-radius:50%; border:2px solid var(--border-strong); background:var(--surface)}
+  .tracker .tst.done .tdot{background:var(--good); border-color:var(--good)}
+  .tracker .tst.cur .tdot{background:var(--surface); border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft)}
+  .tracker .tst.rej .tdot{background:var(--danger); border-color:var(--danger)}
+  .tracker .tlb{font-size:10px; color:var(--faint); text-align:center; line-height:1.2}
+  .tracker .tst.done .tlb,.tracker .tst.cur .tlb{color:var(--text); font-weight:600}
+  .tracker .tln{flex:1; height:2px; background:var(--border); margin:0 -30px; transform:translateY(-8px)}
+  .tracker .tln.done{background:var(--good)}
+
+  #appFoot{margin:30px auto 26px; text-align:center; font-size:11.5px; color:var(--faint); padding:0 20px}
+  @media (max-width:760px){ #appFoot{margin-bottom:110px} }
+
   #toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px); z-index:80;
     background:var(--surface); border:1px solid var(--good); color:var(--text); border-radius:12px;
     padding:14px 24px; font-size:14px; font-weight:600; opacity:0; pointer-events:none; transition:.25s; box-shadow:var(--shadow-lg)}
@@ -525,7 +630,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v1.0</span>
+      <span class="proto-badge">Прототип v1.1</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -545,6 +650,28 @@
 
 <!-- ============ APP ============ -->
 <div id="app">
+  <aside id="sideNav" aria-label="Үндсэн цэс">
+    <div class="sn-brand">
+      <div class="logo2" aria-hidden="true"><svg width="24" height="27" fill="currentColor"><use href="#nclion"/></svg></div>
+      <div><b>Эх үүсвэрийн портал</b><span>Нэткапитал СГ</span></div>
+    </div>
+    <button class="snav on" data-view="newview"><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9v11h13V9"/></svg> Нүүр</button>
+    <button class="snav" data-view="myview"><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg> Миний бүртгэлүүд <span class="sn-cnt num" id="myCntS">0</span><span class="sn-alert" id="myAlertS" hidden>!</span></button>
+    <button class="snav" data-view="cfview"><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg> Cashflow <span class="sn-alert num" id="cfNavCntS" hidden>0</span></button>
+    <button class="snav" data-view="dashview" id="sideDash" hidden><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7.5" height="9" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="5.5" rx="1.5"/><rect x="13.5" y="12" width="7.5" height="9" rx="1.5"/><rect x="3" y="15.5" width="7.5" height="5.5" rx="1.5"/></svg> Дашбоард</button>
+    <button class="snav" data-view="regview" id="sideReg" hidden><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg> Бүртгэлийн сан</button>
+    <div class="sn-foot">
+      <div class="sn-user">
+        <span class="uav2" id="uavS">·</span>
+        <div><b id="unameS">—</b><span id="uposS">—</span></div>
+      </div>
+      <div class="sn-actions">
+        <button id="btnThemeS" title="Гэрэлтэй / харанхуй горим" aria-label="Горим солих"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M19.4 4.6l-1.8 1.8M6.4 17.6l-1.8 1.8"/></svg></button>
+        <button id="btnHelpS" title="Танилцуулга" aria-label="Танилцуулга">?</button>
+        <button id="btnLogoutS">Гарах</button>
+      </div>
+    </div>
+  </aside>
   <header class="top">
     <div class="brand">
       <div class="logo" aria-hidden="true"><svg width="24" height="27" fill="currentColor"><use href="#nclion"/></svg></div>
@@ -581,7 +708,17 @@
       <span class="crumb"><span class="dot"></span> Нүүр</span>
       <h2 class="page" id="homeGreet">Сайн байна уу</h2>
       <p class="lede">Өнөөдрийн хүлээгдэж буй ажил тань доор байна. Шинэ бүртгэлээ хоёр урсгалын аль тохирохоор нь эхлүүлээрэй — аль аль нь дугаарлагдан бүртгэгдэж, ХОБПХГ-т автоматаар хуваарилагдана.</p>
-      <div class="tiles" id="homeTasks" style="margin-bottom:24px"></div>
+      <div class="home-search">
+        <div class="hs-in">
+          <svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--faint)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="homeSearch" placeholder="Хайх — үйлчилгээ, бүртгэл, асуулт… (ж: «хүү 12 сар», «тамга», «ЭҮ-2026»)" aria-label="Нэгдсэн хайлт">
+        </div>
+        <div class="hs-results" id="homeResults" hidden></div>
+      </div>
+      <div class="tiles" id="homeTasks" style="margin-bottom:6px"></div>
+      <h3 class="hsec">Түгээмэл үйлчилгээ</h3>
+      <div class="svc-grid" id="svcGrid"></div>
+      <h3 class="hsec">Шинэ бүртгэл</h3>
       <div class="flow-grid">
         <button class="flow-card f1" id="cardGoReq">
           <span class="fi"><svg class="i" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></span>
@@ -598,6 +735,15 @@
           <span class="go">Мэдэгдэл эхлүүлэх <svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
         </button>
       </div>
+      <h3 class="hsec">Түгээмэл асуулт</h3>
+      <div class="card faq">
+        <details><summary>Одоо мөрдөж буй хүү хэд вэ?</summary>
+          <div class="fa">NC-01/54-2025 тушаалаар (2025.04.07-оос): <b>Итгэлцэл ₮</b> — 6 сар 15.0% · 9 сар 16.0% · 12 сар 17.5% (хугацааны эцэст; улирал/сар бүр бол 1%-иар бага). <b>Өрийн хэрэгсэл ₮</b> — 1 сар 10.0% … 12 сар 18.0%. <b>Итгэлцэл $</b> — 6 сар 3.0% · 9 сар 3.5% · 12 сар 4.0%. Данс хаах/цуцлахад ₮ 2.4%, $ 0.5%.</div></details>
+        <details><summary>Хүү хэд хүртэл нэмэгдүүлж болох вэ?</summary>
+          <div class="fa">Хавсралт №2-ын матрицаар: 49 сая ₮ хүртэл — нэмэгдүүлэхгүй · 50–199 сая +0.5% · 200–499 сая +1.0% · 500 саяас +1.5% (ХОУГ-ын захирлын зөвшөөрлөөр). 100 саяас дээш дүнд Гүйцэтгэх захирлын зөвшөөрлөөр нэмж +1.0%. Түүнээс дээш — ТУЗ, Зөвлөхийн зөвшөөрөл. F01 маягт үүнийг автоматаар шалгана.</div></details>
+        <details><summary>Хавсралт хаана, ямар нэрээр хадгалагдах вэ?</summary>
+          <div class="fa">Байгууллагын архивын <b>21. Funding Support Portal</b> хавтаст он / сар / ангилал / дугаараар ангилагдана. Файлын нэр Naming Standard v1.0-ийн дагуу автоматаар: <span class="mono">[Салбар]_[Дугаар]_[Төрөл]_[ОООО-СС-ӨӨ]_v1.0</span>.</div></details>
+      </div>
     </div>
   </main>
 
@@ -607,6 +753,12 @@
       <span class="crumb"><span class="dot"></span> Шинэ бүртгэл · Хүсэлт</span>
       <h2 class="page">Эх үүсвэрийн хүсэлт илгээх</h2>
       <p class="lede">Хүсэлт бүр дугаарлагдан бүртгэгдэж, Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар руу и-мэйлээр баталгаажин, хавсралт нь Google Drive-д ангилагдан хадгалагдана.</p>
+      <div class="stepper" id="reqStepper">
+        <button type="button" data-t="catCard"><i>1</i> Ангилал</button>
+        <button type="button" data-t="descCard"><i>2</i> Мэдээлэл</button>
+        <button type="button" data-t="linkCard"><i>3</i> Хавсралт</button>
+        <button type="button" data-t="metaCard"><i>4</i> Зэрэглэл, илгээх</button>
+      </div>
 
       <div class="card dept-bar" id="deptCard">
         <span class="k">ИЛГЭЭГЧ</span>
@@ -1042,6 +1194,7 @@
       </div>
     </div>
   </main>
+  <footer id="appFoot">Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар · lkhagvadari.a@netgroup.mn · Мөрдөж буй тушаал NC-01/54-2025 · Naming Standard v1.0</footer>
 </div>
 
 <!-- confirmation modal -->
@@ -1290,6 +1443,8 @@ function loginAs(email){
   $('uname').textContent=e.name; $('uemail').textContent=email; $('uav').textContent=e.name[0];
   $('adminTag').hidden=e.role!=='admin';
   $('navDash').hidden=!isAdmin(); $('navReg').hidden=!isAdmin();
+  $('sideDash').hidden=!isAdmin(); $('sideReg').hidden=!isAdmin();
+  $('unameS').textContent=e.name; $('uposS').textContent=e.unit+' · '+e.pos; $('uavS').textContent=e.name[0];
   $('deptName').textContent=e.unit; $('deptPos').textContent=e.pos;
   $('sumDeptF').textContent=e.unit;
   gotoView('newview');
@@ -1305,8 +1460,8 @@ const VIEWS=['newview','reqview','fbkview','myview','cfview','dashview','regview
 function gotoView(v){
   VIEWS.forEach(x=>$(x).style.display = x===v ? 'grid':'none');
   window.scrollTo(0,0);
-  document.querySelectorAll('nav.views button').forEach(b=>{
-    const navFor = (v==='reqview'||v==='fbkview') ? 'newview' : v;
+  const navFor = (v==='reqview'||v==='fbkview') ? 'newview' : v;
+  document.querySelectorAll('nav.views button, #sideNav .snav').forEach(b=>{
     b.classList.toggle('on', b.dataset.view===navFor);
   });
   const el=$(v).querySelector('.anim');
@@ -1317,7 +1472,10 @@ function gotoView(v){
   if(v==='dashview') renderDash();
   if(v==='regview') renderRegistry();
 }
-document.querySelectorAll('nav.views button').forEach(b=>b.addEventListener('click',()=>gotoView(b.dataset.view)));
+document.querySelectorAll('nav.views button, #sideNav .snav').forEach(b=>b.addEventListener('click',()=>gotoView(b.dataset.view)));
+$('btnThemeS').addEventListener('click',()=>$('btnTheme').click());
+$('btnHelpS').addEventListener('click',()=>$('btnHelp').click());
+$('btnLogoutS').addEventListener('click',()=>$('btnLogout').click());
 $('cardGoReq').addEventListener('click',()=>{
   gotoView('reqview');
   if(!store.get('nc2.tourDone',false)) setTimeout(()=>startTour(),400);
@@ -1646,6 +1804,7 @@ function refresh(){
     : !okRates?(rateRule().level==='block'?rateRule().text:'Хүсэж буй хүүгээ оруулна уу (0–30%).')
     : !okSupport?'Дэмжлэгийн төрлөө сонгоно уу.'
     : 'Энэ ангилалд хавсралт (Drive линк эсвэл зураг) заавал.';
+  stepperSync([okCat, okDesc&&okProd&&okRates&&okSupport, needLink()?okLink:atts.length>0, ready]);
   saveDraftR();
 }
 
@@ -1792,12 +1951,26 @@ $('modalWrap').addEventListener('click',e=>{ if(e.target===$('modalWrap')) $('mo
 
 /* ================= my records ================= */
 function myRecs(){ return state.user? state.recs.filter(r=>r.byEmail===state.user.email || (isAdmin()&&r.demo&&false)) : []; }
+function trackerHtml(r){
+  const rej=r.status==='Татгалзсан';
+  const stage = r.status==='Бүртгэгдсэн'?2 : (r.status==='Хянагдаж байна'||r.status==='Тодруулга хүлээж байна')?3 : 4;
+  const labels=['Бүртгэгдсэн','Хуваарилагдсан','Хянагдаж байна', rej?'Татгалзсан':'Шийдвэрлэсэн'];
+  let h='<div class="tracker">';
+  labels.forEach((lb,i)=>{
+    const n=i+1;
+    const cls = n<stage?'done' : n===stage?(stage===4?(rej?'rej':'done'):'cur') : '';
+    if(i) h+=`<span class="tln ${n<=stage?'done':''}"></span>`;
+    h+=`<span class="tst ${cls}"><span class="tdot"></span><span class="tlb">${lb}</span></span>`;
+  });
+  return h+'</div>';
+}
 let myKindV='all';
 bindSegLocal('mySeg', v=>{ myKindV=v; renderReqs(); });
 $('mySearch').addEventListener('input',()=>renderReqs());
 function renderReqs(){
   const all=myRecs();
   $('myCnt').textContent=all.length;
+  $('myCntS').textContent=all.length;
   const q=($('mySearch').value||'').trim().toLowerCase();
   const mine=all.filter(r=>(myKindV==='all'||r.kind===myKindV)
     &&(!q||[r.id,r.catName,r.desc,r.status,r.product||''].join(' ').toLowerCase().includes(q)));
@@ -1812,7 +1985,8 @@ function renderReqs(){
     d.innerHTML=`<div class="req-top">
         <span class="kind-badge ${r.kind==='REQ'?'req':'fbk'}">${r.kind==='REQ'?'ЭҮ · Хүсэлт':'СГ · Санал, гомдол'}</span>
         <span class="no">${r.id}</span><span class="rt">${r.catName}</span><span class="sp"></span>
-        <span class="status ${ST_CLASS[r.status]}">${r.status}</span><span class="status mail">И-мэйл баталгаажсан</span></div>
+        <span class="status ${ST_CLASS[r.status]}">${r.status}</span></div>
+      ${trackerHtml(r)}
       ${detail?`<div class="req-body num" style="font-weight:600;color:var(--text)">${detail}</div>`:''}
       <div class="req-body">${r.desc.length>180?r.desc.slice(0,180)+'…':r.desc}</div>
       ${thumbs?`<div class="req-thumbs">${thumbs}</div>`:''}
@@ -2026,6 +2200,85 @@ $('btnClearDemo').addEventListener('click',()=>{
   renderDash(); renderReqs(); toast('Жишээ өгөгдөл арилгагдлаа');
 });
 
+/* ================= нэгдсэн хайлт (нүүр) ================= */
+function homeResults(q){
+  const ql=q.trim().toLowerCase(), out=[];
+  if(ql.length<2) return out;
+  /* үйлчилгээ (ангилал) */
+  const lscore=learnedCats(ql);
+  CATS.forEach(c=>{
+    const hit=c.t.toLowerCase().includes(ql)||c.c.toLowerCase().includes(ql)||lscore[c.c]
+      ||Object.entries(AI_KEYS).some(([k,codes])=>ql.includes(k)&&codes.includes(c.c));
+    if(hit) out.push({k:'svc', t:c.c+' · '+c.t, s:'Хүсэлт илгээх · '+c.type, fn:()=>{ state.cat=c; renderCats(''); applyCatFields(); gotoView('reqview'); refresh(); }});
+  });
+  GTYPES.forEach(g=>{
+    if(g.t.toLowerCase().includes(ql)) out.push({k:'svc', t:g.c+' · '+g.t, s:'Санал, гомдол мэдэгдэх', fn:()=>{ state.gtype=g; renderGtypes(); gotoView('fbkview'); refreshF(); }});
+  });
+  /* өөрийн бүртгэл */
+  myRecs().filter(r=>(r.id+' '+r.catName+' '+r.desc).toLowerCase().includes(ql)).slice(0,3)
+    .forEach(r=>out.push({k:'rec', t:r.id+' · '+r.catName, s:r.status+' · '+r.at, fn:()=>{ gotoView('myview'); $('mySearch').value=r.id; renderReqs(); }}));
+  /* шууд хариулт (тушаалаас) */
+  if(/хүү/.test(ql)){
+    const tm=ql.match(/(\d{1,2})\s*сар/);
+    const prod=/доллар|\$/.test(ql)?'Итгэлцэл $':(/өрийн/.test(ql)?'Өрийн хэрэгсэл ₮':'Итгэлцэл ₮');
+    const p=ORDER.products[prod];
+    if(tm&&p.terms[tm[1]+' сар']){
+      const pr=p.terms[tm[1]+' сар'];
+      out.unshift({k:'ans', t:`${prod} · ${tm[1]} сар — ${pr[0]}%${pr[1]?` / ${pr[1]}%`:''}`, s:'NC-01/54-2025 · хугацааны эцэст / улирал, сар бүр'});
+    }
+  }
+  if(/лимит|нэмэгдүүл/.test(ql))
+    out.unshift({k:'ans', t:'Нэмэгдүүлэх лимит: +0.5 / +1.0 / +1.5%', s:'Хавсралт №2 — дүнгээс хамаарна; 49 сая хүртэл нэмэгдүүлэхгүй'});
+  return out.slice(0,7);
+}
+function renderHomeResults(q){
+  const box=$('homeResults');
+  const rs=homeResults(q);
+  box.hidden=!rs.length;
+  box.innerHTML=rs.map((r,i)=>`<button class="hs-row" data-i="${i}" type="button">
+    <span class="hk ${r.k}">${r.k==='svc'?'Үйлчилгээ':r.k==='rec'?'Бүртгэл':'Хариулт'}</span>
+    <span><div>${r.t}</div><div class="hs-sub">${r.s}</div></span></button>`).join('');
+  box.querySelectorAll('.hs-row').forEach(b=>b.addEventListener('click',()=>{
+    const r=rs[Number(b.dataset.i)];
+    if(r.fn){ r.fn(); $('homeSearch').value=''; box.hidden=true; }
+  }));
+}
+$('homeSearch').addEventListener('input',e=>renderHomeResults(e.target.value));
+$('homeSearch').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){ const b=$('homeResults').querySelector('.hs-row'); if(b) b.click(); }
+  if(e.key==='Escape'){ $('homeResults').hidden=true; }
+});
+document.addEventListener('click',e=>{ if(!e.target.closest('.home-search')) $('homeResults').hidden=true; });
+
+/* түгээмэл үйлчилгээний каталог */
+const SVC_TOP=['F01','F02','F03','F08','F05'];
+function renderSvc(){
+  const el=$('svcGrid');
+  const cards=SVC_TOP.map(code=>{ const c=CATS.find(x=>x.c===code);
+    return `<button class="svc" type="button" data-c="${c.c}">
+      <span class="ic">${svg(c.k,17)}</span><span class="st2">${c.t}</span>
+      <span class="ss">${c.c} · ${c.type} · ${c.sla[0]}</span></button>`; }).join('')
+    +`<button class="svc" type="button" data-c="CF">
+      <span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></span>
+      <span class="st2">Cashflow бөглөх</span><span class="ss">Дуусах дансны шийдвэр</span></button>`;
+  el.innerHTML=cards;
+  el.querySelectorAll('.svc').forEach(b=>b.addEventListener('click',()=>{
+    if(b.dataset.c==='CF'){ gotoView('cfview'); return; }
+    state.cat=CATS.find(x=>x.c===b.dataset.c);
+    renderCats(''); applyCatFields(); gotoView('reqview'); refresh();
+    if(!store.get('nc2.tourDone',false)) setTimeout(()=>startTour(),400);
+  }));
+}
+
+/* формын stepper */
+$('reqStepper').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  $(b.dataset.t).scrollIntoView({behavior:'smooth', block:'start'});
+}));
+function stepperSync(st){
+  const bs=$('reqStepper').querySelectorAll('button');
+  st.forEach((ok,i)=>{ bs[i].classList.toggle('done',!!ok); bs[i].querySelector('i').textContent=ok?'✓':String(i+1); });
+}
+
 /* ================= нүүрийн тойм, мэдэгдлийн badge ================= */
 function clarifyPending(){
   return state.user? state.recs.filter(r=>r.byEmail===state.user.email&&r.status==='Тодруулга хүлээж байна'&&r.clarify&&!r.clarifyReply) : [];
@@ -2034,6 +2287,7 @@ function updateBadges(){
   if(!state.user) return;
   const n=clarifyPending().length;
   $('myAlert').hidden=!n; $('myAlert').textContent=n?'!':'';
+  $('myAlertS').hidden=!n; $('myAlertS').textContent=n||'';
   cfBadge();
 }
 function renderHome(){
@@ -2052,6 +2306,7 @@ function renderHome(){
     ${t.a?`<div class="ta">${t.a} <svg class="i" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>`:''}
   </button>`).join('');
   $('homeTasks').querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.go) gotoView(b.dataset.go); }));
+  renderSvc();
   updateBadges();
 }
 
@@ -2500,8 +2755,8 @@ function cfMissing(){
 }
 function cfBadge(){
   const n=cfMissing();
-  const el=$('cfNavCnt');
-  el.hidden=!n; el.textContent=n;
+  $('cfNavCnt').hidden=!n; $('cfNavCnt').textContent=n;
+  $('cfNavCntS').hidden=!n; $('cfNavCntS').textContent=n;
 }
 function cfRemindCheck(){
   const n=cfMissing();
