@@ -170,6 +170,14 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   R.tileAfterFilter = await page.textContent('.tile .tv');
   await shot('v4-08-dash.png');
 
+  // UC8b: Google Chat alert settings — save, test, log per-submit
+  R.chatCard = await page.isVisible('#chatCard');
+  await page.fill('#chatUrl', 'https://chat.googleapis.com/v1/spaces/TEST/messages?key=x');
+  await page.click('#btnChatTest'); await page.waitForTimeout(600);
+  R.chatLogRows = await page.locator('#chatLog > div').count();
+  R.chatStatus = (await page.textContent('#chatStatus')).slice(0, 30);
+  await shot('v10-chat.png');
+
   // UC9: registry — admin status change
   await page.click('nav.views button[data-view="regview"]'); await page.waitForTimeout(300);
   R.regRows = await page.locator('#regBody tr').count();

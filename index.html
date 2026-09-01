@@ -525,7 +525,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v0.9</span>
+      <span class="proto-badge">Прототип v1.0</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -919,6 +919,29 @@
         <button class="ghost-btn" id="btnSeed">Жишээ өгөгдөл үүсгэх</button>
         <button class="ghost-btn" id="btnClearDemo" hidden>Жишээ өгөгдөл арилгах</button>
       </div>
+      <div class="card" id="chatCard" style="border-left:3px solid var(--gold)">
+        <div class="step-head">
+          <span class="step-no">GC</span><h3>Google Chat мэдэгдэл</h3>
+          <span class="aside">Бүртгэл бүрд багийн Chat space руу alert очно</span>
+        </div>
+        <p class="step-sub">Chat space → Apps & integrations → Webhooks хэсгээс webhook үүсгээд URL-ээ энд буулгана. Прототип орчинд гадагш илгээлт хориотой тул alert бэлтгэгдэж бүртгэгдэнэ; байгууллагын сервер дээр байршуулахад яг энэ тохиргоогоор шууд илгээгдэнэ.</p>
+        <div class="fgrid">
+          <div class="field" style="grid-column:span 2"><div class="lb">Webhook URL</div>
+            <div class="in"><input id="chatUrl" class="mono" placeholder="https://chat.googleapis.com/v1/spaces/…/messages?key=…" style="font-size:12.5px"></div></div>
+          <div class="field"><div class="lb">Хэзээ илгээх</div>
+            <div style="display:flex;flex-direction:column;gap:7px;padding-top:4px;font-size:13px">
+              <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="chatOnNew" checked> Шинэ бүртгэл бүрд</label>
+              <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="chatOnlyUrgent"> Зөвхөн Яаралтай / Критик</label>
+              <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="chatOnClarify" checked> Тодруулгын хариу ирэхэд</label>
+            </div></div>
+        </div>
+        <div class="att-btns" style="justify-content:flex-start;align-items:center;gap:14px">
+          <button class="ext-btn" id="btnChatTest" type="button">Туршилтын мэдэгдэл илгээх</button>
+          <span id="chatStatus" style="font-size:12.5px;color:var(--faint)"></span>
+        </div>
+        <div id="chatLog" style="margin-top:12px"></div>
+      </div>
+
       <div class="tiles" id="dashTiles"></div>
       <div class="charts">
         <div class="chart-card wide">
@@ -1698,6 +1721,7 @@ $('btnSubmit').addEventListener('click',()=>{
   store.del(draftKeyR());
   refresh(); renderReqs(); renderFreqCats(); renderHome();
   $('aiCard').hidden=true;
+  chatAlertFor(rec);
 });
 
 $('btnSubmitF').addEventListener('click',()=>{
@@ -1726,6 +1750,7 @@ $('btnSubmitF').addEventListener('click',()=>{
   attFbk.clear(); renderGtypes();
   store.del(draftKeyF());
   refreshF(); renderReqs(); renderHome();
+  chatAlertFor(rec);
 });
 
 function mailSubject(r){ return `[${r.id}] ${r.cat} · ${r.catName} — ${r.dept}`; }
@@ -1812,6 +1837,7 @@ function renderReqs(){
         pushHist(r,'Хариуцагч руу и-мэйл явав (прототип)');
         r.status='Хянагдаж байна'; r.statusAt=nowStr();
         store.set('nc2.recs',state.recs);
+        if(chatCfg().onClarify) sendChatAlert(`💬 *Тодруулгын хариу — ${r.id}*\n*Илгээгч:* ${r.by} (${r.dept})\n*Хариу:* ${a.slice(0,200)}`);
         renderReqs(); renderHome(); toast('Хариулт илгээгдлээ');
       });
       d.appendChild(cbox);
@@ -1884,6 +1910,7 @@ function hideTip(){ tipEl.style.opacity=0; }
 
 function dashRecs(){ return state.recs.filter(r=>dashKindV==='all'||r.kind===dashKindV); }
 function renderDash(){
+  chatBindSettings();
   const rs=dashRecs();
   const total=rs.length;
   const open=rs.filter(r=>r.status==='Бүртгэгдсэн'||r.status==='Хянагдаж байна'||r.status==='Тодруулга хүлээж байна').length;
@@ -2501,6 +2528,79 @@ $('cfPrev').addEventListener('click',()=>{ cfDate=new Date(cfDate.getFullYear(),
 $('cfNext').addEventListener('click',()=>{ cfDate=new Date(cfDate.getFullYear(), cfDate.getMonth()+1, 1); cfDay=0; renderCF(); });
 $('cfUnit').addEventListener('change',()=>{ cfDay=0; renderCF(); });
 $('cfAllBtn').addEventListener('click',()=>{ cfDay=0; renderCF(); });
+
+/* ================= Google Chat мэдэгдэл ================= */
+const chatCfg=()=>store.get('nc2.chat',{url:'', onNew:true, onlyUrgent:false, onClarify:true});
+function chatSave(p){ store.set('nc2.chat', Object.assign(chatCfg(), p)); }
+function chatLogAdd(msg, st, ok){
+  const l=store.get('nc2.chatLog',[]);
+  l.unshift({at:nowStr(), msg:msg.split('\n')[0].replace(/\*/g,'').slice(0,70), st, ok:!!ok});
+  store.set('nc2.chatLog', l.slice(0,8));
+  renderChatLog();
+}
+function renderChatLog(){
+  const el=$('chatLog'); if(!el) return;
+  const l=store.get('nc2.chatLog',[]);
+  el.innerHTML=l.length
+    ? '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:7px">Сүүлийн alert-ууд</div>'
+      +l.map(e=>`<div style="display:flex;gap:10px;font-size:12.5px;padding:4px 0;border-top:1px solid var(--border)">
+        <span class="mono num" style="color:var(--faint);flex:none">${e.at}</span>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.msg}</span>
+        <span style="flex:none;font-weight:600;color:${e.ok?'var(--good)':'var(--warn)'}">${e.st}</span></div>`).join('')
+    : '';
+}
+async function sendChatAlert(text){
+  const cfg=chatCfg();
+  if(!cfg.url){ chatLogAdd(text,'Webhook тохируулаагүй',false); return 'nocfg'; }
+  try{
+    /* Google Chat webhook нь no-cors POST-ыг хүлээж авдаг — хариу нь opaque тул
+       "хүргэгдсэн" гэж баталгаажуулж чадахгүй ч мессеж space-д очно. */
+    await fetch(cfg.url,{method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'text/plain'}, body:JSON.stringify({text})});
+    chatLogAdd(text,'Илгээв',true); return 'sent';
+  }catch(e){
+    chatLogAdd(text,'Энэ орчинд хориотой — production дээр илгээгдэнэ',false); return 'blocked';
+  }
+}
+function chatMsg(rec){
+  const urgent=rec.urg==='Критик'||rec.urg==='Яаралтай'||rec.sev==='Критик'||rec.sev==='Өндөр';
+  const L=[`${urgent?'🚨':'🔔'} *${rec.kind==='REQ'?'Шинэ хүсэлт':'Шинэ мэдэгдэл'} — ${rec.id}*`,
+    `*Ангилал:* ${rec.cat} · ${rec.catName}`,
+    `*Илгээгч:* ${rec.by} (${rec.dept})`];
+  if(rec.amount) L.push(`*Дүн:* ${rec.amount} ${rec.cur||'₮'}${rec.rateNow?` · Хүү: ${rec.rateNow}% → ${rec.rateAsk}%`:''}`);
+  if(rec.area) L.push(`*Хүрээ:* ${rec.area}`);
+  if(rec.sev) L.push(`*Ноцтой байдал:* ${rec.sev}`);
+  L.push(`*Зэрэглэл:* ${rec.urg||'—'} · SLA: ${rec.sla}`);
+  if(rec.assignee) L.push(`*Хариуцагч:* ${rec.assignee.name} (${rec.assignee.role})`);
+  return L.join('\n');
+}
+function chatAlertFor(rec){
+  const cfg=chatCfg();
+  if(!cfg.onNew) return;
+  const urgent=rec.urg==='Критик'||rec.urg==='Яаралтай'||rec.sev==='Критик'||rec.sev==='Өндөр';
+  if(cfg.onlyUrgent&&!urgent) return;
+  sendChatAlert(chatMsg(rec));
+}
+function chatBindSettings(){
+  const cfg=chatCfg();
+  $('chatUrl').value=cfg.url;
+  $('chatOnNew').checked=cfg.onNew;
+  $('chatOnlyUrgent').checked=cfg.onlyUrgent;
+  $('chatOnClarify').checked=cfg.onClarify;
+  renderChatLog();
+}
+$('chatUrl').addEventListener('input',e=>{ chatSave({url:e.target.value.trim()});
+  $('chatStatus').textContent=e.target.value.trim()?'Хадгалагдлаа':''; });
+$('chatOnNew').addEventListener('change',e=>chatSave({onNew:e.target.checked}));
+$('chatOnlyUrgent').addEventListener('change',e=>chatSave({onlyUrgent:e.target.checked}));
+$('chatOnClarify').addEventListener('change',e=>chatSave({onClarify:e.target.checked}));
+$('btnChatTest').addEventListener('click',async()=>{
+  $('chatStatus').textContent='Илгээж байна…';
+  const st=await sendChatAlert('✅ Туршилт — Funding Support Portal-ын Google Chat мэдэгдэл ажиллаж байна.');
+  $('chatStatus').textContent = st==='sent'?'Илгээв — Chat space-ээ шалгана уу'
+    : st==='nocfg'?'Эхлээд webhook URL-ээ оруулна уу'
+    : 'Энэ орчинд гадагш илгээх хориотой — тохиргоо хадгалагдсан, production дээр ажиллана';
+});
 
 /* ================= тодруулгын урсгал ================= */
 let clarifyRec=null;
