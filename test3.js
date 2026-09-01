@@ -78,13 +78,56 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   R.verdict185 = await page.textContent('#rateVerdict');
   R.enabled185 = !(await page.isDisabled('#btnSubmit'));
   await page.fill('#rateAsk', '25'); await page.waitForTimeout(100);
-  R.blocked25 = await page.isDisabled('#btnSubmit');
-  R.verdict25 = (await page.textContent('#rateVerdict')).slice(0, 40);
+  R.tuz25enabled = !(await page.isDisabled('#btnSubmit'));
+  R.tuz25 = (await page.textContent('#rateVerdict')).includes('ТУЗ');
+  await page.fill('#bonus', '0.5');
+  R.sumBonus = await page.textContent('#sumBonus');
+  await page.fill('#custName', 'Б.Тэст /АА00112233/');
   await page.fill('#rateAsk', '18.0'); await page.waitForTimeout(100);
   await page.click('#btnSubmit'); await page.waitForTimeout(300);
-  R.mailHasOrder = (await page.textContent('#mBody')).includes('NC-01/54-2025');
+  const mb = await page.textContent('#mBody');
+  R.mailHasOrder = mb.includes('NC-01/54-2025');
+  R.mailHasBonus = mb.includes('Урамшууллын хувь: 0.5%');
+  R.mailHasCust = mb.includes('Б.Тэст');
   await shot('v5-order.png');
   await page.click('#mOk'); await page.waitForTimeout(200);
+
+  // UC5c: gdoc link extraction — button appears; graceful degrade outside claude.ai
+  await page.click('.cat:has-text("Хүүгийн тохируулгын")'); await page.waitForTimeout(150);
+  await page.click('#btnAddLinkR');
+  await page.fill('#attReq .att-row input[type=url]', 'https://docs.google.com/document/d/1-fUr1JsQcooqftHpCIUDF5OzSHSzYam55WXahfINRmQ/edit');
+  await page.waitForTimeout(150);
+  R.extBtnVisible = await page.isVisible('#attReq .ext-btn');
+  await page.click('#attReq .ext-btn'); await page.waitForTimeout(400);
+  R.extPanel = await page.isVisible('#extractPanel');
+  R.extDegrade = (await page.textContent('#extBody')).includes('claude.ai');
+  await shot('v6-extract-degrade.png');
+
+  // parser unit test in page context (same structure as approval template, synthetic data)
+  R.parser = await page.evaluate(() => {
+    const t = [
+      '| ХОБХУГ менежер | [АЖИЛТАН_НЭГ](mailto:a1@x.mn) | Боловсруулах |',
+      '| ГЗ | [АЖИЛТАН_ХОЁР](mailto:a2@x.mn) | Батлах |',
+      '| Харилцагчийн нэр /РД/ | Т.Туршилт /АБ12345678/ |',
+      '| Эх үүсвэрийн дүн | 120,000,000.00 ₮ Шинэ |',
+      '| Хүү, Хүү төлөх давтамж, Хугацаа | 18.5%, Хугацааны эцэст, 12 сар |',
+      '| Гэрээний хүүний хувь | Урамшууллын хувь | Нэмэлт | Нийт |',
+      '| 18.5% | 0.5 | 0 | 19.0% |',
+      '| Стандарт хүү | ХОУГ | ГЗ | ТУЗ | Гэрээний | Тайлбар |',
+      '| 17.5% | 0.5% | 0.5% | 0% | 18.5% | тайлбар |',
+    ].join('\n');
+    const ex = parseApprovalDoc(t);
+    return {
+      apr: ex.approvers.length,
+      name: ex.fields.custName,
+      amt: ex.fields.amount,
+      rate: ex.fields.contractRate,
+      bonus: ex.fields.bonus,
+      std: ex.fields.stdRate,
+      term: ex.fields.term,
+      payout: ex.fields.payout,
+    };
+  });
 
   // UC6: feedback flow — G05 bug, severity critical
   await page.click('nav.views button[data-view="newview"]'); await page.waitForTimeout(200);
@@ -142,6 +185,34 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   await page.click('.acct[data-email="lkhagvadari.a@netgroup.mn"]'); await page.waitForTimeout(300);
   await page.click('nav.views button[data-view="regview"]'); await page.waitForTimeout(300);
   R.regAfterReload = await page.locator('#regBody tr').count();
+
+  // UC11b: cashflow — tiles, calendar, decision fill, persistence
+  await page.click('nav.views button[data-view="cfview"]'); await page.waitForTimeout(400);
+  R.cfTiles = await page.locator('#cfTiles .tile').count();
+  R.cfCalDays = await page.locator('#cfCal .day.has').count();
+  R.cfRows = await page.locator('#cfBody tr:not(.cf-det)').count();
+  R.cfMonth = await page.textContent('#cfMonthLbl');
+  await page.locator('#cfBody select.cf-dec').first().selectOption('Сунгана'); await page.waitForTimeout(200);
+  R.cfDetVisible = await page.locator('#cfBody tr.cf-det').first().isVisible();
+  await page.locator('#cfBody .cf-rate').first().fill('18.0'); await page.waitForTimeout(150);
+  R.cfProgress = await page.textContent('#cfProgress');
+  await page.locator('#cfCal .day.has').first().click(); await page.waitForTimeout(200);
+  R.cfDayFiltered = await page.locator('#cfBody tr:not(.cf-det)').count();
+  await page.click('#cfAllBtn'); await page.waitForTimeout(150);
+  await shot('v6-cashflow.png');
+  // branch user sees only own unit
+  await page.click('#btnLogout'); await page.waitForTimeout(150);
+  await page.click('#btnLogin'); await page.waitForTimeout(150);
+  await page.click('.acct[data-email="sarnai.d@netgroup.mn"]'); await page.waitForTimeout(300);
+  await page.click('nav.views button[data-view="cfview"]'); await page.waitForTimeout(300);
+  R.cfBranchUnits = await page.evaluate(() => [...new Set([...document.querySelectorAll('#cfBody tr:not(.cf-det) td:nth-child(7)')].map(t => t.textContent))]);
+  R.cfUnitSelHidden = !(await page.isVisible('#cfUnit'));
+  // persistence of decision after reload (as admin)
+  await page.reload(); await page.waitForTimeout(400);
+  await page.click('#btnLogin'); await page.waitForTimeout(150);
+  await page.click('.acct[data-email="lkhagvadari.a@netgroup.mn"]'); await page.waitForTimeout(300);
+  await page.click('nav.views button[data-view="cfview"]'); await page.waitForTimeout(300);
+  R.cfDecPersist = await page.locator('#cfBody select.cf-dec').first().inputValue();
 
   // UC12: theme toggle
   await page.click('#btnTheme'); await page.waitForTimeout(300);

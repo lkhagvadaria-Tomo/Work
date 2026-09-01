@@ -441,17 +441,42 @@
   #tour .tf .b2{background:var(--brand); border:none; color:#fff; border-radius:9px; padding:8px 18px; font-size:13px; font-weight:600}
   #tour .never{display:flex; gap:8px; align-items:center; margin-top:12px; font-size:11.5px; color:var(--faint)}
 
+  .ext-btn{flex:none; border:1px solid var(--brand); color:var(--brand); background:var(--brand-soft);
+    border-radius:9px; padding:8px 13px; font-size:12.5px; font-weight:600; transition:background .12s, color .12s}
+  .ext-btn:hover{background:var(--brand); color:#fff}
+
+  /* cashflow calendar */
+  .cal{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+  .cal .wd{font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); text-align:center; padding:4px 0; font-weight:600}
+  .cal .day{min-height:66px; border:1px solid var(--border); border-radius:10px; padding:6px 9px; background:var(--surface-2);
+    text-align:left; position:relative; transition:border-color .12s}
+  .cal .day.off{opacity:.35}
+  .cal .day .dn{font-size:11px; color:var(--faint)}
+  .cal .day .amt{font-size:12px; font-weight:700; margin-top:5px; line-height:1.3}
+  .cal .day .cnt2{font-size:10px; color:var(--faint)}
+  .cal .day.has{cursor:pointer}
+  .cal .day.has:hover{border-color:var(--brand)}
+  .cal .day.sel{border-color:var(--brand); box-shadow:0 0 0 2px var(--brand-soft)}
+  .cf-det td{background:var(--surface-2)}
+  .cf-det .fgrid{margin-bottom:0}
+  .month-nav{display:inline-flex; align-items:center; border:1px solid var(--border); border-radius:10px; background:var(--surface-2); overflow:hidden}
+  .month-nav button{border:none; background:none; padding:8px 14px; font-weight:700; font-size:14px}
+  .month-nav .lblm{padding:8px 6px; font-size:13px; font-weight:700; min-width:120px; text-align:center}
+
   #toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px); z-index:80;
     background:var(--surface); border:1px solid var(--good); color:var(--text); border-radius:12px;
     padding:14px 24px; font-size:14px; font-weight:600; opacity:0; pointer-events:none; transition:.25s; box-shadow:var(--shadow-lg)}
   #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 </style>
 
+<!-- Нэткапиталын албан ёсны лого (SVG, currentColor) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="nclion" viewBox="305 505 215 245"><circle cx="354.14" cy="513.46" r="5.77"/><circle cx="395.89" cy="743.74" r="4.19"/><circle cx="489.69" cy="706.72" r="4.19"/><circle cx="488.24" cy="573.23" r="3.43"/><circle cx="514.06" cy="632.45" r="2.73"/><path d="M504.35,647.31l-1.15-27.18h0a16.87,16.87,0,1,0-21.9-18.41h0l-30.6-14.62a9.21,9.21,0,0,0-3-4.89l15.31-18a9.48,9.48,0,1,0-3.56-13.34h0l-36.77-6.93a13.38,13.38,0,0,0-26.11,1.2h-7.33l5-10a106.31,106.31,0,0,0-30.41,9.18l-15.92,35a68.27,68.27,0,0,0-14.17,11.12l-1.26.23-4.13,4.12a11.18,11.18,0,0,0-3.08,6.95l-.31,5.58a3.56,3.56,0,0,1-1.35,2.56l-30.31,24.43,9.37,15.16a107.07,107.07,0,0,0,31.5,68.21l-1.38-21.33,29.13,38.85a3.78,3.78,0,1,0,6-3h0L372,720.47h0a5.68,5.68,0,0,0,2.63.64,5.79,5.79,0,0,0,5.28-3.43h0l15.16-1.83a8,8,0,0,0,13,6.26h0l34.83,14.7h0a3.8,3.8,0,0,0-.1.89,4.24,4.24,0,1,0,.49-1.93h0L411,717.42h0a8.22,8.22,0,0,0,.16-1.58,8,8,0,0,0-2.44-5.75h0l9.12-13.68h0a5.93,5.93,0,0,0,2.19.43,5.77,5.77,0,0,0,5-8.61h0l12.55-14h0a10.19,10.19,0,0,0,13.19,1.39h0l17.9,8,.06,0a5.29,5.29,0,0,0-.06.8A5.78,5.78,0,1,0,480.05,683h0l11.9-10.4h0a15.68,15.68,0,1,0,12.39-25.29Zm-55.71-52h0l32.47,9.33,0,0a17,17,0,0,0,1,5.2h0l-2.6,1.25h0a12,12,0,0,0-22.45,6c0,.18,0,.36,0,.54h0l-42,4.82h0a9.71,9.71,0,0,0-1.47-.83h0L438.2,597.7h0a9.15,9.15,0,0,0,10.44-2.44Zm27,21.81a6.6,6.6,0,1,1-6.6-6.59A6.6,6.6,0,0,1,475.68,617.07Zm-84.4-22.24h0l13.4-16.39h0a6.49,6.49,0,0,0,8.17.22h0l19.67,9.28.08.07a9.42,9.42,0,0,0-.08,1.2,9.19,9.19,0,0,0,.88,3.92h0l-21,28h0a9.22,9.22,0,0,0-9.25,2.39h0l-15.73-16.41h0A9.19,9.19,0,0,0,392.3,599,9,9,0,0,0,391.28,594.83Zm18.47,31a4.24,4.24,0,1,1-4.24,4.24A4.24,4.24,0,0,1,409.75,625.79Zm13.18-76.06,35.84,2.41h0a9.53,9.53,0,0,0-.75,3.71,9.39,9.39,0,0,0,1.42,5h0l-14,20A9.18,9.18,0,0,0,433.1,586h0l-17.67-12.53a6.51,6.51,0,0,0-4.63-6.24h0l2.06-6.77,0,0A13.36,13.36,0,0,0,422.93,549.73Zm-13.18-9.05a6.75,6.75,0,1,1-6.75,6.75A6.75,6.75,0,0,1,409.75,540.68ZM315.48,682.05l-1.06-10a2,2,0,0,1,1.95-1.95,1.92,1.92,0,0,1,1.4.6c4.43,4.54,11.11,18.3,11.11,18.3Zm-6.94-28V649l.52,0a8,8,0,0,0,8.05-8v0a6.9,6.9,0,0,1,1.3-4.22,58.56,58.56,0,0,1,20.84-17.3s8.47-3.71,16.6-4.26c1.09-.07,2.17-.15,3.25-.32,2.3-.36,5.93-1.1,7.08-2.3a10.33,10.33,0,0,0-9.84-7.19,10.57,10.57,0,0,0-1.14.07s-4.2.54-5.13.69c-5.39.65-7.28-.4-7.28-.4a4.61,4.61,0,0,1-2.68-3.52,2.19,2.19,0,0,0-1.26,2,21.36,21.36,0,0,1-.57,6.3,12.78,12.78,0,0,1-4.49,6.82l-5.1,4.05c-2.59,2.06-5.16,4.13-7.68,6.27-7.66,6.5-11.95,7.33-11.95,7.33a8.08,8.08,0,0,1-1.92.23,7.94,7.94,0,0,1-3.61-.86L333.69,611v-5.8a12,12,0,0,1,3.6-8.6,60.2,60.2,0,0,1,18-12.35L382,571.51l1.86-3.71-28.39,8.74,9.32-19.25,9.07-5.15-6.39,16.48L398.66,555a13.41,13.41,0,0,0,11.09,5.88h0V567a6,6,0,0,0-.85-.06,6.51,6.51,0,0,0-4.9,10.81h0l-16.58,13.12h0a9.21,9.21,0,1,0-1.91,17L390.57,620l-20.68,17.37a11.77,11.77,0,0,0-4.08-.75,11.58,11.58,0,0,0-11,8.08H328.88l23.81,7.12L333.48,668Zm57.27.93a6.78,6.78,0,1,1,6.77-6.77A6.77,6.77,0,0,1,365.81,655Zm19.69,33.64L341.11,667.2l18-9.54a11.51,11.51,0,0,0,6.69,2.13,11.34,11.34,0,0,0,3.05-.42h0Zm-7.83,21.79a5.7,5.7,0,0,0-3-.87,5.77,5.77,0,0,0-3.19,10.59h0l-5.79,11.33a3.78,3.78,0,0,0-2.57,1h0l-23.81-47.09a5.77,5.77,0,0,1-.53-3.7,5.69,5.69,0,0,1,4.67-4.53,5.75,5.75,0,0,1,3.05.34l37.61,16a8.92,8.92,0,0,0,1.3,4.64h0l-7.71,12.29Zm17.55,4H380.33a5.74,5.74,0,0,0-2.24-3.68h0l9.41-10.16h0a9,9,0,0,0,5.59,2,9.24,9.24,0,0,0,2-.22h0l4,6.64h0A8,8,0,0,0,395.22,714.38Zm7.88,5.25a3.8,3.8,0,1,1,3.8-3.79A3.79,3.79,0,0,1,403.1,719.63Zm12-25.53-7.46,15.12h0a8,8,0,0,0-4.54-1.42,7.85,7.85,0,0,0-3,.58h0l-1.41-7.85h0a9,9,0,0,0,3.38-6.68h0l12.12-2.78a5.76,5.76,0,0,0,.86,3ZM437,673.54l-14.66,12.23h0a5.61,5.61,0,0,0-2.32-.49,5.76,5.76,0,0,0-5.58,4.33H401.24a9,9,0,0,0-8.14-5.16,8.78,8.78,0,0,0-1.93.21h0L373.37,657h0a11.52,11.52,0,0,0,4-8.75c0-.08,0-.15,0-.22l24.57-13a9.22,9.22,0,0,0,10.76,3.81h0l23.65,23h0a10.18,10.18,0,0,0,.63,11.78Zm-.4-12.13h0l-20.06-25.1h0A9.21,9.21,0,0,0,419,630l38.2-11h0a12,12,0,0,0,2,4.94h0L448,657.42h0a10.34,10.34,0,0,0-3-.44A10.2,10.2,0,0,0,436.59,661.41ZM445,673a5.79,5.79,0,1,1,5.79-5.79A5.78,5.78,0,0,1,445,673Zm43.66-10a15.61,15.61,0,0,0,2.69,8.79h0l-12.74,8.66a5.77,5.77,0,0,0-9.31,1.44h0l-14.67-11.25h0a10.17,10.17,0,0,0-4.3-12.14h0L467,628.93h0a12.38,12.38,0,0,0,2,.18,12.6,12.6,0,0,0,2.05-.18h0l22,23.14h0A15.57,15.57,0,0,0,488.66,663Zm-10.05-38.57h0a11.92,11.92,0,0,0,2.2-10h0l2.31-2.31h0A16.88,16.88,0,0,0,498,621l4.43,26.35,0,.12a15.67,15.67,0,0,0-7.7,3.17h0Zm25.74,49A10.41,10.41,0,1,1,514.75,663,10.41,10.41,0,0,1,504.35,673.4Z"/></symbol></svg>
+
 <!-- ============ LOGIN ============ -->
 <section id="login">
   <div class="login-brand">
     <div class="lb-top">
-      <div class="mark" aria-hidden="true">N</div>
+      <div class="mark" aria-hidden="true"><svg width="27" height="31" fill="currentColor" style="color:#6fdccf"><use href="#nclion"/></svg></div>
       <div>
         <div class="w1">Нэткапитал Санхүүгийн Групп</div>
         <div class="w2">Банк бус санхүүгийн байгууллага</div>
@@ -472,7 +497,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v0.4</span>
+      <span class="proto-badge">Прототип v0.6</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -494,7 +519,7 @@
 <div id="app">
   <header class="top">
     <div class="brand">
-      <div class="logo" aria-hidden="true">N</div>
+      <div class="logo" aria-hidden="true"><svg width="24" height="27" fill="currentColor"><use href="#nclion"/></svg></div>
       <div>
         <div class="t1">Эх үүсвэрийн портал</div>
         <div class="t2">Нэткапитал Санхүүгийн Групп</div>
@@ -503,6 +528,7 @@
     <nav class="views" aria-label="Хэсгүүд">
       <button data-view="newview" class="on" id="navNew"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">Шинэ бүртгэл</span></button>
       <button data-view="myview" id="navMy"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span class="lbl">Миний бүртгэлүүд</span> <span class="cnt num" id="myCnt">0</span></button>
+      <button data-view="cfview" id="navCf"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span class="lbl">Cashflow</span></button>
       <button data-view="dashview" id="navDash" hidden><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7.5" height="9" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="5.5" rx="1.5"/><rect x="13.5" y="12" width="7.5" height="9" rx="1.5"/><rect x="3" y="15.5" width="7.5" height="5.5" rx="1.5"/></svg><span class="lbl">Дашбоард</span></button>
       <button data-view="regview" id="navReg" hidden><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="lbl">Бүртгэлийн сан</span></button>
     </nav>
@@ -602,6 +628,10 @@
               <button data-v="Иргэн" class="on" style="flex:1">Иргэн</button>
               <button data-v="Байгууллага" style="flex:1">Байгууллага</button>
             </div></div>
+          <div class="field"><div class="lb">Харилцагчийн нэр /РД/</div>
+            <div class="in"><input id="custName" placeholder="Овог Нэр /РД/" aria-label="Харилцагчийн нэр"></div></div>
+          <div class="field"><div class="lb">Дансны дугаар</div>
+            <div class="in"><input id="custAcct" inputmode="numeric" placeholder="—" class="num" aria-label="Дансны дугаар"></div></div>
         </div>
 
         <div id="fldRates" hidden>
@@ -610,6 +640,8 @@
               <div class="in"><input id="rateNow" readonly placeholder="—" class="num" aria-label="Тушаалаар мөрдөж буй хүү"><span class="sfx">%</span></div></div>
             <div class="field"><div class="lb">Хүсэж буй хүү (жилийн)</div>
               <div class="in"><input id="rateAsk" inputmode="decimal" placeholder="—" class="num"><span class="sfx">%</span></div></div>
+            <div class="field"><div class="lb">Урамшууллын хувь</div>
+              <div class="in"><input id="bonus" inputmode="decimal" placeholder="0.5" class="num" aria-label="Урамшууллын хувь"><span class="sfx">%</span></div></div>
           </div>
           <div class="drive-preview" style="margin:0 0 16px">
             <b>Мөрдөж буй тушаал — NC-01/54-2025</b> · Актив, пассивын хорооны шийдвэр, 2025.04.07-оос мөрдөнө. Хүсэлт илгээхэд энэ тушаал и-мэйлд автоматаар хавсаргагдана.<br>
@@ -653,7 +685,11 @@
           <button class="add-att" id="btnAddImgR"><svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L7 20"/></svg> Зураг хавсаргах</button>
           <input type="file" id="fileR" accept="image/*" multiple hidden>
         </div>
-        <p class="link-note">Drive линкээ «ХОБПХГ үзэх эрхтэй» болгож тохируулсан эсэхээ шалгана уу — эрхгүй линк шийдвэрлэлтийг зогсооно.</p>
+        <div class="drive-preview" id="extractPanel" hidden style="border-left-color:var(--brand); margin-top:13px">
+          <b>Баримтаас таньсан мэдээлэл</b> <span id="extStatus" style="font-weight:400"></span>
+          <div id="extBody" style="margin-top:8px"></div>
+        </div>
+        <p class="link-note">Drive линкээ «ХОБПХГ үзэх эрхтэй» болгож тохируулсан эсэхээ шалгана уу — эрхгүй линк шийдвэрлэлтийг зогсооно. Зөвшөөрлийн G-Doc линк нэмбэл «Уншуулах» товчоор хүү, урамшуулал, зөвшөөрсөн хүмүүсийн жагсаалтыг автоматаар татна.</p>
         <div class="drive-preview">
           <b>Drive-д хадгалагдах байрлал</b> — илгээмэгц хавсралтууд дараах хавтаст автоматаар ангилагдана:<br>
           <span class="path mono" id="drivePath">Эх үүсвэрийн хүсэлтүүд / …</span>
@@ -696,6 +732,7 @@
           <div class="srow" id="sumProdRow" hidden><span class="k">Бүтээгдэхүүн</span><span class="v" id="sumProd">—</span></div>
           <div class="srow" id="sumAmtRow" hidden><span class="k">Дүн</span><span class="v num" id="sumAmt">—</span></div>
           <div class="srow" id="sumRateRow" hidden><span class="k">Хүү</span><span class="v num" id="sumRate">—</span></div>
+          <div class="srow" id="sumBonusRow" hidden><span class="k">Урамшуулал</span><span class="v num" id="sumBonus">—</span></div>
           <div class="srow"><span class="k">Хавсралт</span><span class="v num" id="sumAtt">—</span></div>
           <div class="srow"><span class="k">Яаралтай байдал</span><span class="v good" id="sumUrg">Энгийн</span></div>
           <div class="srow"><span class="k">Хариуцагч</span><span class="v">ХОБПХГ</span></div>
@@ -888,6 +925,43 @@
       </div>
     </div>
   </main>
+
+  <!-- ---- cashflow ---- -->
+  <main id="cfview" class="single" style="display:none">
+    <div class="anim">
+      <span class="crumb"><span class="dot"></span> Cashflow · Эх үүсвэрийн төлөвлөлт</span>
+      <h2 class="page">Дуусах хугацааны cashflow</h2>
+      <p class="lede">Сонгосон сард хугацаа нь дуусах данс бүр дээр салбар шийдвэрээ бүртгэнэ: сунгах эсэх, ямар нөхцөлөөр, хэдий дүнгээр. Прототип горимд жишээ данснууд харагдана — production дээр Нэткор системээс автоматаар татагдана.</p>
+      <div class="dash-tools">
+        <div class="month-nav">
+          <button id="cfPrev" aria-label="Өмнөх сар">‹</button>
+          <span class="lblm num" id="cfMonthLbl">—</span>
+          <button id="cfNext" aria-label="Дараах сар">›</button>
+        </div>
+        <select id="cfUnit" class="st-select" hidden aria-label="Салбар шүүх"></select>
+        <span class="reg-count num" id="cfProgress"></span>
+        <span class="spacer"></span>
+        <button class="ghost-btn" id="cfAllBtn" hidden>Бүх өдрийг харуулах</button>
+      </div>
+      <div class="tiles" id="cfTiles"></div>
+      <div class="chart-card" style="margin-bottom:16px">
+        <div class="ct">Дуусах хугацааны календарь</div>
+        <div class="cs">Өдөр тус бүрд дуусах дансны нийт дүн — өдөр дээр дарж доорх жагсаалтыг шүүнэ</div>
+        <div class="cal" id="cfCal"></div>
+      </div>
+      <div class="table-wrap">
+        <table class="reg" style="min-width:1100px">
+          <thead><tr>
+            <th>Огноо</th><th>Данс</th><th>Харилцагч</th><th>Бүтээгдэхүүн</th><th>Дүн</th><th>Хүү</th><th>Салбар</th><th>Шийдвэр</th><th>Статус</th>
+          </tr></thead>
+          <tbody id="cfBody"></tbody>
+        </table>
+      </div>
+      <div class="integrity">
+        <b>Ажиллагаа.</b> Шийдвэр бүр даруй хадгалагдаж, ХОБПХГ-ын нэгтгэлд бодит цагаар тусна. «Сунгана» гэж сонгоход шинэ хугацаа, хүү, дүнгийн талбар нээгдэнэ; хүүг мөрдөж буй NC-01/54-2025 тушаалын хязгаартай харьцуулж шалгана. Production дээр дансны жагсаалт Нэткор системээс автоматаар татагдаж, сар хаагдахад нэгтгэл ХОБПХГ руу и-мэйлээр очно.
+      </div>
+    </div>
+  </main>
 </div>
 
 <!-- confirmation modal -->
@@ -975,7 +1049,7 @@ function rateRule(){ /* {level:'base'|'dir'|'ceo'|'block'|null, text, max} */
   if(step===0&&ask>base) return {level:'block', text:'49 сая ₮ хүртэлх эх үүсвэрт хүү нэмэгдүүлэхгүй (Хавсралт №2).', max:base};
   if(ask<=dirMax) return {level:'dir', text:`Хөрөнгө оруулалтын удирдлагын газрын захирлын зөвшөөрлөөр боломжтой (дээд ${dirMax.toFixed(1)}%).`, max:dirMax};
   if(ask<=ceoMax) return {level:'ceo', text:`Гүйцэтгэх захирлын зөвшөөрөл шаардлагатай (дээд ${ceoMax.toFixed(1)}%).`, max:ceoMax};
-  return {level:'block', text:`Тушаалын дээд хязгаараас (${ceoMax.toFixed(1)}%) хэтэрсэн — «Онцгой нөхцөлийн зөвшөөрөл» (F07) ангиллаар илгээнэ үү.`, max:ceoMax};
+  return {level:'tuz', text:`Тушаалын матрицын дээд хязгаараас (${ceoMax.toFixed(1)}%) дээш — ТУЗ, Зөвлөхийн зөвшөөрөл шаардлагатай.`, max:null};
 }
 const CATS = [
   {c:'F01', t:'Хүүгийн тохируулгын хүсэлт', k:'percent', type:'Шийдвэр', folder:'F01 Хүүгийн тохируулга', fields:['product','rates'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
@@ -1082,7 +1156,7 @@ $('btnLogout').addEventListener('click',()=>{
 });
 
 /* ================= views ================= */
-const VIEWS=['newview','reqview','fbkview','myview','dashview','regview'];
+const VIEWS=['newview','reqview','fbkview','myview','cfview','dashview','regview'];
 function gotoView(v){
   VIEWS.forEach(x=>$(x).style.display = x===v ? 'grid':'none');
   document.querySelectorAll('nav.views button').forEach(b=>{
@@ -1092,6 +1166,7 @@ function gotoView(v){
   const el=$(v).querySelector('.anim');
   if(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }
   if(v==='myview') renderReqs();
+  if(v==='cfview') renderCF();
   if(v==='dashview') renderDash();
   if(v==='regview') renderRegistry();
 }
@@ -1170,6 +1245,9 @@ document.querySelectorAll('#chipsReq .chip').forEach(ch=>ch.addEventListener('cl
 const fmtAmt = v => { const d=v.replace(/[^\d]/g,''); return d? Number(d).toLocaleString('en-US'):''; };
 $('amount').addEventListener('input',e=>{ e.target.value=fmtAmt(e.target.value); refresh(); });
 $('rateAsk').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,5); refresh(); });
+$('bonus').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,4); refresh(); });
+$('custName').addEventListener('input',refresh);
+$('custAcct').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d]/g,'').slice(0,16); refresh(); });
 $('ptype').addEventListener('change',()=>{
   const p=ORDER.products[$('ptype').value];
   const term=$('term'); term.innerHTML='<option value="">Сонгох…</option>';
@@ -1200,7 +1278,8 @@ bindSeg('segSev','sev',()=>refreshF());
 
 /* ================= attachments ================= */
 const validLink = v => /^https:\/\/(drive|docs)\.google\.com\/\S+/i.test(v.trim());
-function makeAttach(rootId, onChange){
+function makeAttach(rootId, onChange, opts){
+  opts=opts||{};
   const root=$(rootId);
   const items=[];
   function row(item){
@@ -1228,7 +1307,24 @@ function makeAttach(rootId, onChange){
     }
     const rm=document.createElement('button'); rm.className='rm'; rm.title='Устгах'; rm.setAttribute('aria-label','Хавсралт устгах'); rm.textContent='×';
     rm.addEventListener('click',()=>{ items.splice(items.indexOf(item),1); div.remove(); onChange(); });
-    div.append(sel, body, rm);
+    if(opts.extract){
+      const eb=document.createElement('button'); eb.className='ext-btn'; eb.type='button'; eb.textContent='Уншуулах';
+      if(item.kind==='link'){
+        eb.hidden=true;
+        const inp=body.querySelector('input');
+        inp.addEventListener('input',()=>{ eb.hidden=!(item.ok&&driveId(item.url)); });
+        eb.addEventListener('click',()=>runExtract(item.url));
+      } else {
+        eb.addEventListener('click',()=>{
+          const panel=$('extractPanel');
+          panel.hidden=false; $('extStatus').textContent='';
+          $('extBody').innerHTML='<span style="color:var(--warn)">Шууд оруулсан зургийг унших нь production дээр AI (OCR) уншилтаар хийгдэнэ. Одоо туршихдаа зургаа Google Drive-д байршуулаад линкийг нь хавсаргавал «Уншуулах» товч харилцагчийн нэр, данс, хүүг автоматаар таньж бөглөнө.</span>';
+        });
+      }
+      div.append(sel, body, eb, rm);
+    } else {
+      div.append(sel, body, rm);
+    }
     root.appendChild(div);
   }
   return {
@@ -1259,7 +1355,7 @@ function makeAttach(rootId, onChange){
     clear(){ items.length=0; root.innerHTML=''; onChange(); },
   };
 }
-const attReq=makeAttach('attReq',()=>refresh());
+const attReq=makeAttach('attReq',()=>refresh(),{extract:true});
 const attFbk=makeAttach('attFbk',()=>refreshF());
 $('btnAddLinkR').addEventListener('click',()=>attReq.addLink());
 $('btnAddLinkF').addEventListener('click',()=>attFbk.addLink());
@@ -1302,6 +1398,7 @@ function refresh(){
     const rv=$('rateVerdict');
     rv.textContent=rule.text;
     rv.style.color = rule.level==='block' ? 'var(--danger)'
+      : rule.level==='tuz' ? 'var(--danger)'
       : rule.level==='ceo' ? 'var(--warn)'
       : rule.level==='dir' ? 'var(--gold)'
       : rule.level==='base' ? 'var(--good)' : 'var(--muted)';
@@ -1323,6 +1420,8 @@ function refresh(){
   $('sumAmt').textContent=$('amount').value?$('amount').value+' '+$('curSfx').textContent:'—';
   $('sumRateRow').hidden=!needRates();
   $('sumRate').textContent=(base!==null&&rateOk($('rateAsk').value))?`${base}% → ${$('rateAsk').value}%`:'—';
+  $('sumBonusRow').hidden=!needRates()||!$('bonus').value;
+  $('sumBonus').textContent=$('bonus').value?$('bonus').value+'%':'—';
   $('sumAtt').textContent=attSummary(attReq.items);
   $('sumUrg').textContent=state.urg;
   $('sumUrg').className='v '+(state.urg==='Энгийн'?'good':'warn');
@@ -1404,6 +1503,8 @@ $('btnSubmit').addEventListener('click',()=>{
     product:$('ptype').value?`${$('ptype').value} · ${$('term').value} · ${$('payout').value}`:'',
     amount:$('amount').value||'', cur:$('curSfx').textContent, client:state.client,
     rateNow:$('rateNow').value||'', rateAsk:$('rateAsk').value||'',
+    bonus:$('bonus').value||'', custName:$('custName').value.trim(), custAcct:$('custAcct').value.trim(),
+    approvers:(lastExtract&&lastExtract.approvers)||[],
     order:rule&&rule.level?{no:ORDER.no, verdict:rule.text}:null,
     support:$('supportType').value||'',
     desc:desc.value.trim(), urg:state.urg, atts:packAtts(attReq.items),
@@ -1419,7 +1520,8 @@ $('btnSubmit').addEventListener('click',()=>{
   ['ptype','term','supportType'].forEach(i=>$(i).value='');
   $('term').innerHTML='<option value="">Сонгох…</option>';
   $('payout').selectedIndex=0; $('curSfx').textContent='₮';
-  ['amount','rateNow','rateAsk'].forEach(i=>$(i).value='');
+  ['amount','rateNow','rateAsk','bonus','custName','custAcct'].forEach(i=>$(i).value='');
+  lastExtract=null; $('extractPanel').hidden=true; $('extBody').innerHTML='';
   state.urg='Энгийн'; state.client='Иргэн';
   ['segUrg','segClient'].forEach(id2=>$(id2).querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===0)));
   attReq.clear(); renderCats($('catSearch').value); applyCatFields(); refresh(); renderReqs();
@@ -1450,10 +1552,14 @@ function mailSubject(r){ return `[${r.id}] ${r.cat} · ${r.catName} — ${r.dept
 function mailBody(r){
   const L=[`Бүртгэлийн дугаар: ${r.id}`,`Огноо, цаг: ${r.at}`,`Илгээгч: ${r.by} (${r.byEmail})`,`Нэгж: ${r.dept}`,
     `Ангилал: ${r.cat} · ${r.catName}`];
+  if(r.custName) L.push(`Харилцагч: ${r.custName}`);
+  if(r.custAcct) L.push(`Дансны дугаар: ${r.custAcct}`);
   if(r.product) L.push(`Бүтээгдэхүүн: ${r.product} · ${r.client}`);
   if(r.amount) L.push(`Дүн: ${r.amount} ${r.cur||'₮'}`);
   if(r.rateNow) L.push(`Хүү: мөрдөж буй ${r.rateNow}% → хүсэж буй ${r.rateAsk}%`);
+  if(r.bonus) L.push(`Урамшууллын хувь: ${r.bonus}%`);
   if(r.order){ L.push(`Мөрдөж буй тушаал: ${r.order.no}`); L.push(`Тушаалын дүгнэлт: ${r.order.verdict}`); }
+  if(r.approvers&&r.approvers.length){ L.push('','Зөвшөөрлийн бүрдэл (баримтаас):'); r.approvers.forEach(a=>L.push(`· ${a.name} — ${a.pos} (${a.action})`)); }
   if(r.support) L.push(`Дэмжлэгийн төрөл: ${r.support}`);
   if(r.area) L.push(`Холбогдох хүрээ: ${r.area}`);
   if(r.sev) L.push(`Ноцтой байдал: ${r.sev}`);
@@ -1671,6 +1777,296 @@ $('btnClearDemo').addEventListener('click',()=>{
   store.set('nc2.recs',state.recs);
   renderDash(); renderReqs(); toast('Жишээ өгөгдөл арилгагдлаа');
 });
+
+/* ================= баримтаас унших (Google Drive, viewer-ийн эрхээр) ================= */
+let mcpNS=null, mcpTried=false, lastExtract=null;
+async function getMcp(){
+  if(mcpTried) return mcpNS;
+  mcpTried=true;
+  try{ if(window.claude&&typeof window.claude.use==='function') mcpNS=await window.claude.use('mcp'); }catch(e){ mcpNS=null; }
+  return mcpNS;
+}
+function driveId(u){
+  const m=(u||'').match(/\/(?:document|file|spreadsheets|presentation)\/d\/([A-Za-z0-9_-]{15,})/)||(u||'').match(/[?&]id=([A-Za-z0-9_-]{15,})/);
+  return m?m[1]:null;
+}
+function extPayloadText(res){
+  let p=res&&res.payload;
+  if(p==null&&res&&Array.isArray(res.content)) p=res.content.filter(b=>b&&b.type==='text').map(b=>b.text).join('\n');
+  if(typeof p==='string'){ try{ const j=JSON.parse(p); if(j&&typeof j.fileContent==='string') return j.fileContent; }catch(e){} return p; }
+  if(p&&typeof p.fileContent==='string') return p.fileContent;
+  if(p&&typeof p==='object') return JSON.stringify(p);
+  return '';
+}
+/* Зөвшөөрлийн G-Doc-ийн бүтэц + чөлөөт текстийн аль алинд ажиллах parser */
+function parseApprovalDoc(text){
+  const clean=x=>x.replace(/\\/g,'').replace(/\*+/g,'').replace(/\[|\]/g,'').replace(/\(mailto:[^)]*\)/g,'').replace(/\s+/g,' ').trim();
+  const lines=text.split('\n');
+  const out={approvers:[], fields:{}};
+  const rowCells=l=>l.split('|').map(clean).filter(c=>c!=='');
+  lines.forEach(l=>{
+    if(l.includes('mailto:')&&l.trim().startsWith('|')){
+      const email=(l.match(/mailto:([^)\s]+)/)||[])[1]||'';
+      const c=rowCells(l);
+      if(c.length>=3) out.approvers.push({pos:c[0], name:c[1], action:c[c.length-1], email});
+    }
+  });
+  const kv=label=>{ for(const l of lines){ if(l.includes(label)&&l.trim().startsWith('|')){ const c=rowCells(l); const i=c.findIndex(x=>x.includes(label)); if(i>=0&&c[i+1]) return c[i+1]; } } return ''; };
+  out.fields.custName=kv('Харилцагчийн нэр');
+  out.fields.amountRaw=kv('Эх үүсвэрийн дүн');
+  out.fields.rateTriplet=kv('Хүү төлөх давтамж')||kv('давтамж');
+  const rowAfter=label=>{
+    const i=lines.findIndex(l=>l.includes(label));
+    if(i<0) return null;
+    for(let j=i+1;j<lines.length;j++){
+      const t=lines[j].trim();
+      if(!t.startsWith('|')) { if(t==='') continue; else continue; }
+      const c=rowCells(lines[j]);
+      if(c.length>=2&&/\d/.test(c[0])) return c;
+    }
+    return null;
+  };
+  const dec=rowAfter('Урамшууллын хувь');
+  if(dec){ out.fields.contractRate=(dec[0].match(/[\d.]+/)||[])[0]; out.fields.bonus=(dec[1].match(/[\d.]+/)||[])[0]; }
+  const std=rowAfter('Стандарт хүү');
+  if(std){ out.fields.stdRate=(std[0].match(/[\d.]+/)||[])[0]; }
+  /* чөлөөт текст (зураг, тайлбар) — fallback */
+  if(!out.fields.custName){ const m=text.match(/(?:Харилцагч(?:ийн)?\s*нэр|Нэр)\s*[:\-–]?\s*([А-ЯЁӨҮ][^\n,;|]{2,40})/); if(m) out.fields.custName=clean(m[1]); }
+  { const m=text.match(/(?:данс(?:ны)?\s*(?:дугаар)?|account)\s*[:\-–#№]*\s*(\d[\d\s-]{5,18}\d)/i); if(m) out.fields.acct=m[1].replace(/[\s-]/g,''); }
+  if(!out.fields.contractRate){ const m=text.match(/хүү[^%\n]{0,30}?(\d{1,2}(?:\.\d)?)\s*%/i); if(m) out.fields.contractRate=m[1]; }
+  if(!out.fields.bonus){ const m=text.match(/урамшуул[^\d%\n]{0,40}?(\d{1,2}(?:\.\d)?)\s*%/i); if(m) out.fields.bonus=m[1]; }
+  if(out.fields.rateTriplet){
+    const t=out.fields.rateTriplet;
+    const r=(t.match(/([\d.]+)\s*%/)||[])[1]; if(r) out.fields.contractRate=out.fields.contractRate||r;
+    if(/эцэст/i.test(t)) out.fields.payout='Хугацааны эцэст'; else if(/улирал|сар бүр/i.test(t)) out.fields.payout='Улирал, сар бүр';
+    const tm=t.match(/(\d{1,2})\s*сар/); if(tm) out.fields.term=tm[1]+' сар';
+  }
+  if(out.fields.amountRaw){ const m=out.fields.amountRaw.match(/(\d[\d,]*)(?:\.\d+)?/); if(m) out.fields.amount=Number(m[1].replace(/,/g,'')); }
+  out.found=Object.values(out.fields).some(Boolean)||out.approvers.length>0;
+  return out;
+}
+async function runExtract(url){
+  const panel=$('extractPanel'), st=$('extStatus'), body=$('extBody');
+  panel.hidden=false; st.textContent='— уншиж байна…'; body.innerHTML='';
+  const fid=driveId(url);
+  const m=await getMcp();
+  if(!m){
+    st.textContent='';
+    body.innerHTML='<span style="color:var(--warn)">Энэ орчинд шууд унших боломжгүй — портал claude.ai дотор нээгдсэн үед Google Drive-аас таны эрхээр уншина. Production дээр серверээс автоматаар уншина.</span>';
+    return;
+  }
+  try{
+    const res=await m.callTool('Google Drive','read_file_content',{fileId:fid});
+    st.textContent='';
+    const ex=parseApprovalDoc(extPayloadText(res));
+    lastExtract=ex;
+    renderExtract(ex);
+  }catch(e){
+    st.textContent='';
+    const code=e&&e.code;
+    body.innerHTML='<span style="color:var(--danger)">'+(
+      code==='needs_reauth'?'Google Drive холболт хүчингүй болсон — claude.ai Settings → Connectors дээр дахин холбоно уу.'
+      :code==='server_not_connected'?'Google Drive холбогдоогүй байна — claude.ai Settings → Connectors дээр нэмнэ үү.'
+      :code==='selection_required'?'Хэд хэдэн Google Drive холболт байна — аль нэгийг нь сонгоно уу.'
+      :code==='not_in_manifest'?'Энэ хуудсанд Drive унших эрх олгогдоогүй байна.'
+      :code==='tool_error'?'Файлыг уншиж чадсангүй — линк зөв, танд үзэх эрхтэй эсэхийг шалгана уу.'
+      :'Унших үед алдаа гарлаа ('+(code||'тодорхойгүй')+').')+'</span>';
+  }
+}
+function renderExtract(ex){
+  const body=$('extBody');
+  const esc=x=>String(x).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+  const f=ex.fields;
+  const row=(k,v)=>v?`<div style="display:flex;gap:10px;padding:3px 0;font-size:12.5px"><span style="color:var(--faint);width:170px;flex:none">${k}</span><b>${esc(v)}</b></div>`:'';
+  let h='';
+  h+=row('Харилцагч', f.custName);
+  h+=row('Дансны дугаар', f.acct);
+  h+=row('Дүн', f.amount?Number(f.amount).toLocaleString('en-US')+' ₮':'');
+  h+=row('Гэрээний хүү', f.contractRate?f.contractRate+'%':'');
+  h+=row('Стандарт хүү (тушаал)', f.stdRate?f.stdRate+'%':'');
+  h+=row('Урамшууллын хувь', f.bonus?f.bonus+'%':'');
+  h+=row('Нөхцөл', [f.payout,f.term].filter(Boolean).join(' · '));
+  if(ex.approvers.length){
+    h+='<div style="margin-top:9px;color:var(--faint);font-size:12px">Зөвшөөрлийн бүрдэл:</div>'
+      +ex.approvers.map(a=>`<div style="padding:3px 0;font-size:12.5px">· <b>${esc(a.name)}</b> — ${esc(a.pos)} <span class="status ${/батлах/i.test(a.action)?'s-done':'s-new'}" style="margin-left:6px">${esc(a.action)}</span></div>`).join('');
+  }
+  if(!ex.found){
+    h='<span style="color:var(--warn)">Танигдсан мэдээлэл олдсонгүй — баримтын бүтэц зөвшөөрлийн загвараас өөр байна.</span>';
+  } else {
+    h+='<div style="margin-top:12px"><button class="ext-btn" id="btnExtFill" type="button">Форм руу бөглөх</button></div>';
+  }
+  body.innerHTML=h;
+  const btn=$('btnExtFill');
+  if(btn) btn.addEventListener('click',()=>fillFromExtract(ex));
+}
+function fillFromExtract(ex){
+  const f=ex.fields;
+  if(f.custName) $('custName').value=f.custName;
+  if(f.acct) $('custAcct').value=f.acct;
+  if(f.amount) $('amount').value=Number(f.amount).toLocaleString('en-US');
+  if(f.term){
+    if(!$('ptype').value){ $('ptype').value='Итгэлцэл ₮'; $('ptype').dispatchEvent(new Event('change')); }
+    if([...$('term').options].some(o=>o.textContent===f.term)) $('term').value=f.term;
+  }
+  if(f.payout) $('payout').value=f.payout;
+  syncPayout();
+  if(f.contractRate) $('rateAsk').value=f.contractRate;
+  if(f.bonus) $('bonus').value=f.bonus;
+  refresh();
+  toast('Баримтын мэдээллээр бөглөлөө');
+}
+
+/* ================= cashflow ================= */
+const CF_NAMES=['Д.Болормаа','С.Ганбат','Б.Түвшин','Ц.Оюунчимэг','Ж.Наранцэцэг','Г.Батбаяр','Л.Энхжин','Н.Мөнхтуяа','Х.Тэмүүжин','Р.Сарангэрэл'];
+const CF_WD=['Да','Мя','Лх','Пү','Ба','Бя','Ня'];
+let cfDate=(()=>{ const d=new Date(); return new Date(d.getFullYear(), d.getMonth()+1, 1); })();
+let cfDay=0; /* 0 = бүх өдөр */
+const cfKey=()=>cfDate.getFullYear()+'-'+String(cfDate.getMonth()+1).padStart(2,'0');
+function mulberry(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function cfAccounts(){
+  const key='nc2.cfA.'+cfKey();
+  let a=store.get(key,null); if(a) return a;
+  const rnd=mulberry(cfKey().split('').reduce((x,c)=>x+c.charCodeAt(0),7));
+  const dim=new Date(cfDate.getFullYear(), cfDate.getMonth()+1, 0).getDate();
+  const units=UNITS.slice(1);
+  const prods=[['Итгэлцэл ₮','6 сар',15.0],['Итгэлцэл ₮','9 сар',16.0],['Итгэлцэл ₮','12 сар',17.5],['Өрийн хэрэгсэл ₮','12 сар',18.0],['Итгэлцэл $','12 сар',4.0]];
+  a=[];
+  const n=20+Math.floor(rnd()*6);
+  for(let i=0;i<n;i++){
+    const p=prods[Math.floor(rnd()*prods.length)];
+    const isUsd=p[0].includes('$');
+    a.push({
+      id:cfKey()+'-'+(i+1), day:1+Math.floor(rnd()*dim),
+      acct:String(500000000+Math.floor(rnd()*99999999)),
+      name:CF_NAMES[Math.floor(rnd()*CF_NAMES.length)],
+      ptype:p[0], term:p[1], rate:p[2], cur:isUsd?'$':'₮',
+      amount:isUsd? (10+Math.floor(rnd()*90))*1000 : (5+Math.floor(rnd()*96))*5e6,
+      unit:units[i%units.length],
+    });
+  }
+  a.sort((x,y)=>x.day-y.day);
+  store.set(key,a); return a;
+}
+const cfDecKey=()=>'nc2.cfD.'+cfKey();
+const cfDecs=()=>store.get(cfDecKey(),{});
+function cfSaveDec(id,patch){
+  const d=cfDecs();
+  d[id]=Object.assign({}, d[id]||{}, patch, {by:state.user?state.user.name:'', at:nowStr()});
+  store.set(cfDecKey(),d);
+  cfHeader();
+}
+function cfScope(){
+  const all=cfAccounts();
+  const u=isAdmin()? ($('cfUnit').value||'all') : (state.user?state.user.unit:'all');
+  return all.filter(x=>u==='all'||x.unit===u);
+}
+const cfMoney=(v,cur)=> cur==='$' ? '$'+v.toLocaleString('en-US')
+  : v>=1e9 ? (v/1e9).toFixed(2)+' тэрбум ₮' : (v/1e6).toFixed(0)+' сая ₮';
+function cfHeader(){
+  const rows=cfScope(), d=cfDecs();
+  const mnt=rows.filter(r=>r.cur==='₮');
+  const usd=rows.filter(r=>r.cur==='$');
+  const tot=mnt.reduce((s,r)=>s+r.amount,0);
+  const extAmt=r=>{ const dd=d[r.id]; if(!dd||dd.dec!=='Сунгана') return 0; const raw=(dd.amt||'').replace(/[^\d]/g,''); return raw?Number(raw):r.amount; };
+  const roll=mnt.reduce((s,r)=>s+extAmt(r),0);
+  const out=mnt.filter(r=>d[r.id]&&d[r.id].dec==='Гарна').reduce((s,r)=>s+r.amount,0);
+  const filled=rows.filter(r=>d[r.id]&&d[r.id].dec&&d[r.id].dec!=='Сонгоогүй').length;
+  $('cfMonthLbl').textContent=cfDate.getFullYear()+' · '+String(cfDate.getMonth()+1).padStart(2,'0')+'-сар';
+  $('cfProgress').textContent=filled+' / '+rows.length+' данс бөглөгдсөн';
+  $('cfTiles').innerHTML=`
+    <div class="tile"><div class="tk">Дуусах дүн</div><div class="tv num">${(tot/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">${rows.length} данс${usd.length?' · үүнээс '+usd.length+' валютын':''}</div></div>
+    <div class="tile good"><div class="tk">Сунгана</div><div class="tv num">${(roll/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">rollover ${tot?Math.round(roll/tot*100):0}%</div></div>
+    <div class="tile warn"><div class="tk">Гарна</div><div class="tv num">${(out/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">гарах урсгал</div></div>
+    <div class="tile"><div class="tk">Шийдвэр хүлээгдэж буй</div><div class="tv num">${rows.length-filled}</div><div class="ts">данс бөглөгдөөгүй</div></div>`;
+  $('cfAllBtn').hidden=!cfDay;
+}
+function cfCalendar(){
+  const rows=cfScope();
+  const byDay={};
+  rows.forEach(r=>{ (byDay[r.day]=byDay[r.day]||{amt:0,n:0}); byDay[r.day].n++; byDay[r.day].amt+=r.cur==='₮'?r.amount:0; });
+  const dim=new Date(cfDate.getFullYear(), cfDate.getMonth()+1, 0).getDate();
+  const first=(new Date(cfDate.getFullYear(), cfDate.getMonth(), 1).getDay()+6)%7;
+  const maxAmt=Math.max(1,...Object.values(byDay).map(x=>x.amt));
+  let h=CF_WD.map(w=>`<div class="wd">${w}</div>`).join('');
+  for(let i=0;i<first;i++) h+='<div class="day off"></div>';
+  for(let d=1; d<=dim; d++){
+    const info=byDay[d];
+    const ratio=info?info.amt/maxAmt:0;
+    const bg=info?` style="background:color-mix(in srgb, var(--brand) ${Math.round(7+ratio*24)}%, var(--surface))"`:'';
+    h+=`<div class="day${info?' has':''}${cfDay===d?' sel':''}" data-day="${d}"${bg}>
+      <span class="dn num">${d}</span>
+      ${info?`<div class="amt num">${(info.amt/1e6).toFixed(0)} сая</div><div class="cnt2 num">${info.n} данс</div>`:''}
+    </div>`;
+  }
+  $('cfCal').innerHTML=h;
+  $('cfCal').querySelectorAll('.day.has').forEach(el=>el.addEventListener('click',()=>{
+    cfDay = cfDay===Number(el.dataset.day) ? 0 : Number(el.dataset.day);
+    cfCalendar(); cfTable(); cfHeader();
+  }));
+}
+function cfTable(){
+  const d=cfDecs();
+  const rows=cfScope().filter(r=>!cfDay||r.day===cfDay);
+  const tb=$('cfBody'); tb.innerHTML='';
+  if(!rows.length){ tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--faint);padding:32px">Энэ шүүлтэд данс алга.</td></tr>'; return; }
+  const mm=String(cfDate.getMonth()+1).padStart(2,'0');
+  rows.forEach(r=>{
+    const dd=d[r.id]||{};
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="mono num">${mm}.${String(r.day).padStart(2,'0')}</td>
+      <td class="mono num">${r.acct}</td>
+      <td>${r.name}</td>
+      <td>${r.ptype} · ${r.term}</td>
+      <td class="num">${cfMoney(r.amount,r.cur)}</td>
+      <td class="num">${r.rate}%</td>
+      <td>${r.unit}</td>
+      <td></td><td></td>`;
+    const tdDec=tr.children[7], tdSt=tr.children[8];
+    const sel=document.createElement('select'); sel.className='st-select cf-dec';
+    ['Сонгоогүй','Сунгана','Гарна','Тодорхойгүй'].forEach(o=>{ const op=document.createElement('option'); op.textContent=o; sel.appendChild(op); });
+    sel.value=dd.dec||'Сонгоогүй';
+    tdDec.appendChild(sel);
+    const setSt=()=>{ const has=sel.value!=='Сонгоогүй';
+      tdSt.innerHTML=`<span class="status ${has?'s-done':'s-rev'}">${has?'Бөглөсөн':'Хүлээгдэж'}</span>`; };
+    setSt();
+    const det=document.createElement('tr'); det.className='cf-det'; det.hidden=true;
+    det.innerHTML=`<td colspan="9"><div class="fgrid">
+      <div class="field"><div class="lb">Шинэ хугацаа</div><div class="in"><select class="cf-term">
+        <option>3 сар</option><option>6 сар</option><option>9 сар</option><option>12 сар</option><option>24 сар</option></select></div></div>
+      <div class="field"><div class="lb">Шинэ хүү (жилийн)</div><div class="in"><input class="cf-rate num" inputmode="decimal"><span class="sfx">%</span></div></div>
+      <div class="field"><div class="lb">Сунгах дүн</div><div class="in"><input class="cf-amt num" inputmode="numeric"><span class="sfx">${r.cur}</span></div></div>
+      <div class="field" style="grid-column:span 2"><div class="lb">Тайлбар, нөхцөл</div><div class="in"><input class="cf-note" placeholder="Жишээ: харилцагч хүү нэмэхийг хүссэн…"></div></div>
+    </div></td>`;
+    const inTerm=det.querySelector('.cf-term'), inRate=det.querySelector('.cf-rate'), inAmt=det.querySelector('.cf-amt'), inNote=det.querySelector('.cf-note');
+    inTerm.value=dd.term||r.term; if(![...inTerm.options].some(o=>o.textContent===inTerm.value)) inTerm.selectedIndex=1;
+    inRate.value=dd.rate||String(r.rate);
+    inAmt.value=dd.amt|| r.amount.toLocaleString('en-US');
+    inNote.value=dd.note||'';
+    const syncDet=()=>{ det.hidden = sel.value!=='Сунгана'; };
+    if(dd.dec==='Сунгана') det.hidden=false;
+    sel.addEventListener('change',()=>{ cfSaveDec(r.id,{dec:sel.value, term:inTerm.value, rate:inRate.value, amt:inAmt.value, note:inNote.value}); syncDet(); setSt(); });
+    inTerm.addEventListener('change',()=>cfSaveDec(r.id,{term:inTerm.value}));
+    inRate.addEventListener('input',()=>{ inRate.value=inRate.value.replace(/[^\d.]/g,'').slice(0,5); cfSaveDec(r.id,{rate:inRate.value}); });
+    inAmt.addEventListener('input',()=>{ const dg=inAmt.value.replace(/[^\d]/g,''); inAmt.value=dg?Number(dg).toLocaleString('en-US'):''; cfSaveDec(r.id,{amt:inAmt.value}); });
+    inNote.addEventListener('input',()=>cfSaveDec(r.id,{note:inNote.value}));
+    tb.appendChild(tr); tb.appendChild(det);
+  });
+}
+function renderCF(){
+  if(!state.user) return;
+  const uSel=$('cfUnit');
+  if(isAdmin()){
+    uSel.hidden=false;
+    const cur=uSel.value;
+    uSel.innerHTML='<option value="all">Бүх салбар</option>'+UNITS.slice(1).map(u=>`<option>${u}</option>`).join('');
+    if(cur) uSel.value=cur;
+  } else uSel.hidden=true;
+  cfHeader(); cfCalendar(); cfTable();
+}
+$('cfPrev').addEventListener('click',()=>{ cfDate=new Date(cfDate.getFullYear(), cfDate.getMonth()-1, 1); cfDay=0; renderCF(); });
+$('cfNext').addEventListener('click',()=>{ cfDate=new Date(cfDate.getFullYear(), cfDate.getMonth()+1, 1); cfDay=0; renderCF(); });
+$('cfUnit').addEventListener('change',()=>{ cfDay=0; renderCF(); });
+$('cfAllBtn').addEventListener('click',()=>{ cfDay=0; renderCF(); });
 
 /* ================= tour ================= */
 const TOUR=[
