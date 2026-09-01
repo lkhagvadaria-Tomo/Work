@@ -28,6 +28,7 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   R.navDash = await page.isVisible('#navDash');
   R.navReg = await page.isVisible('#navReg');
   R.chooser = await page.isVisible('#cardGoReq');
+  R.remindAdminHidden = (await page.evaluate(() => document.getElementById('cfRemindWrap').style.display)) !== 'flex';
   await shot('v4-03-chooser.png');
 
   // UC3: request flow — F08 early withdrawal (link required, product field)
@@ -35,6 +36,8 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   R.tour = await page.isVisible('#tour');
   if (R.tour) { await page.click('#tourSkip'); await page.waitForTimeout(150); }
   R.senderAuto = await page.textContent('#deptName');
+  R.catCount = await page.locator('#catGrid .cat').count();
+  R.urgLevels = await page.locator('#segUrg button').count();
   await page.fill('#catSearch', 'буцаалт'); await page.waitForTimeout(150);
   await page.click('.cat:has-text("буцаалтын")');
   R.prodVisible = await page.isVisible('#fldProduct');
@@ -72,7 +75,11 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   await page.selectOption('#term', { label: '12 сар' }); await page.waitForTimeout(100);
   R.baseAuto = await page.inputValue('#rateNow');
   await page.fill('#amount', '250000000');
-  await page.fill('#desc', 'Байнгын харилцагч 250 сая ₮-ийн итгэлцэлдээ 18.5% хүсэж байна, өрсөлдөгчийн саналтай.');
+  await page.fill('#desc', 'Байнгын харилцагч 12 сарын итгэлцэлдээ 18.5% хүү хүсэж байна, яаралтай шийдвэрлүүлэх шаардлагатай.');
+  await page.waitForTimeout(800);
+  R.aiPanel = await page.isVisible('#aiCard');
+  R.aiHasRate = (await page.textContent('#aiBody')).includes('17.5');
+  R.urgSuggest = await page.textContent('#urgSuggest');
   await page.fill('#rateAsk', '18.5');
   await page.setInputFiles('#fileR', require('path').join(__dirname, 'shot.png')); await page.waitForTimeout(300);
   R.verdict185 = await page.textContent('#rateVerdict');
@@ -89,6 +96,7 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   R.mailHasOrder = mb.includes('NC-01/54-2025');
   R.mailHasBonus = mb.includes('Урамшууллын хувь: 0.5%');
   R.mailHasCust = mb.includes('Б.Тэст');
+  R.mailAssignee = mb.includes('Хариуцагч:');
   await shot('v5-order.png');
   await page.click('#mOk'); await page.waitForTimeout(200);
 
@@ -169,6 +177,21 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   await page.locator('.st-select').first().selectOption('Шийдвэрлэсэн'); await page.waitForTimeout(200);
   await page.click('#regKind button[data-v="FBK"]'); await page.waitForTimeout(200);
   R.regFbkOnly = await page.locator('#regBody tr').count();
+  await page.click('#regKind button[data-v="REQ"]'); await page.waitForTimeout(200);
+  R.assigneeCol = await page.locator('#regBody tr', { hasText: 'ЭҮ-2026-0002' }).locator('td:nth-child(8)').textContent();
+  // clarify flow: ask on own request → answer in my records
+  await page.locator('#regBody tr', { hasText: 'ЭҮ-2026-0002' }).locator('button:has-text("Тодруулга")').click();
+  await page.waitForTimeout(200);
+  await page.fill('#cModalText', 'Гэрээний хуулбараа хавсаргаж өгнө үү.');
+  await page.click('#cModalSend'); await page.waitForTimeout(300);
+  R.clarifyStatus = await page.locator('#regBody tr', { hasText: 'ЭҮ-2026-0002' }).locator('select.st-select').inputValue();
+  await page.click('nav.views button[data-view="myview"]'); await page.waitForTimeout(300);
+  R.clarifyBox = await page.isVisible('.cf-reply');
+  await page.fill('.cf-reply', 'Хавсаргалаа, Drive линкийг шинэчилсэн.');
+  await page.click('.cf-reply-btn'); await page.waitForTimeout(300);
+  R.historyDetails = await page.locator('#reqList details').count();
+  await shot('v7-clarify.png');
+  await page.click('nav.views button[data-view="regview"]'); await page.waitForTimeout(300);
   await shot('v4-09-reg.png');
 
   // UC10: logout → login as branch USER → no admin nav
@@ -194,6 +217,12 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   R.cfMonth = await page.textContent('#cfMonthLbl');
   await page.locator('#cfBody select.cf-dec').first().selectOption('Сунгана'); await page.waitForTimeout(200);
   R.cfDetVisible = await page.locator('#cfBody tr.cf-det').first().isVisible();
+  R.cfSunFields = await page.locator('#cfBody tr.cf-det').first().locator('.cf-sun:visible').count();
+  await page.locator('#cfBody select.cf-dec').nth(1).selectOption('Гарна'); await page.waitForTimeout(200);
+  R.cfExitVisible = await page.locator('#cfBody tr.cf-det').nth(1).locator('.cf-how').isVisible();
+  await page.locator('#cfBody tr.cf-det').nth(1).locator('.cf-how').selectOption('Данс руу шилжүүлэх');
+  await page.locator('#cfBody tr.cf-det').nth(1).locator('.cf-note').fill('Харилцагч орон сууц авна.');
+  await page.waitForTimeout(200);
   await page.locator('#cfBody .cf-rate').first().fill('18.0'); await page.waitForTimeout(150);
   R.cfProgress = await page.textContent('#cfProgress');
   await page.locator('#cfCal .day.has').first().click(); await page.waitForTimeout(200);
@@ -203,8 +232,12 @@ fs.writeFileSync(path.join(__dirname, 'shot.png'), PNG);
   // branch user sees only own unit
   await page.click('#btnLogout'); await page.waitForTimeout(150);
   await page.click('#btnLogin'); await page.waitForTimeout(150);
-  await page.click('.acct[data-email="sarnai.d@netgroup.mn"]'); await page.waitForTimeout(300);
-  await page.click('nav.views button[data-view="cfview"]'); await page.waitForTimeout(300);
+  await page.click('.acct[data-email="sarnai.d@netgroup.mn"]'); await page.waitForTimeout(900);
+  R.remindShown = (await page.evaluate(() => document.getElementById('cfRemindWrap').style.display)) === 'flex';
+  R.cfNavCnt = await page.textContent('#cfNavCnt');
+  await shot('v7-remind.png');
+  await page.click('#cfRemindGo'); await page.waitForTimeout(300);
+  R.remindGoesCf = await page.isVisible('#cfCal');
   R.cfBranchUnits = await page.evaluate(() => [...new Set([...document.querySelectorAll('#cfBody tr:not(.cf-det) td:nth-child(7)')].map(t => t.textContent))]);
   R.cfUnitSelHidden = !(await page.isVisible('#cfUnit'));
   // persistence of decision after reload (as admin)
