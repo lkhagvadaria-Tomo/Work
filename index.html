@@ -630,7 +630,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v1.2</span>
+      <span class="proto-badge">Прототип v1.3</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -789,14 +789,11 @@
         <p class="step-sub" id="descSub">Ангиллаа эхлээд сонговол шаардлагатай талбарууд энд гарч ирнэ.</p>
 
         <div class="fgrid" id="fldProduct" hidden>
-          <div class="field"><div class="lb">Бүтээгдэхүүн</div>
-            <div class="in"><select id="ptype">
+          <div class="field"><div class="lb">Бүтээгдэхүүн (Нэткор)</div>
+            <div class="in"><select id="product">
               <option value="">Сонгох…</option>
-              <option>Итгэлцэл ₮</option>
-              <option>Өрийн хэрэгсэл ₮</option>
-              <option>Итгэлцэл $</option>
             </select></div></div>
-          <div class="field"><div class="lb">Хугацаа</div>
+          <div class="field" id="termWrap" hidden><div class="lb">Хугацаа</div>
             <div class="in"><select id="term"><option value="">Сонгох…</option></select></div></div>
           <div class="field"><div class="lb">Хүү зарлагадах нөхцөл</div>
             <div class="in"><select id="payout">
@@ -871,12 +868,7 @@
           <b>Баримтаас таньсан мэдээлэл</b> <span id="extStatus" style="font-weight:400"></span>
           <div id="extBody" style="margin-top:8px"></div>
         </div>
-        <p class="link-note">Drive линкээ «ХОБПХГ үзэх эрхтэй» болгож тохируулсан эсэхээ шалгана уу — эрхгүй линк шийдвэрлэлтийг зогсооно. Зөвшөөрлийн G-Doc линк нэмбэл «Уншуулах» товчоор хүү, урамшуулал, зөвшөөрсөн хүмүүсийн жагсаалтыг автоматаар татна.</p>
-        <div class="drive-preview">
-          <b>Drive-д хадгалагдах байрлал</b> — илгээмэгц хавсралтууд байгууллагын архивын дараах хавтаст автоматаар ангилагдана:<br>
-          <span class="path mono" id="drivePath">21. Funding Support Portal / …</span><br>
-          <span style="font-size:11.5px">Файлын нэршил (Naming Standard v1.0): <span class="mono">[Салбар]_[Дугаар]_[Төрөл]_[ОООО-СС-ӨӨ]_v1.0</span> — систем автоматаар нэрлэнэ.</span>
-        </div>
+        <p class="link-note">Drive линкээ хариуцагч «үзэх эрхтэй» болгож тохируулсан эсэхээ шалгана уу — эрхгүй линк шийдвэрлэлтийг зогсооно. Зөвшөөрлийн G-Doc линк нэмбэл «Уншуулах» товчоор хүү, урамшуулал, зөвшөөрсөн хүмүүсийн жагсаалтыг автоматаар татна.</p>
       </div>
 
       <div class="card" id="metaCard">
@@ -1287,6 +1279,18 @@ const EMPLOYEES = {
   'sarnai.d@netgroup.mn':{name:'Сарнай Д.', unit:'Дархан салбар', unitFull:'Дархан салбар', pos:'Салбарын захирал', role:'user'},
 };
 const HANDLER_MAIL='lkhagvadari.a@netgroup.mn';
+/* Нэткор системийн бүтээгдэхүүнүүд — тушаалын хүүтэй холбогдоно */
+const PRODUCTS=[
+  {code:203, name:'ИТГЭЛЦЭЛ MNT 12.0', map:['Итгэлцэл ₮','12 сар'], cur:'₮'},
+  {code:206, name:'ИТГЭЛЦЭЛ MNT 6.0', map:['Итгэлцэл ₮','6 сар'], cur:'₮'},
+  {code:207, name:'ИТГЭЛЦЭЛ MNT 9.0', map:['Итгэлцэл ₮','9 сар'], cur:'₮'},
+  {code:213, name:'ИТГЭЛЦЭЛ USD 12.0', map:['Итгэлцэл $','12 сар'], cur:'$'},
+  {code:244, name:'ИТГЭЛЦЭЛ /ХБҮЦ/', map:null, cur:'₮'},
+  {code:280, name:'БОГИНО ХУГАЦААТ ЗЭЭЛ 1 ЖИЛ ХҮРТЭЛ MNT', map:['Өрийн хэрэгсэл ₮',null], cur:'₮'},
+  {code:300, name:'NET ИТГЭЛЦЭЛ', map:null, cur:'₮'},
+];
+function prodSel(){ const c=Number($('product').value); return PRODUCTS.find(p=>p.code===c)||null; }
+
 /* Мөрдөж буй хүүгийн тушаал — NC-01/54-2025 (2025.04.07-оос).
    [хугацааны эцэст, улирал/сар бүр] — жилийн хувь; null = тухайн нөхцөл байхгүй. */
 const ORDER={
@@ -1300,16 +1304,20 @@ const ORDER={
   step(amtM){ return amtM<50?0 : amtM<200?0.5 : amtM<500?1.0 : 1.5; },
 };
 function baseRate(){
-  const p=ORDER.products[$('ptype').value], t=$('term').value;
-  if(!p||!t||!p.terms[t]) return null;
-  const pair=p.terms[t];
+  const pr=prodSel(); if(!pr||!pr.map) return null;
+  const t=pr.map[1]||$('term').value; if(!t) return null;
+  const o=ORDER.products[pr.map[0]];
+  if(!o||!o.terms[t]) return null;
+  const pair=o.terms[t];
   return $('payout').value==='Улирал, сар бүр' ? pair[1] : pair[0];
 }
-function rateRule(){ /* {level:'base'|'dir'|'ceo'|'block'|null, text, max} */
-  const p=$('ptype').value, base=baseRate();
+function rateRule(){ /* {level:'base'|'dir'|'ceo'|'block'|'tuz'|null, text, max} */
+  const pr=prodSel(), base=baseRate();
   const ask=parseFloat($('rateAsk').value);
+  if(pr&&!pr.map&&!isNaN(ask))
+    return {level:'dir', text:'Энэ бүтээгдэхүүнд тушаалд суурь хүү заагаагүй — хүсэлтийг хариуцагч хянаж шийднэ.', max:null};
   if(base===null||isNaN(ask)) return {level:null, text:'', max:null};
-  const isMNT=p!=='Итгэлцэл $';
+  const isMNT=pr?pr.cur!=='$':true;
   const amtM=Number($('amount').value.replace(/,/g,''))/1e6||0;
   if(ask<=base) return {level:'base', text:`Ерөнхий нөхцөл (${base}%) дотор — нэмэлт зөвшөөрөл шаардахгүй.`, max:base};
   if(!isMNT) return {level:'dir', text:'Ерөнхий нөхцөлөөс дээш — ам.долларын нэмэгдүүлэлтийг ХОБПХГ шийдвэрлэнэ.', max:null};
@@ -1320,26 +1328,34 @@ function rateRule(){ /* {level:'base'|'dir'|'ceo'|'block'|null, text, max} */
   if(ask<=ceoMax) return {level:'ceo', text:`Гүйцэтгэх захирлын зөвшөөрөл шаардлагатай (дээд ${ceoMax.toFixed(1)}%).`, max:ceoMax};
   return {level:'tuz', text:`Тушаалын матрицын дээд хязгаараас (${ceoMax.toFixed(1)}%) дээш — ТУЗ, Зөвлөхийн зөвшөөрөл шаардлагатай.`, max:null};
 }
+/* Хариуцах ажилтнууд — хуваарилалтын дүрэмд ашиглана */
+const P={
+  erkhbayar:{name:'Э.Эрхбаяр', role:'ХОБХУГ-ын менежер', unit:'ХОБХУГ', email:'erkhbayar.e@netgroup.mn'},
+  aldar:{name:'Б.Алдар', role:'ХОБХУГ-ын дэд захирал', unit:'ХОБХУГ', email:'aldar.b@netgroup.mn'},
+  ganbaatar:{name:'Э.Ганбаатар', role:'ХОБХУГ-ын дэд захирал', unit:'ХОБХУГ', email:'ganbaatar.e@netgroup.mn'},
+  nasanbat:{name:'Б.Насанбат', role:'ХОБХУГ-ын дэд захирал', unit:'ХОБХУГ', email:'nasanbat.b@netgroup.mn'},
+  munkherdene:{name:'О.Мөнх-Эрдэнэ', role:'ХОБПХГ-ын захирал', unit:'ХОБПХГ', email:'munkh-erdene.o@netgroup.mn'},
+  lkhagvadari:{name:'А.Лхагвадарь', role:'ХОБПХГ-ын менежер', unit:'ХОБПХГ', email:'lkhagvadari.a@netgroup.mn'},
+  onon:{name:'О.Онон', role:'ХОБПХГ-ын менежер', unit:'ХОБПХГ', email:'onon.or@netgroup.mn'},
+};
+const DEPUTIES=[P.aldar, P.ganbaatar, P.nasanbat];
+const HOBPHG_MGRS=[P.lkhagvadari, P.onon];
+
 const CATS = [
-  {c:'F01', t:'Хүүгийн тохируулгын хүсэлт', k:'percent', type:'Шийдвэр', folder:'F01 Хүүгийн тохируулга', fields:['product','rates'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F02', t:'Борлуулалтын дэмжлэг хүсэх', k:'chart', type:'Дэмжлэг', folder:'F02 Борлуулалтын дэмжлэг', fields:['support'], link:false, sla:['Ажлын 2–3 өдөр','Ажлын 1 өдөр']},
-  {c:'F03', t:'Зааварчилгаа, аргачлал хүсэх', k:'book', type:'Лавлагаа', folder:'F03 Зааварчилгаа', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F04', t:'Бүтээгдэхүүний нөхцөлийн лавлагаа', k:'doc', type:'Лавлагаа', folder:'F04 Нөхцөлийн лавлагаа', fields:['product'], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F05', t:'Гэрээ, маягтын загвар авах', k:'copy', type:'Лавлагаа', folder:'F05 Гэрээ, маягт', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F06', t:'Хугацааны сунгалт, өөрчлөлт', k:'clock', type:'Шийдвэр', folder:'F06 Сунгалт, өөрчлөлт', fields:['product'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F07', t:'Онцгой нөхцөлийн зөвшөөрөл', k:'shield', type:'Шийдвэр', folder:'F07 Онцгой нөхцөл', fields:['product','rates'], link:true, sla:['Ажлын 1–2 өдөр','Ажлын 4 цаг']},
-  {c:'F08', t:'Хугацаанаас өмнөх буцаалтын зөвшөөрөл', k:'undo', type:'Шийдвэр', folder:'F08 Өмнөх буцаалт', fields:['product'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F09', t:'Кампанит ажил, урамшууллын зөвшөөрөл', k:'mega', type:'Шийдвэр', folder:'F09 Кампанит ажил', fields:[], link:false, sla:['Ажлын 2–3 өдөр','Ажлын 1 өдөр']},
-  {c:'F10', t:'Шинэ бүтээгдэхүүн, сайжруулалтын санал', k:'bulb', type:'Санал', folder:'F10 Бүтээгдэхүүний санал', fields:[], link:false, sla:['Ажлын 5 өдөр','Ажлын 2 өдөр']},
-  {c:'F11', t:'Сургалт, чадавхжуулалт хүсэх', k:'grad', type:'Дэмжлэг', folder:'F11 Сургалт', fields:[], link:false, sla:['Ажлын 3 өдөр','Ажлын 1 өдөр']},
-  {c:'F12', t:'Тайлан, мэдээллийн хүсэлт', k:'report', type:'Лавлагаа', folder:'F12 Тайлан, мэдээлэл', fields:[], link:false, sla:['Ажлын 2 өдөр','Ажлын 1 өдөр']},
-  {c:'F13', t:'Хүүгийн залруулга, буцаан тооцоолол', k:'calc', type:'Шийдвэр', folder:'F13 Хүүгийн залруулга', fields:['product'], link:true, sla:['Ажлын 1–2 өдөр','Ажлын 4 цаг']},
-  {c:'F14', t:'Харилцагчийн KYC, мэдээллийн шинэчлэл', k:'idcard', type:'Дэмжлэг', folder:'F14 KYC шинэчлэл', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F15', t:'Системийн эрх, хандалт нээлгэх', k:'key', type:'Дэмжлэг', folder:'F15 Эрх, хандалт', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F16', t:'Гэрээ цуцлалт, торгуулийн хөнгөлөлт', k:'slash', type:'Шийдвэр', folder:'F16 Цуцлалт, хөнгөлөлт', fields:['product'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F17', t:'Эх үүсвэрийн дансны зэрэглэл бууруулах', k:'down', type:'Шийдвэр', folder:'F17 Зэрэглэл бууруулах', fields:['product'], link:true, sla:['Ажлын 1–2 өдөр','Ажлын 4 цаг'],
-   route:{name:'Э.Эрхбаяр', role:'Хөрөнгө оруулалтын менежер', unit:'ХОБХУГ', unitFull:'Хөрөнгө оруулалтын борлуулалт, харилцагчийн удирдлагын газар', email:'erkhbayar.e@netgroup.mn'}},
-  {c:'F18', t:'Бусад / эргэлзээтэй', k:'help', type:'Лавлагаа', folder:'F18 Бусад', fields:[], link:false, sla:['Ажлын 1–2 өдөр','Ажлын 1 өдөр']},
+  {c:'F01', t:'Хүүгийн тохируулгын хүсэлт', k:'percent', type:'Шийдвэр', folder:'F01 Хүүгийн тохируулга', fields:['product','rates'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:P.munkherdene},
+  {c:'F02', t:'Борлуулалтын дэмжлэг хүсэх', k:'chart', type:'Дэмжлэг', folder:'F02 Борлуулалтын дэмжлэг', fields:['support'], link:false, sla:['Ажлын 2–3 өдөр','Ажлын 1 өдөр'], route:{pool:DEPUTIES, why:'ХОБХУГ-ын дэд захирлууд'}},
+  {c:'F03', t:'Зааварчилгаа, аргачлал хүсэх', k:'book', type:'Лавлагаа', folder:'F03 Зааварчилгаа', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:P.erkhbayar},
+  {c:'F04', t:'Бүтээгдэхүүний мэдээлэл, нөхцөлийн лавлагаа', k:'doc', type:'Лавлагаа', folder:'F04 Бүтээгдэхүүний мэдээлэл', fields:['product'], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:{pool:DEPUTIES, why:'ХОБХУГ-ын дэд захирлууд'}},
+  {c:'F05', t:'Гэрээний бүрдэл, загвар', k:'copy', type:'Лавлагаа', folder:'F05 Гэрээний бүрдэл', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:P.erkhbayar},
+  {c:'F06', t:'Хугацаа дуусах данс, сунгалт', k:'clock', type:'Шийдвэр', folder:'F06 Сунгалт', fields:['product'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:P.erkhbayar},
+  {c:'F07', t:'Онцгой нөхцөлийн зөвшөөрөл', k:'shield', type:'Шийдвэр', folder:'F07 Онцгой нөхцөл', fields:['product','rates'], link:true, sla:['Ажлын 1–2 өдөр','Ажлын 4 цаг'], route:P.munkherdene},
+  {c:'F08', t:'Хугацаанаас өмнөх буцаалтын зөвшөөрөл', k:'undo', type:'Шийдвэр', folder:'F08 Өмнөх буцаалт', fields:['product'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:P.erkhbayar},
+  {c:'F09', t:'Кампанит ажил, урамшууллын зөвшөөрөл', k:'mega', type:'Шийдвэр', folder:'F09 Кампанит ажил', fields:[], link:false, sla:['Ажлын 2–3 өдөр','Ажлын 1 өдөр'], route:{pool:DEPUTIES, why:'ХОБХУГ-ын дэд захирлууд'}},
+  {c:'F10', t:'Дансны тохиргооны өөрчлөлт', k:'sliders', type:'Дэмжлэг', folder:'F10 Дансны тохиргоо', fields:['product'], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:P.erkhbayar},
+  {c:'F11', t:'Бүтээгдэхүүний тохиргоо, эрх', k:'key', type:'Дэмжлэг', folder:'F11 Бүтээгдэхүүний тохиргоо', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:P.nasanbat},
+  {c:'F12', t:'Өндөр дүнтэй харилцагчийн уулзалт, танилцуулга', k:'users', type:'Дэмжлэг', folder:'F12 Уулзалт, танилцуулга', fields:[], link:false, sla:['Ажлын 1–2 өдөр','Ажлын 1 өдөр'], route:{pool:DEPUTIES, why:'ХОБХУГ-ын дэд захирлууд'}},
+  {c:'F13', t:'Эх үүсвэрийн дансны зэрэглэл бууруулах', k:'down', type:'Шийдвэр', folder:'F13 Зэрэглэл бууруулах', fields:['product'], link:true, sla:['Ажлын 1–2 өдөр','Ажлын 4 цаг'], route:P.erkhbayar},
+  {c:'F14', t:'Бусад / эргэлзээтэй', k:'help', type:'Лавлагаа', folder:'F14 Бусад', fields:[], link:false, sla:['Ажлын 1–2 өдөр','Ажлын 1 өдөр'], route:P.erkhbayar},
 ];
 const GTYPES = [
   {c:'G01', t:'Санал', d:'Сайжруулах санаа, шинэ боломж', k:'bulb', sev:false},
@@ -1355,25 +1371,31 @@ const ATT_TYPES=['Харилцагчийн хүсэлт','Тооцоолол','�
 const STATUSES=['Бүртгэгдсэн','Хянагдаж байна','Тодруулга хүлээж байна','Шийдвэрлэсэн','Татгалзсан'];
 const ST_CLASS={'Бүртгэгдсэн':'s-new','Хянагдаж байна':'s-rev','Тодруулга хүлээж байна':'s-rev','Шийдвэрлэсэн':'s-done','Татгалзсан':'s-rej'};
 const ST_COLOR={'Бүртгэгдсэн':'var(--st-new)','Хянагдаж байна':'var(--st-review)','Тодруулга хүлээж байна':'#ec835a','Шийдвэрлэсэн':'var(--st-done)','Татгалзсан':'var(--st-rej)'};
-/* ХОБПХГ-ын баг — автомат хуваарилалт (production: жинхэнэ ачааллаар) */
-const TEAM=[
-  {email:'onon.or@netgroup.mn', name:'Онон О.', role:'Ахлах мэргэжилтэн', types:['Шийдвэр']},
-  {email:'lkhagvadari.a@netgroup.mn', name:'Алтанхуяг Лхагвадарь', role:'Мэргэжилтэн', types:['Дэмжлэг','Лавлагаа','Санал','Санал, гомдол']},
-  {email:'munkh-erdene.o@netgroup.mn', name:'Мөнх-Эрдэнэ О.', role:'Газрын захирал', types:[]},
-];
 function openLoad(email){
   return state.recs.filter(r=>r.assignee&&r.assignee.email===email
     &&(r.status==='Бүртгэгдсэн'||r.status==='Хянагдаж байна'||r.status==='Тодруулга хүлээж байна')).length;
 }
-function autoAssign(rec){
-  /* Ангилалд тогтмол хариуцагч заасан бол шууд түүнд (ж: F17 → Э.Эрхбаяр, ХОБХУГ) */
-  const cd=CATS.find(c=>c.c===rec.cat);
-  if(rec.kind==='REQ'&&cd&&cd.route) return cd.route;
-  const amt=Number((rec.amount||'').replace(/,/g,''))||0;
-  if(rec.kind==='REQ'&&(amt>=5e8||(rec.order&&/ТУЗ|Гүйцэтгэх/.test(rec.order.verdict)))) return TEAM[2];
-  const cands=TEAM.filter(t=>t.types.includes(rec.type));
-  const pool=cands.length?cands:TEAM.slice(0,2);
+function pickLeast(pool){
   return pool.reduce((a,b)=>openLoad(a.email)<=openLoad(b.email)?a:b);
+}
+/* Ухаалаг хуваарилалт: ангиллын дүрэм → багц бол хамгийн бага ачаалалтай нь →
+   өндөр дүн / удирдлагын түвшний зөвшөөрөлд захирал руу эскалаци */
+function autoAssign(rec){
+  let who=null, why='';
+  if(rec.kind==='REQ'){
+    const cd=CATS.find(c=>c.c===rec.cat);
+    if(cd&&cd.route){
+      if(cd.route.pool){ who=pickLeast(cd.route.pool); why=(cd.route.why||'багц')+' дундаас хамгийн бага ачаалалтай нь'; }
+      else { who=cd.route; why='ангиллын тогтмол хариуцагч'; }
+    } else { who=P.erkhbayar; why='үндсэн хариуцагч'; }
+    const amt=Number((rec.amount||'').replace(/,/g,''))||0;
+    if(rec.order&&/ТУЗ|Гүйцэтгэх/.test(rec.order.verdict)){ who=P.munkherdene; why='удирдлагын түвшний зөвшөөрөл шаардсан тул ХОБПХГ-ын захиралд'; }
+    else if(amt>=5e8&&who!==P.munkherdene){ who=P.munkherdene; why='500 сая ₮-с дээш дүнтэй тул ХОБПХГ-ын захиралд'; }
+  } else {
+    who=pickLeast(HOBPHG_MGRS);
+    why=(rec.cat==='G05'?'системийн асуудал — ':'')+'ХОБПХГ-ын менежерүүдээс хамгийн бага ачаалалтай нь';
+  }
+  return {who, why};
 }
 function pushHist(rec,ev){ (rec.history=rec.history||[]).push({at:nowStr(), ev}); }
 
@@ -1400,6 +1422,7 @@ const ICONS = {
   key:'<circle cx="8" cy="15" r="4.5"/><path d="M11 12 21 2M16 7l3 3M13 10l2 2"/>',
   slash:'<circle cx="12" cy="12" r="9.5"/><path d="M5.5 5.5l13 13"/>',
   down:'<path d="M3 7l6.5 6.5 4-4L21 17"/><path d="M21 11v6h-6"/>',
+  sliders:'<path d="M4 7h9M17.5 7H20M4 12h3M11.5 12H20M4 17h11M19.5 17H20"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17.5" cy="17" r="2"/>',
 };
 const svg=(k,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round">${ICONS[k]||ICONS.doc}</svg>`;
 
@@ -1560,18 +1583,28 @@ $('rateAsk').addEventListener('input',e=>{ e.target.value=e.target.value.replace
 $('bonus').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,4); refresh(); });
 $('custName').addEventListener('input',refresh);
 $('custAcct').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d]/g,'').slice(0,16); refresh(); });
-$('ptype').addEventListener('change',()=>{
-  const p=ORDER.products[$('ptype').value];
+/* Нэткорын бүтээгдэхүүний сонголтыг дүүргэх */
+(function(){
+  const sel=$('product');
+  PRODUCTS.forEach(p=>{ const o=document.createElement('option'); o.value=p.code; o.textContent=p.code+' · '+p.name; sel.appendChild(o); });
+})();
+$('product').addEventListener('change',()=>{
+  const pr=prodSel();
+  $('curSfx').textContent=pr?pr.cur:'₮';
+  const needTerm=!!(pr&&pr.map&&!pr.map[1]);
+  $('termWrap').hidden=!needTerm;
   const term=$('term'); term.innerHTML='<option value="">Сонгох…</option>';
-  if(p) Object.keys(p.terms).forEach(t=>{ const o=document.createElement('option'); o.textContent=t; term.appendChild(o); });
-  $('curSfx').textContent=p?p.cur:'₮';
+  if(needTerm){ const o=ORDER.products[pr.map[0]];
+    Object.keys(o.terms).forEach(t=>{ const op=document.createElement('option'); op.textContent=t; term.appendChild(op); }); }
   syncPayout(); refresh();
 });
 $('term').addEventListener('change',()=>{ syncPayout(); refresh(); });
 $('payout').addEventListener('change',refresh);
 function syncPayout(){
-  const p=ORDER.products[$('ptype').value], t=$('term').value;
-  const per=p&&t&&p.terms[t]?p.terms[t][1]:null;
+  const pr=prodSel();
+  let per=null;
+  if(pr&&pr.map){ const t=pr.map[1]||$('term').value; const o=ORDER.products[pr.map[0]];
+    if(t&&o&&o.terms[t]) per=o.terms[t][1]; }
   const opt=$('payout').options[1];
   opt.disabled=per===null;
   if(per===null) $('payout').value='Хугацааны эцэст';
@@ -1728,14 +1761,15 @@ function suggestPrio(){
 function refresh(){
   const okCat=!!state.cat;
   const okDesc=desc.value.trim().length>=20;
-  const okProd=!needProduct()||($('ptype').value && $('term').value && $('amount').value.replace(/,/g,'').length>0);
+  const prS=prodSel();
+  const okProd=!needProduct()||(!!prS && (!( prS.map&&!prS.map[1] )||$('term').value) && $('amount').value.replace(/,/g,'').length>0);
   const base=baseRate();
   $('rateNow').value = base===null ? '' : String(base);
   const rule=rateRule();
   if(needRates()){
     $('orderRates').textContent = base===null
-      ? 'Бүтээгдэхүүн, хугацаа, зарлагадах нөхцөлөө сонговол мөрдөж буй хүү автоматаар гарна.'
-      : `${$('ptype').value} · ${$('term').value} · ${$('payout').value}: ерөнхий нөхцөл ${base}% (данс хаах/цуцлахад ${ORDER.products[$('ptype').value].brk}%).`;
+      ? (prS&&!prS.map ? prS.name+' — тушаалд суурь хүү заагаагүй бүтээгдэхүүн.' : 'Бүтээгдэхүүнээ сонговол мөрдөж буй хүү автоматаар гарна.')
+      : `${prS.code} · ${prS.name} · ${$('payout').value}: ерөнхий нөхцөл ${base}% (данс хаах/цуцлахад ${ORDER.products[prS.map[0]].brk}%).`;
     const rv=$('rateVerdict');
     rv.textContent=rule.text;
     rv.style.color = rule.level==='block' ? 'var(--danger)'
@@ -1744,19 +1778,18 @@ function refresh(){
       : rule.level==='dir' ? 'var(--gold)'
       : rule.level==='base' ? 'var(--good)' : 'var(--muted)';
   }
-  const okRates=!needRates()||(base!==null && rateOk($('rateAsk').value) && rule.level!==null && rule.level!=='block');
+  const okRates=!needRates()||(rateOk($('rateAsk').value) && rule.level!==null && rule.level!=='block');
   const okSupport=!needSupport()||!!$('supportType').value;
   const atts=attReq.valid();
   const okLink=!needLink()||atts.length>0;
 
   $('linkReq').hidden=!needLink();
-  $('drivePath').textContent=drivePath('REQ', state.cat&&state.cat.folder, null);
 
   $('sumCat').textContent=state.cat?`${state.cat.c} · ${state.cat.t}`:'Сонгоогүй';
   $('sumCat').className='v'+(state.cat?'':' dim');
   $('sumDept').textContent=state.dept||'—';
   $('sumProdRow').hidden=!needProduct();
-  $('sumProd').textContent=$('ptype').value?`${$('ptype').value}${$('term').value?' · '+$('term').value:''}`:'—';
+  $('sumProd').textContent=prS?`${prS.code} · ${prS.name}${(prS.map&&!prS.map[1]&&$('term').value)?' · '+$('term').value:''}`:'—';
   $('sumAmtRow').hidden=!needProduct();
   $('sumAmt').textContent=$('amount').value?$('amount').value+' '+$('curSfx').textContent:'—';
   $('sumRateRow').hidden=!needRates();
@@ -1764,7 +1797,10 @@ function refresh(){
   $('sumBonusRow').hidden=!needRates()||!$('bonus').value;
   $('sumBonus').textContent=$('bonus').value?$('bonus').value+'%':'—';
   $('sumAtt').textContent=attSummary(attReq.items);
-  $('sumOwnerR').textContent = (state.cat&&state.cat.route) ? state.cat.route.name+' · '+state.cat.route.unit : 'ХОБПХГ';
+  $('sumOwnerR').textContent = !state.cat ? '—'
+    : state.cat.route&&state.cat.route.pool ? (state.cat.route.why||'Багц')+' (ачааллаар)'
+    : state.cat.route ? state.cat.route.name+' · '+state.cat.route.unit
+    : 'ХОБПХГ';
   $('sumUrg').textContent=state.urg;
   $('sumUrg').className='v '+({'Бага':'dim','Энгийн':'good','Яаралтай':'warn','Критик':''}[state.urg]||'');
   $('sumUrg').style.color = state.urg==='Критик' ? 'var(--danger)' : '';
@@ -1851,11 +1887,12 @@ function packAtts(items){ return items.filter(i=>i.kind==='img'||(i.kind==='link
 $('btnSubmit').addEventListener('click',()=>{
   const id=nextIdR();
   const rule=needRates()?rateRule():null;
-  const mailTo=(state.cat&&state.cat.route)?state.cat.route.email:HANDLER_MAIL;
+  /* и-мэйл нь хуваарилагдсан хариуцагч руу очно (доор autoAssign тогтооно) */
+  let mailTo=HANDLER_MAIL;
   const rec={
     kind:'REQ', id, at:nowStr(), ts:Date.now(), dept:state.dept,
     cat:state.cat.c, catName:state.cat.t, type:state.cat.type, folder:state.cat.folder,
-    product:$('ptype').value?`${$('ptype').value} · ${$('term').value} · ${$('payout').value}`:'',
+    product:prodSel()?`${prodSel().code} · ${prodSel().name}${$('term').value?' · '+$('term').value:''} · ${$('payout').value}`:'',
     amount:$('amount').value||'', cur:$('curSfx').textContent, client:state.client,
     rateNow:$('rateNow').value||'', rateAsk:$('rateAsk').value||'',
     bonus:$('bonus').value||'', custName:$('custName').value.trim(), custAcct:$('custAcct').value.trim(),
@@ -1869,16 +1906,18 @@ $('btnSubmit').addEventListener('click',()=>{
     status:'Бүртгэгдсэн', statusAt:nowStr(),
   };
   rec.sla=slaFor(state.cat, state.urg);
-  rec.assignee=autoAssign(rec);
+  const asg=autoAssign(rec);
+  rec.assignee=asg.who;
+  rec.mail.to=asg.who.email||HANDLER_MAIL;
   pushHist(rec,'Бүртгэгдсэн — '+rec.id);
-  pushHist(rec,'Автоматаар хуваарилагдав → '+rec.assignee.name+' ('+rec.assignee.role+')');
+  pushHist(rec,'Автоматаар хуваарилагдав → '+asg.who.name+' ('+asg.who.role+') — шалтгаан: '+asg.why);
   pushHist(rec,'Хариуцагч болон илгээгчид и-мэйл мэдэгдэл явав (прототип)');
   state.recs.push(rec);
   store.set('nc2.recs',state.recs); store.set('nc2.seqR',store.get('nc2.seqR',0)+1);
   showConfirm(rec);
   state.cat=null; desc.value=''; $('descCnt').textContent='0';
-  ['ptype','term','supportType'].forEach(i=>$(i).value='');
-  $('term').innerHTML='<option value="">Сонгох…</option>';
+  ['product','term','supportType'].forEach(i=>$(i).value='');
+  $('term').innerHTML='<option value="">Сонгох…</option>'; $('termWrap').hidden=true;
   $('payout').selectedIndex=0; $('curSfx').textContent='₮';
   ['amount','rateNow','rateAsk','bonus','custName','custAcct'].forEach(i=>$(i).value='');
   lastExtract=null; $('extractPanel').hidden=true; $('extBody').innerHTML='';
@@ -1905,9 +1944,11 @@ $('btnSubmitF').addEventListener('click',()=>{
     status:'Бүртгэгдсэн', statusAt:nowStr(),
   };
   rec.sla = (g.sev&&state.sev==='Критик') ? 'Ажлын 4 цаг' : 'Ажлын 1–3 өдөр';
-  rec.assignee=autoAssign(rec);
+  const asg=autoAssign(rec);
+  rec.assignee=asg.who;
+  rec.mail.to=asg.who.email||HANDLER_MAIL;
   pushHist(rec,'Бүртгэгдсэн — '+rec.id);
-  pushHist(rec,'Автоматаар хуваарилагдав → '+rec.assignee.name+' ('+rec.assignee.role+')');
+  pushHist(rec,'Автоматаар хуваарилагдав → '+asg.who.name+' ('+asg.who.role+') — шалтгаан: '+asg.why);
   pushHist(rec,'Хариуцагч болон илгээгчид и-мэйл мэдэгдэл явав (прототип)');
   state.recs.push(rec);
   store.set('nc2.recs',state.recs); store.set('nc2.seqF',store.get('nc2.seqF',0)+1);
@@ -2182,7 +2223,7 @@ $('btnSeed').addEventListener('click',()=>{
       const c=rnd(CATS);
       const id='ЭҮ-'+YEAR+'-'+pad4(store.get('nc2.seqR',0)+1); store.set('nc2.seqR',store.get('nc2.seqR',0)+1);
       state.recs.push({kind:'REQ', id, at, ts, dept:rnd(units), cat:c.c, catName:c.t, type:c.type, folder:c.folder,
-        product:c.fields.includes('product')?rnd(['Итгэлцэл ₮ · 6 сар · Хугацааны эцэст','Итгэлцэл ₮ · 12 сар · Хугацааны эцэст','Өрийн хэрэгсэл ₮ · 12 сар · Улирал, сар бүр']):'',
+        product:c.fields.includes('product')?rnd(['206 · ИТГЭЛЦЭЛ MNT 6.0 · Хугацааны эцэст','203 · ИТГЭЛЦЭЛ MNT 12.0 · Хугацааны эцэст','280 · БОГИНО ХУГАЦААТ ЗЭЭЛ 1 ЖИЛ ХҮРТЭЛ MNT · 12 сар · Улирал, сар бүр']):'',
         amount:c.fields.includes('product')?rnd(['50,000,000','120,000,000','250,000,000','480,000,000']):'', cur:'₮',
         client:rnd(['Иргэн','Байгууллага']),
         rateNow:c.fields.includes('rates')?'17.5':'', rateAsk:c.fields.includes('rates')?rnd(['18.0','18.5','17.8']):'',
@@ -2260,7 +2301,7 @@ $('homeSearch').addEventListener('keydown',e=>{
 document.addEventListener('click',e=>{ if(!e.target.closest('.home-search')) $('homeResults').hidden=true; });
 
 /* түгээмэл үйлчилгээний каталог */
-const SVC_TOP=['F01','F02','F03','F08','F05'];
+const SVC_TOP=['F01','F02','F06','F05','F12'];
 function renderSvc(){
   const el=$('svcGrid');
   const cards=SVC_TOP.map(code=>{ const c=CATS.find(x=>x.c===code);
@@ -2324,7 +2365,7 @@ function draftKeyR(){ return 'nc2.draftR.'+state.user.email; }
 function draftKeyF(){ return 'nc2.draftF.'+state.user.email; }
 function saveDraftR(){
   if(!state.user) return;
-  const d={cat:state.cat?state.cat.c:'', desc:desc.value, ptype:$('ptype').value, term:$('term').value,
+  const d={cat:state.cat?state.cat.c:'', desc:desc.value, product:$('product').value, term:$('term').value,
     payout:$('payout').value, amount:$('amount').value, client:state.client, custName:$('custName').value,
     custAcct:$('custAcct').value, rateAsk:$('rateAsk').value, bonus:$('bonus').value, urg:state.urg, support:$('supportType').value};
   if(!d.cat&&!d.desc.trim()) store.del(draftKeyR()); else store.set(draftKeyR(),d);
@@ -2340,7 +2381,7 @@ function restoreDrafts(){
   if(dr&&(dr.cat||dr.desc.trim())){
     state.cat=CATS.find(c=>c.c===dr.cat)||null;
     renderCats(''); applyCatFields();
-    if(dr.ptype){ $('ptype').value=dr.ptype; $('ptype').dispatchEvent(new Event('change'));
+    if(dr.product){ $('product').value=dr.product; $('product').dispatchEvent(new Event('change'));
       if(dr.term) $('term').value=dr.term; if(dr.payout) $('payout').value=dr.payout; }
     desc.value=dr.desc||''; $('descCnt').textContent=desc.value.length;
     $('amount').value=dr.amount||''; $('custName').value=dr.custName||''; $('custAcct').value=dr.custAcct||'';
@@ -2399,10 +2440,11 @@ function renderFreqCats(){
 }
 
 /* ================= AI туслах — урьдчилсан шалгалт (дүрэмд суурилсан) ================= */
-const AI_KEYS={'хүү':['F01','F13'],'нэмэгдүүл':['F01'],'лимит':['F01'],'буцаа':['F08'],'буцаалт':['F08'],
-  'сунга':['F06'],'сургалт':['F11'],'тайлан':['F12'],'мэдээлэл':['F12'],'загвар':['F05'],'маягт':['F05'],
-  'гэрээ':['F05','F16'],'кампанит':['F09'],'урамшуул':['F09','F01'],'эрх':['F15'],'хандалт':['F15'],
-  'kyc':['F14'],'дэмжлэг':['F02'],'заавар':['F03'],'нөхцөл':['F04'],'цуцл':['F16'],'торгууль':['F16','F08'],'залруул':['F13'],'зэрэглэл':['F17'],'бууруул':['F17']};
+const AI_KEYS={'хүү':['F01'],'нэмэгдүүл':['F01'],'лимит':['F01'],'буцаа':['F08'],'буцаалт':['F08'],
+  'сунга':['F06'],'дуус':['F06'],'мэдээлэл':['F04'],'нөхцөл':['F04'],'загвар':['F05'],'маягт':['F05'],
+  'гэрээ':['F05'],'бүрдэл':['F05'],'кампанит':['F09'],'урамшуул':['F09','F01'],'эрх':['F11'],'тохиргоо':['F10','F11'],
+  'данс':['F10','F06'],'уулзалт':['F12'],'танилцуулга':['F12'],'дэмжлэг':['F02'],'заавар':['F03'],
+  'зэрэглэл':['F13'],'бууруул':['F13']};
 function aiSuggestCat(text){
   const t=text.toLowerCase();
   const score=learnedCats(t);
@@ -2447,6 +2489,12 @@ function aiItems(){
       return w2.length>=5&&common/Math.max(words.size,1)>0.6;
     })());
     if(dup) items.push({dot:'var(--warn)', html:`Ижил төстэй бүртгэл өмнө илгээгдсэн байж магадгүй: <b>${dup.id}</b> (${dup.at}) — давхардуулахгүйн тулд «Миний бүртгэлүүд» хэсгээс шалгана уу.`});
+  }
+  /* 4b. Өндөр дүнтэй харилцагч — дэд захирлуудтай уулзалтын санал */
+  {
+    const amtM=(Number(($('amount').value||'').replace(/,/g,''))||0)/1e6;
+    if(amtM>=300&&(!state.cat||state.cat.c!=='F12'))
+      items.push({dot:'var(--gold)', html:`Өндөр дүнтэй (${amtM.toFixed(0)} сая ₮) харилцагч — Б.Алдар, Э.Ганбаатар, Б.Насанбат дэд захирлуудтай уулзалт товлуулж, компанийн танилцуулга хийлгэх боломжтой (F12 ангилал).`});
   }
   /* 5. SLA мэдээлэл */
   if(state.cat) items.push({dot:'var(--faint)', html:`Энэ ангилал, зэрэглэлд хариу өгөх хугацаа: <b>${slaFor(state.cat,state.urg)}</b>. Хариуцагч автоматаар хуваарилагдана.`});
@@ -2595,9 +2643,9 @@ function fillFromExtract(ex){
   if(f.custName) $('custName').value=f.custName;
   if(f.acct) $('custAcct').value=f.acct;
   if(f.amount) $('amount').value=Number(f.amount).toLocaleString('en-US');
-  if(f.term){
-    if(!$('ptype').value){ $('ptype').value='Итгэлцэл ₮'; $('ptype').dispatchEvent(new Event('change')); }
-    if([...$('term').options].some(o=>o.textContent===f.term)) $('term').value=f.term;
+  if(f.term&&!$('product').value){
+    const match=PRODUCTS.find(p=>p.map&&p.map[0]==='Итгэлцэл ₮'&&p.map[1]===f.term);
+    if(match){ $('product').value=match.code; $('product').dispatchEvent(new Event('change')); }
   }
   if(f.payout) $('payout').value=f.payout;
   syncPayout();
@@ -2620,7 +2668,7 @@ function cfAccounts(){
   const rnd=mulberry(cfKey().split('').reduce((x,c)=>x+c.charCodeAt(0),7));
   const dim=new Date(cfDate.getFullYear(), cfDate.getMonth()+1, 0).getDate();
   const units=UNITS.slice(1);
-  const prods=[['Итгэлцэл ₮','6 сар',15.0],['Итгэлцэл ₮','9 сар',16.0],['Итгэлцэл ₮','12 сар',17.5],['Өрийн хэрэгсэл ₮','12 сар',18.0],['Итгэлцэл $','12 сар',4.0]];
+  const prods=[['ИТГЭЛЦЭЛ MNT 6.0','6 сар',15.0],['ИТГЭЛЦЭЛ MNT 9.0','9 сар',16.0],['ИТГЭЛЦЭЛ MNT 12.0','12 сар',17.5],['БОГИНО ХУГАЦААТ ЗЭЭЛ MNT','12 сар',18.0],['ИТГЭЛЦЭЛ USD 12.0','12 сар',4.0]];
   a=[];
   const n=20+Math.floor(rnd()*6);
   for(let i=0;i<n;i++){
@@ -2708,7 +2756,7 @@ function cfTable(){
     tr.innerHTML=`<td class="mono num">${mm}.${String(r.day).padStart(2,'0')}</td>
       <td class="mono num">${r.acct}</td>
       <td>${r.name}</td>
-      <td>${r.ptype} · ${r.term}</td>
+      <td>${r.ptype}</td>
       <td class="num">${cfMoney(r.amount,r.cur)}</td>
       <td class="num">${r.rate}%</td>
       <td>${r.unit}</td>
