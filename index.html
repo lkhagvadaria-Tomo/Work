@@ -630,7 +630,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v1.1</span>
+      <span class="proto-badge">Прототип v1.2</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -933,7 +933,7 @@
           <div class="srow" id="sumBonusRow" hidden><span class="k">Урамшуулал</span><span class="v num" id="sumBonus">—</span></div>
           <div class="srow"><span class="k">Хавсралт</span><span class="v num" id="sumAtt">—</span></div>
           <div class="srow"><span class="k">Яаралтай байдал</span><span class="v good" id="sumUrg">Энгийн</span></div>
-          <div class="srow"><span class="k">Хариуцагч</span><span class="v">ХОБПХГ</span></div>
+          <div class="srow"><span class="k">Хариуцагч</span><span class="v" id="sumOwnerR">ХОБПХГ</span></div>
         </div>
         <div class="checks" id="checks"></div>
         <div class="sla">
@@ -1207,7 +1207,7 @@
     </div>
     <div class="mailcard">
       <div class="mc-h"><span>И-мэйл баталгаажуулалт</span><span class="sim">Прототип — урьдчилсан харагдац</span></div>
-      <div class="mrow"><span class="k">Хэнд</span><span class="mono">lkhagvadari.a@netgroup.mn</span></div>
+      <div class="mrow"><span class="k">Хэнд</span><span class="mono" id="mTo">lkhagvadari.a@netgroup.mn</span></div>
       <div class="mrow"><span class="k">Cc</span><span class="mono" id="mCc">—</span></div>
       <div class="mrow"><span class="k">Гарчиг</span><span id="mSubj">—</span></div>
       <div class="mbody" id="mBody"></div>
@@ -1337,7 +1337,9 @@ const CATS = [
   {c:'F14', t:'Харилцагчийн KYC, мэдээллийн шинэчлэл', k:'idcard', type:'Дэмжлэг', folder:'F14 KYC шинэчлэл', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
   {c:'F15', t:'Системийн эрх, хандалт нээлгэх', k:'key', type:'Дэмжлэг', folder:'F15 Эрх, хандалт', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
   {c:'F16', t:'Гэрээ цуцлалт, торгуулийн хөнгөлөлт', k:'slash', type:'Шийдвэр', folder:'F16 Цуцлалт, хөнгөлөлт', fields:['product'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг']},
-  {c:'F17', t:'Бусад / эргэлзээтэй', k:'help', type:'Лавлагаа', folder:'F17 Бусад', fields:[], link:false, sla:['Ажлын 1–2 өдөр','Ажлын 1 өдөр']},
+  {c:'F17', t:'Эх үүсвэрийн дансны зэрэглэл бууруулах', k:'down', type:'Шийдвэр', folder:'F17 Зэрэглэл бууруулах', fields:['product'], link:true, sla:['Ажлын 1–2 өдөр','Ажлын 4 цаг'],
+   route:{name:'Э.Эрхбаяр', role:'Хөрөнгө оруулалтын менежер', unit:'ХОБХУГ', unitFull:'Хөрөнгө оруулалтын борлуулалт, харилцагчийн удирдлагын газар', email:'erkhbayar.e@netgroup.mn'}},
+  {c:'F18', t:'Бусад / эргэлзээтэй', k:'help', type:'Лавлагаа', folder:'F18 Бусад', fields:[], link:false, sla:['Ажлын 1–2 өдөр','Ажлын 1 өдөр']},
 ];
 const GTYPES = [
   {c:'G01', t:'Санал', d:'Сайжруулах санаа, шинэ боломж', k:'bulb', sev:false},
@@ -1364,6 +1366,9 @@ function openLoad(email){
     &&(r.status==='Бүртгэгдсэн'||r.status==='Хянагдаж байна'||r.status==='Тодруулга хүлээж байна')).length;
 }
 function autoAssign(rec){
+  /* Ангилалд тогтмол хариуцагч заасан бол шууд түүнд (ж: F17 → Э.Эрхбаяр, ХОБХУГ) */
+  const cd=CATS.find(c=>c.c===rec.cat);
+  if(rec.kind==='REQ'&&cd&&cd.route) return cd.route;
   const amt=Number((rec.amount||'').replace(/,/g,''))||0;
   if(rec.kind==='REQ'&&(amt>=5e8||(rec.order&&/ТУЗ|Гүйцэтгэх/.test(rec.order.verdict)))) return TEAM[2];
   const cands=TEAM.filter(t=>t.types.includes(rec.type));
@@ -1394,6 +1399,7 @@ const ICONS = {
   idcard:'<rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M5.5 16c.6-1.8 5.4-1.8 6 0M14 10h4.5M14 13.5h4.5"/>',
   key:'<circle cx="8" cy="15" r="4.5"/><path d="M11 12 21 2M16 7l3 3M13 10l2 2"/>',
   slash:'<circle cx="12" cy="12" r="9.5"/><path d="M5.5 5.5l13 13"/>',
+  down:'<path d="M3 7l6.5 6.5 4-4L21 17"/><path d="M21 11v6h-6"/>',
 };
 const svg=(k,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round">${ICONS[k]||ICONS.doc}</svg>`;
 
@@ -1758,6 +1764,7 @@ function refresh(){
   $('sumBonusRow').hidden=!needRates()||!$('bonus').value;
   $('sumBonus').textContent=$('bonus').value?$('bonus').value+'%':'—';
   $('sumAtt').textContent=attSummary(attReq.items);
+  $('sumOwnerR').textContent = (state.cat&&state.cat.route) ? state.cat.route.name+' · '+state.cat.route.unit : 'ХОБПХГ';
   $('sumUrg').textContent=state.urg;
   $('sumUrg').className='v '+({'Бага':'dim','Энгийн':'good','Яаралтай':'warn','Критик':''}[state.urg]||'');
   $('sumUrg').style.color = state.urg==='Критик' ? 'var(--danger)' : '';
@@ -1844,6 +1851,7 @@ function packAtts(items){ return items.filter(i=>i.kind==='img'||(i.kind==='link
 $('btnSubmit').addEventListener('click',()=>{
   const id=nextIdR();
   const rule=needRates()?rateRule():null;
+  const mailTo=(state.cat&&state.cat.route)?state.cat.route.email:HANDLER_MAIL;
   const rec={
     kind:'REQ', id, at:nowStr(), ts:Date.now(), dept:state.dept,
     cat:state.cat.c, catName:state.cat.t, type:state.cat.type, folder:state.cat.folder,
@@ -1857,7 +1865,7 @@ $('btnSubmit').addEventListener('click',()=>{
     desc:desc.value.trim(), urg:state.urg, atts:packAtts(attReq.items),
     drive:drivePath('REQ',state.cat.folder,id),
     by:state.user.name, byEmail:state.user.email,
-    mail:{to:HANDLER_MAIL, at:nowStr(), status:'Илгээгдсэн (прототип)'},
+    mail:{to:mailTo, at:nowStr(), status:'Илгээгдсэн (прототип)'},
     status:'Бүртгэгдсэн', statusAt:nowStr(),
   };
   rec.sla=slaFor(state.cat, state.urg);
@@ -1928,7 +1936,7 @@ function mailBody(r){
   if(r.area) L.push(`Холбогдох хүрээ: ${r.area}`);
   if(r.sev) L.push(`Ноцтой байдал: ${r.sev}`);
   if(r.urg) L.push(`Яаралтай байдал: ${r.urg}`);
-  if(r.assignee) L.push(`Хариуцагч: ${r.assignee.name} (${r.assignee.role}) — автоматаар хуваарилагдав`);
+  if(r.assignee) L.push(`Хариуцагч: ${r.assignee.name} (${r.assignee.role}${r.assignee.unit?', '+r.assignee.unit:''}) — автоматаар хуваарилагдав`);
   L.push('','Тайлбар:',r.desc);
   if(r.atts.length||r.order){ L.push('','Хавсралт:');
     r.atts.forEach(a=>L.push(`· [${a.type}] `+(a.kind==='link'?a.url:a.name)));
@@ -1937,6 +1945,7 @@ function mailBody(r){
 }
 function showConfirm(r){
   $('mTitle').textContent=r.id+' бүртгэгдлээ';
+  $('mTo').textContent=r.mail.to;
   $('mCc').textContent=r.byEmail;
   $('mSubj').textContent=mailSubject(r);
   $('mBody').textContent=mailBody(r);
@@ -2393,7 +2402,7 @@ function renderFreqCats(){
 const AI_KEYS={'хүү':['F01','F13'],'нэмэгдүүл':['F01'],'лимит':['F01'],'буцаа':['F08'],'буцаалт':['F08'],
   'сунга':['F06'],'сургалт':['F11'],'тайлан':['F12'],'мэдээлэл':['F12'],'загвар':['F05'],'маягт':['F05'],
   'гэрээ':['F05','F16'],'кампанит':['F09'],'урамшуул':['F09','F01'],'эрх':['F15'],'хандалт':['F15'],
-  'kyc':['F14'],'дэмжлэг':['F02'],'заавар':['F03'],'нөхцөл':['F04'],'цуцл':['F16'],'торгууль':['F16','F08'],'залруул':['F13']};
+  'kyc':['F14'],'дэмжлэг':['F02'],'заавар':['F03'],'нөхцөл':['F04'],'цуцл':['F16'],'торгууль':['F16','F08'],'залруул':['F13'],'зэрэглэл':['F17'],'бууруул':['F17']};
 function aiSuggestCat(text){
   const t=text.toLowerCase();
   const score=learnedCats(t);
@@ -2826,7 +2835,7 @@ function chatMsg(rec){
   if(rec.area) L.push(`*Хүрээ:* ${rec.area}`);
   if(rec.sev) L.push(`*Ноцтой байдал:* ${rec.sev}`);
   L.push(`*Зэрэглэл:* ${rec.urg||'—'} · SLA: ${rec.sla}`);
-  if(rec.assignee) L.push(`*Хариуцагч:* ${rec.assignee.name} (${rec.assignee.role})`);
+  if(rec.assignee) L.push(`*Хариуцагч:* ${rec.assignee.name} (${rec.assignee.role}${rec.assignee.unit?', '+rec.assignee.unit:''})`);
   return L.join('\n');
 }
 function chatAlertFor(rec){
