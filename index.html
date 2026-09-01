@@ -463,6 +463,34 @@
   .month-nav button{border:none; background:none; padding:8px 14px; font-weight:700; font-size:14px}
   .month-nav .lblm{padding:8px 6px; font-size:13px; font-weight:700; min-width:120px; text-align:center}
 
+  /* ---------- mobile ---------- */
+  .home-task{cursor:pointer; text-align:left; border:1px solid var(--border); transition:border-color .12s, transform .12s, box-shadow .12s}
+  .home-task:hover{border-color:var(--brand); transform:translateY(-1px); box-shadow:0 2px 8px rgba(24,36,48,.08)}
+  .home-task .ta{margin-top:8px; font-size:12.5px; font-weight:600; color:var(--brand); display:flex; align-items:center; gap:6px}
+  .home-task.warn2{border-left:3px solid var(--warn)}
+  .home-task.ok2{border-left:3px solid var(--good)}
+  @media (max-width:760px){
+    header.top{gap:8px; padding:10px 12px}
+    .brand .t1,.brand .t2{display:none}
+    .brand .logo{width:34px; height:34px}
+    nav.views{margin-left:0; overflow-x:auto; scrollbar-width:none}
+    nav.views::-webkit-scrollbar{display:none}
+    .userchip{padding:4px}
+    .userchip .meta,.admin-tag{display:none}
+    .ghost-btn{padding:8px 10px}
+    main{padding-top:20px; padding-bottom:70px}
+    h2.page{font-size:22px}
+    .lede{font-size:14px}
+    .card{padding:18px 16px}
+    .chart-card{overflow-x:auto}
+    .cal{min-width:600px}
+    .month-nav .lblm{min-width:96px; font-size:12px}
+    .dash-tools{gap:8px}
+    .att-row .type{width:120px; font-size:11.5px}
+    .modal .mh{padding:20px 18px 0}
+    .mailcard{margin:0 14px 14px}
+  }
+
   #toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px); z-index:80;
     background:var(--surface); border:1px solid var(--good); color:var(--text); border-radius:12px;
     padding:14px 24px; font-size:14px; font-weight:600; opacity:0; pointer-events:none; transition:.25s; box-shadow:var(--shadow-lg)}
@@ -497,7 +525,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v0.7</span>
+      <span class="proto-badge">Прототип v0.8</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -527,7 +555,7 @@
     </div>
     <nav class="views" aria-label="Хэсгүүд">
       <button data-view="newview" class="on" id="navNew"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">Шинэ бүртгэл</span></button>
-      <button data-view="myview" id="navMy"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span class="lbl">Миний бүртгэлүүд</span> <span class="cnt num" id="myCnt">0</span></button>
+      <button data-view="myview" id="navMy"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span class="lbl">Миний бүртгэлүүд</span> <span class="cnt num" id="myCnt">0</span> <span class="cnt num" id="myAlert" style="color:var(--danger);font-weight:700" hidden>!</span></button>
       <button data-view="cfview" id="navCf"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span class="lbl">Cashflow</span> <span class="cnt num" id="cfNavCnt" style="color:var(--danger);font-weight:700" hidden>0</span></button>
       <button data-view="dashview" id="navDash" hidden><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7.5" height="9" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="5.5" rx="1.5"/><rect x="13.5" y="12" width="7.5" height="9" rx="1.5"/><rect x="3" y="15.5" width="7.5" height="5.5" rx="1.5"/></svg><span class="lbl">Дашбоард</span></button>
       <button data-view="regview" id="navReg" hidden><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="lbl">Бүртгэлийн сан</span></button>
@@ -550,9 +578,10 @@
   <!-- ---- flow chooser ---- -->
   <main id="newview" class="single">
     <div class="anim">
-      <span class="crumb"><span class="dot"></span> Шинэ бүртгэл</span>
-      <h2 class="page">Юу бүртгүүлэх вэ?</h2>
-      <p class="lede">Хоёр төрлийн бүртгэл тус тусдаа урсгалаар явна — аль нь тохирохоо сонгоно уу. Аль аль нь дугаарлагдан бүртгэгдэж, Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газарт очно.</p>
+      <span class="crumb"><span class="dot"></span> Нүүр</span>
+      <h2 class="page" id="homeGreet">Сайн байна уу</h2>
+      <p class="lede">Өнөөдрийн хүлээгдэж буй ажил тань доор байна. Шинэ бүртгэлээ хоёр урсгалын аль тохирохоор нь эхлүүлээрэй — аль аль нь дугаарлагдан бүртгэгдэж, ХОБПХГ-т автоматаар хуваарилагдана.</p>
+      <div class="tiles" id="homeTasks" style="margin-bottom:24px"></div>
       <div class="flow-grid">
         <button class="flow-card f1" id="cardGoReq">
           <span class="fi"><svg class="i" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></span>
@@ -858,6 +887,17 @@
       <span class="crumb"><span class="dot"></span> Миний бүртгэлүүд</span>
       <h2 class="page">Илгээсэн бүртгэлүүд</h2>
       <p class="lede">Прототип горимд бүртгэлүүд зөвхөн энэ хөтөч дээр хадгалагдана. Production дээр серверт бүртгэгдэж, ХОБПХГ-ын самбарт очно.</p>
+      <div class="reg-tools">
+        <div class="seg" id="mySeg">
+          <button data-v="all" class="on">Бүгд</button>
+          <button data-v="REQ">Хүсэлт</button>
+          <button data-v="FBK">Санал, гомдол</button>
+        </div>
+        <div class="search">
+          <svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="mySearch" type="search" placeholder="Хайх — дугаар, ангилал, тайлбар…" aria-label="Бүртгэл хайх">
+        </div>
+      </div>
       <div id="reqList"></div>
     </div>
   </main>
@@ -1184,6 +1224,7 @@ const svg=(k,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="n
 const store = {
   get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
   set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} },
 };
 const state = {
   user:null, dept:'', cat:null, urg:'Энгийн', client:'Иргэн',
@@ -1228,7 +1269,7 @@ function loginAs(email){
   $('deptName').textContent=e.unit; $('deptPos').textContent=e.pos;
   $('sumDeptF').textContent=e.unit;
   gotoView('newview');
-  refresh(); refreshF(); renderReqs(); renderFreqCats();
+  restoreDrafts(); renderReqs(); renderFreqCats(); renderHome();
   setTimeout(cfRemindCheck, 600);
 }
 $('btnLogout').addEventListener('click',()=>{
@@ -1239,12 +1280,14 @@ $('btnLogout').addEventListener('click',()=>{
 const VIEWS=['newview','reqview','fbkview','myview','cfview','dashview','regview'];
 function gotoView(v){
   VIEWS.forEach(x=>$(x).style.display = x===v ? 'grid':'none');
+  window.scrollTo(0,0);
   document.querySelectorAll('nav.views button').forEach(b=>{
     const navFor = (v==='reqview'||v==='fbkview') ? 'newview' : v;
     b.classList.toggle('on', b.dataset.view===navFor);
   });
   const el=$(v).querySelector('.anim');
   if(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }
+  if(v==='newview') renderHome();
   if(v==='myview') renderReqs();
   if(v==='cfview') renderCF();
   if(v==='dashview') renderDash();
@@ -1568,6 +1611,7 @@ function refresh(){
     : !okRates?(rateRule().level==='block'?rateRule().text:'Хүсэж буй хүүгээ оруулна уу (0–30%).')
     : !okSupport?'Дэмжлэгийн төрлөө сонгоно уу.'
     : 'Энэ ангилалд хавсралт (Drive линк эсвэл зураг) заавал.';
+  saveDraftR();
 }
 
 /* ================= FBK validation / summary ================= */
@@ -1594,6 +1638,7 @@ function refreshF(){
     : !okType?'Мэдэгдлийн төрлөө сонгоно уу.'
     : !okArea?'Холбогдох хүрээгээ сонгоно уу.'
     : 'Тайлбараа дор хаяж 20 тэмдэгт бичнэ үү.';
+  saveDraftF();
 }
 
 /* ================= submit ================= */
@@ -1621,6 +1666,7 @@ $('btnSubmit').addEventListener('click',()=>{
     mail:{to:HANDLER_MAIL, at:nowStr(), status:'Илгээгдсэн (прототип)'},
     status:'Бүртгэгдсэн', statusAt:nowStr(),
   };
+  rec.sla=slaFor(state.cat, state.urg);
   rec.assignee=autoAssign(rec);
   pushHist(rec,'Бүртгэгдсэн — '+rec.id);
   pushHist(rec,'Автоматаар хуваарилагдав → '+rec.assignee.name+' ('+rec.assignee.role+')');
@@ -1636,7 +1682,9 @@ $('btnSubmit').addEventListener('click',()=>{
   lastExtract=null; $('extractPanel').hidden=true; $('extBody').innerHTML='';
   state.urg='Энгийн'; state.client='Иргэн';
   ['segUrg','segClient'].forEach(id2=>$(id2).querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===0)));
-  attReq.clear(); renderCats($('catSearch').value); applyCatFields(); refresh(); renderReqs(); renderFreqCats();
+  attReq.clear(); renderCats($('catSearch').value); applyCatFields();
+  store.del(draftKeyR());
+  refresh(); renderReqs(); renderFreqCats(); renderHome();
   $('aiCard').hidden=true;
 });
 
@@ -1653,6 +1701,7 @@ $('btnSubmitF').addEventListener('click',()=>{
     mail:{to:HANDLER_MAIL, at:nowStr(), status:'Илгээгдсэн (прототип)'},
     status:'Бүртгэгдсэн', statusAt:nowStr(),
   };
+  rec.sla = (g.sev&&state.sev==='Критик') ? 'Ажлын 4 цаг' : 'Ажлын 1–3 өдөр';
   rec.assignee=autoAssign(rec);
   pushHist(rec,'Бүртгэгдсэн — '+rec.id);
   pushHist(rec,'Автоматаар хуваарилагдав → '+rec.assignee.name+' ('+rec.assignee.role+')');
@@ -1662,7 +1711,9 @@ $('btnSubmitF').addEventListener('click',()=>{
   showConfirm(rec);
   state.gtype=null; fdesc.value=''; $('fdescCnt').textContent='0'; $('area').value='';
   state.sev='Бага'; $('segSev').querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===0));
-  attFbk.clear(); renderGtypes(); refreshF(); renderReqs();
+  attFbk.clear(); renderGtypes();
+  store.del(draftKeyF());
+  refreshF(); renderReqs(); renderHome();
 });
 
 function mailSubject(r){ return `[${r.id}] ${r.cat} · ${r.catName} — ${r.dept}`; }
@@ -1703,11 +1754,18 @@ $('modalWrap').addEventListener('click',e=>{ if(e.target===$('modalWrap')) $('mo
 
 /* ================= my records ================= */
 function myRecs(){ return state.user? state.recs.filter(r=>r.byEmail===state.user.email || (isAdmin()&&r.demo&&false)) : []; }
+let myKindV='all';
+bindSegLocal('mySeg', v=>{ myKindV=v; renderReqs(); });
+$('mySearch').addEventListener('input',()=>renderReqs());
 function renderReqs(){
-  const mine=myRecs();
-  $('myCnt').textContent=mine.length;
+  const all=myRecs();
+  $('myCnt').textContent=all.length;
+  const q=($('mySearch').value||'').trim().toLowerCase();
+  const mine=all.filter(r=>(myKindV==='all'||r.kind===myKindV)
+    &&(!q||[r.id,r.catName,r.desc,r.status,r.product||''].join(' ').toLowerCase().includes(q)));
   const list=$('reqList'); list.innerHTML='';
-  if(!mine.length){ list.innerHTML='<div class="empty">Одоогоор илгээсэн бүртгэл алга. «Шинэ бүртгэл» хэсгээс эхнийхээ илгээгээрэй.</div>'; return; }
+  updateBadges();
+  if(!mine.length){ list.innerHTML='<div class="empty">'+(all.length?'Энэ шүүлтэд бүртгэл алга.':'Одоогоор илгээсэн бүртгэл алга. «Шинэ бүртгэл» хэсгээс эхнийхээ илгээгээрэй.')+'</div>'; return; }
   [...mine].reverse().forEach(r=>{
     const d=document.createElement('div'); d.className='req-item';
     const detail=[r.product&&`${r.product} · ${r.client}`, r.amount&&r.amount+' '+(r.cur||'₮'),
@@ -1720,7 +1778,7 @@ function renderReqs(){
       ${detail?`<div class="req-body num" style="font-weight:600;color:var(--text)">${detail}</div>`:''}
       <div class="req-body">${r.desc.length>180?r.desc.slice(0,180)+'…':r.desc}</div>
       ${thumbs?`<div class="req-thumbs">${thumbs}</div>`:''}
-      <div class="req-meta mono num"><span>${r.dept}</span><span>${r.atts.length} хавсралт</span><span>${r.at}</span>${r.assignee?`<span>Хариуцагч: ${r.assignee.name}</span>`:''}</div>
+      <div class="req-meta mono num"><span>${r.dept}</span><span>${r.atts.length} хавсралт</span><span>${r.at}</span>${r.assignee?`<span>Хариуцагч: ${r.assignee.name}</span>`:''}${r.sla&&r.status!=='Шийдвэрлэсэн'&&r.status!=='Татгалзсан'?`<span style="color:var(--gold)">Хариу: ${r.sla} дотор</span>`:''}</div>
       <div class="req-drive mono">${r.drive}</div>
       ${r.history&&r.history.length?`<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12px;color:var(--muted)">Явцын түүх (${r.history.length})</summary>
         <div style="margin-top:8px;border-left:2px solid var(--border);padding-left:14px">
@@ -1741,7 +1799,7 @@ function renderReqs(){
         pushHist(r,'Хариуцагч руу и-мэйл явав (прототип)');
         r.status='Хянагдаж байна'; r.statusAt=nowStr();
         store.set('nc2.recs',state.recs);
-        renderReqs(); toast('Хариулт илгээгдлээ');
+        renderReqs(); renderHome(); toast('Хариулт илгээгдлээ');
       });
       d.appendChild(cbox);
     }
@@ -1927,6 +1985,79 @@ $('btnClearDemo').addEventListener('click',()=>{
   store.set('nc2.recs',state.recs);
   renderDash(); renderReqs(); toast('Жишээ өгөгдөл арилгагдлаа');
 });
+
+/* ================= нүүрийн тойм, мэдэгдлийн badge ================= */
+function clarifyPending(){
+  return state.user? state.recs.filter(r=>r.byEmail===state.user.email&&r.status==='Тодруулга хүлээж байна'&&r.clarify&&!r.clarifyReply) : [];
+}
+function updateBadges(){
+  if(!state.user) return;
+  const n=clarifyPending().length;
+  $('myAlert').hidden=!n; $('myAlert').textContent=n?'!':'';
+  cfBadge();
+}
+function renderHome(){
+  if(!state.user) return;
+  $('homeGreet').textContent='Сайн байна уу, '+state.user.name.split(' ')[0]+(state.user.name.split(' ')[1]?' '+state.user.name.split(' ')[1]:'');
+  const tiles=[];
+  const cf=cfMissing();
+  if(cf>0) tiles.push({cls:'warn2', k:'Cashflow бөглөлт', v:cf, s:'данс шийдвэр хүлээж байна', a:'Одоо бөглөх', go:'cfview'});
+  const cp=clarifyPending().length;
+  if(cp>0) tiles.push({cls:'warn2', k:'Тодруулга хариулах', v:cp, s:'ХОБПХГ танаас тодруулга хүссэн', a:'Хариулах', go:'myview'});
+  const open=state.recs.filter(r=>r.byEmail===state.user.email&&(r.status==='Бүртгэгдсэн'||r.status==='Хянагдаж байна')).length;
+  if(open>0) tiles.push({cls:'', k:'Шийдвэр хүлээгдэж буй', v:open, s:'бүртгэл ХОБПХГ дээр байна', a:'Явц харах', go:'myview'});
+  if(!tiles.length) tiles.push({cls:'ok2', k:'Өнөөдрийн ажил', v:'✓', s:'Хүлээгдэж буй ажил алга — сайн байна!', a:'', go:''});
+  $('homeTasks').innerHTML=tiles.map((t,i)=>`<button class="tile home-task ${t.cls}" data-go="${t.go}" type="button">
+    <div class="tk">${t.k}</div><div class="tv num">${t.v}</div><div class="ts">${t.s}</div>
+    ${t.a?`<div class="ta">${t.a} <svg class="i" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>`:''}
+  </button>`).join('');
+  $('homeTasks').querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.go) gotoView(b.dataset.go); }));
+  updateBadges();
+}
+
+/* ================= ноорог автоматаар хадгалах ================= */
+function draftKeyR(){ return 'nc2.draftR.'+state.user.email; }
+function draftKeyF(){ return 'nc2.draftF.'+state.user.email; }
+function saveDraftR(){
+  if(!state.user) return;
+  const d={cat:state.cat?state.cat.c:'', desc:desc.value, ptype:$('ptype').value, term:$('term').value,
+    payout:$('payout').value, amount:$('amount').value, client:state.client, custName:$('custName').value,
+    custAcct:$('custAcct').value, rateAsk:$('rateAsk').value, bonus:$('bonus').value, urg:state.urg, support:$('supportType').value};
+  if(!d.cat&&!d.desc.trim()) store.del(draftKeyR()); else store.set(draftKeyR(),d);
+}
+function saveDraftF(){
+  if(!state.user) return;
+  const d={gtype:state.gtype?state.gtype.c:'', area:$('area').value, sev:state.sev, desc:fdesc.value};
+  if(!d.gtype&&!d.desc.trim()) store.del(draftKeyF()); else store.set(draftKeyF(),d);
+}
+function restoreDrafts(){
+  let restored=false;
+  const dr=store.get(draftKeyR(),null);
+  if(dr&&(dr.cat||dr.desc.trim())){
+    state.cat=CATS.find(c=>c.c===dr.cat)||null;
+    renderCats(''); applyCatFields();
+    if(dr.ptype){ $('ptype').value=dr.ptype; $('ptype').dispatchEvent(new Event('change'));
+      if(dr.term) $('term').value=dr.term; if(dr.payout) $('payout').value=dr.payout; }
+    desc.value=dr.desc||''; $('descCnt').textContent=desc.value.length;
+    $('amount').value=dr.amount||''; $('custName').value=dr.custName||''; $('custAcct').value=dr.custAcct||'';
+    $('rateAsk').value=dr.rateAsk||''; $('bonus').value=dr.bonus||''; $('supportType').value=dr.support||'';
+    state.client=dr.client||'Иргэн'; state.urg=dr.urg||'Энгийн';
+    $('segClient').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===state.client));
+    $('segUrg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===state.urg));
+    restored=true;
+  }
+  const df=store.get(draftKeyF(),null);
+  if(df&&(df.gtype||df.desc.trim())){
+    state.gtype=GTYPES.find(g=>g.c===df.gtype)||null;
+    renderGtypes();
+    $('area').value=df.area||''; fdesc.value=df.desc||''; $('fdescCnt').textContent=fdesc.value.length;
+    state.sev=df.sev||'Бага';
+    $('segSev').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===state.sev));
+    restored=true;
+  }
+  refresh(); refreshF();
+  if(restored) setTimeout(()=>toast('Дуусаагүй ноорог тань сэргээгдлээ'),900);
+}
 
 /* ================= өөрөөс суралцах: хайлтын үг → ангилал ================= */
 function learnPick(query,catCode){
