@@ -703,7 +703,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v2.7</span>
+      <span class="proto-badge">Прототип v2.8</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -805,7 +805,7 @@
         <div class="step-head" style="margin-bottom:10px"><span class="step-no">ЗАР</span><h3 style="font-size:16.5px">Мэдээ, зарлал</h3><span class="aside">ХОБПХГ-аас салбаруудад</span></div>
         <div id="newsList"></div>
         <div id="newsAdmin" hidden style="margin-top:12px; display:flex; gap:9px">
-          <input id="newsInput" placeholder="Шинэ зарлалын текст…" aria-label="Шинэ зарлал"
+          <input id="newsInput" placeholder="Шинэ зарлалын текст…" aria-label="Шинэ зарлал" maxlength="300"
             style="flex:1; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 14px; font-size:13.5px">
           <button class="ext-btn" id="newsAdd" type="button">Нийтлэх</button>
         </div>
@@ -1670,6 +1670,9 @@
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
+/* Аюулгүй байдал: гар оруулгатай ямар ч утгыг innerHTML руу буулгахын өмнө esc() заавал —
+   XSS (script injection) хамгаалалт. Шинэ innerHTML бичихдээ энэ дүрмийг баримтал. */
+const esc = x => String(x==null?'':x).replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
 
 /* ================= data ================= */
 /* Ажилтны бүртгэл (mock) — и-мэйл → нэр, нэгж, албан тушаал, эрх.
@@ -2458,28 +2461,29 @@ function renderReqs(){
   if(!mine.length){ list.innerHTML='<div class="empty">'+(all.length?'Энэ шүүлтэд бүртгэл алга.':'Одоогоор илгээсэн бүртгэл алга. «Шинэ бүртгэл» хэсгээс эхнийхээ илгээгээрэй.')+'</div>'; return; }
   [...mine].reverse().forEach(r=>{
     const d=document.createElement('div'); d.className='req-item';
-    const detail=[r.product&&`${r.product} · ${r.client}`, r.amount&&r.amount+' '+(r.cur||'₮'),
-      r.rateNow&&`${r.rateNow}% → ${r.rateAsk}%`, r.support, r.area, r.sev&&('Ноцтой байдал: '+r.sev)].filter(Boolean).join(' · ');
-    const thumbs=r.atts.filter(a=>a.kind==='img').slice(0,4).map(a=>`<img src="${a.thumb}" alt="${a.name}">`).join('');
+    const detail=esc([r.product&&`${r.product} · ${r.client}`, r.amount&&r.amount+' '+(r.cur||'₮'),
+      r.rateNow&&`${r.rateNow}% → ${r.rateAsk}%`, r.support, r.area, r.sev&&('Ноцтой байдал: '+r.sev)].filter(Boolean).join(' · '));
+    const thumbs=r.atts.filter(a=>a.kind==='img'&&String(a.thumb).startsWith('data:image/')).slice(0,4)
+      .map(a=>`<img src="${esc(a.thumb)}" alt="${esc(a.name)}">`).join('');
     d.innerHTML=`<div class="req-top">
         <span class="kind-badge ${r.kind==='REQ'?'req':'fbk'}">${r.kind==='REQ'?'ЭҮ · Хүсэлт':'СГ · Санал, гомдол'}</span>
         <span class="no">${r.id}</span><span class="rt">${r.catName}</span><span class="sp"></span>
         <span class="status ${ST_CLASS[r.status]}">${r.status}</span></div>
       ${trackerHtml(r)}
       ${detail?`<div class="req-body num" style="font-weight:600;color:var(--text)">${detail}</div>`:''}
-      <div class="req-body">${r.desc.length>180?r.desc.slice(0,180)+'…':r.desc}</div>
+      <div class="req-body">${esc(r.desc.length>180?r.desc.slice(0,180)+'…':r.desc)}</div>
       ${thumbs?`<div class="req-thumbs">${thumbs}</div>`:''}
-      <div class="req-meta mono num"><span>${r.dept}</span><span>${r.atts.length} хавсралт</span><span>${r.at}</span>${r.assignee?`<span>Хариуцагч: ${r.assignee.name}</span>`:''}${r.sla&&r.status!=='Шийдвэрлэсэн'&&r.status!=='Татгалзсан'?`<span style="color:var(--gold)">Хариу: ${r.sla} дотор</span>`:''}</div>
-      <div class="req-drive mono">${r.drive}</div>
+      <div class="req-meta mono num"><span>${esc(r.dept)}</span><span>${r.atts.length} хавсралт</span><span>${r.at}</span>${r.assignee?`<span>Хариуцагч: ${esc(r.assignee.name)}</span>`:''}${r.sla&&r.status!=='Шийдвэрлэсэн'&&r.status!=='Татгалзсан'?`<span style="color:var(--gold)">Хариу: ${r.sla} дотор</span>`:''}</div>
+      <div class="req-drive mono">${esc(r.drive)}</div>
       ${r.history&&r.history.length?`<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12px;color:var(--muted)">Явцын түүх (${r.history.length})</summary>
         <div style="margin-top:8px;border-left:2px solid var(--border);padding-left:14px">
-          ${r.history.map(h=>`<div style="font-size:12px;color:var(--muted);padding:3px 0"><span class="mono num" style="color:var(--faint)">${h.at}</span> — ${h.ev}</div>`).join('')}
+          ${r.history.map(h=>`<div style="font-size:12px;color:var(--muted);padding:3px 0"><span class="mono num" style="color:var(--faint)">${h.at}</span> — ${esc(h.ev)}</div>`).join('')}
         </div></details>`:''}`;
     if(r.status==='Тодруулга хүлээж байна'&&r.clarify&&!r.clarifyReply){
       const cbox=document.createElement('div');
       cbox.style.cssText='margin-top:12px;background:var(--warn-soft);border:1px solid var(--border);border-left:3px solid var(--warn);border-radius:10px;padding:13px 16px';
-      cbox.innerHTML=`<div style="font-size:12px;font-weight:600;color:var(--warn);margin-bottom:5px">ХОБПХГ тодруулга хүсэв (${r.clarify.by} · ${r.clarify.at})</div>
-        <div style="font-size:13.5px;margin-bottom:10px">${r.clarify.q}</div>
+      cbox.innerHTML=`<div style="font-size:12px;font-weight:600;color:var(--warn);margin-bottom:5px">ХОБПХГ тодруулга хүсэв (${esc(r.clarify.by)} · ${r.clarify.at})</div>
+        <div style="font-size:13.5px;margin-bottom:10px">${esc(r.clarify.q)}</div>
         <div style="display:flex;gap:9px"><input class="cf-reply" placeholder="Хариултаа бичнэ үү…" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 13px;font-size:13.5px">
         <button class="ext-btn cf-reply-btn" type="button">Хариулах</button></div>`;
       const inp=cbox.querySelector('.cf-reply');
@@ -2500,9 +2504,9 @@ function renderReqs(){
       const box=document.createElement('div');
       box.style.cssText='margin-top:12px;background:'+(rej?'var(--danger-soft)':'var(--good-soft)')
         +';border:1px solid var(--border);border-left:3px solid '+(rej?'var(--danger)':'var(--good)')+';border-radius:10px;padding:13px 16px';
-      box.innerHTML=`<div style="font-size:12px;font-weight:600;color:${rej?'var(--danger)':'var(--good)'};margin-bottom:5px">${rej?'Татгалзсан шалтгаан':'Шийдвэрийн хариу'} (${r.decision.by} · ${r.decision.at}) — и-мэйлээр илгээгдсэн${r.decision.dec?` · <span class="mono">${r.decision.dec}</span>`:''}</div>
-        <div style="font-size:13.5px">${r.decision.text}</div>
-        ${r.decision.extra?`<div style="font-size:12.5px;color:var(--muted);margin-top:6px"><b>Нэмэлт мэдээлэл, нөхцөл:</b> ${r.decision.extra}</div>`:''}`;
+      box.innerHTML=`<div style="font-size:12px;font-weight:600;color:${rej?'var(--danger)':'var(--good)'};margin-bottom:5px">${rej?'Татгалзсан шалтгаан':'Шийдвэрийн хариу'} (${esc(r.decision.by)} · ${r.decision.at}) — и-мэйлээр илгээгдсэн${r.decision.dec?` · <span class="mono">${esc(r.decision.dec)}</span>`:''}</div>
+        <div style="font-size:13.5px">${esc(r.decision.text)}</div>
+        ${r.decision.extra?`<div style="font-size:12.5px;color:var(--muted);margin-top:6px"><b>Нэмэлт мэдээлэл, нөхцөл:</b> ${esc(r.decision.extra)}</div>`:''}`;
       d.appendChild(box);
     }
     list.appendChild(d);
@@ -2528,16 +2532,16 @@ function renderRegistry(filter=''){
   [...rows].sort((a,b)=>b.ts-a.ts).forEach(r=>{
     const tr=document.createElement('tr');
     const det=r.kind==='REQ'
-      ? (r.product?`${r.product}<div class="sub">${r.amount?r.amount+' '+(r.cur||'₮'):''}${r.rateNow?` · ${r.rateNow}%→${r.rateAsk}%`:''}</div>`:'—')
-      : `${r.area||'—'}`;
+      ? (r.product?`${esc(r.product)}<div class="sub">${esc(r.amount?r.amount+' '+(r.cur||'₮'):'')}${r.rateNow?` · ${esc(r.rateNow)}%→${esc(r.rateAsk)}%`:''}</div>`:'—')
+      : `${esc(r.area||'—')}`;
     tr.innerHTML=`<td class="mono"><span class="kind-badge ${r.kind==='REQ'?'req':'fbk'}">${r.kind==='REQ'?'ЭҮ':'СГ'}</span> ${r.id}</td>
       <td class="mono num">${r.at}</td>
-      <td>${r.dept}<div class="sub">${r.by}</div></td>
+      <td>${esc(r.dept)}<div class="sub">${esc(r.by)}</div></td>
       <td>${r.cat} · ${r.catName}<div class="sub">${r.type}</div></td>
       <td class="num">${det}</td>
-      <td>${r.sev||r.urg||'—'}</td>
+      <td>${esc(r.sev||r.urg||'—')}</td>
       <td class="num">${r.atts?r.atts.length:0}</td>
-      <td>${r.assignee?r.assignee.name:'—'}<div class="sub">${r.assignee?r.assignee.role:''}</div></td>
+      <td>${esc(r.assignee?r.assignee.name:'—')}<div class="sub">${esc(r.assignee?r.assignee.role:'')}</div></td>
       <td></td>`;
     const td=tr.lastElementChild;
     if(isAdmin()){
@@ -2730,7 +2734,7 @@ function renderHomeResults(q){
   box.hidden=!rs.length;
   box.innerHTML=rs.map((r,i)=>`<button class="hs-row" data-i="${i}" type="button">
     <span class="hk ${r.k}">${r.k==='svc'?'Үйлчилгээ':r.k==='rec'?'Бүртгэл':'Хариулт'}</span>
-    <span><div>${r.t}</div><div class="hs-sub">${r.s}</div></span></button>`).join('');
+    <span><div>${esc(r.t)}</div><div class="hs-sub">${esc(r.s)}</div></span></button>`).join('');
   box.querySelectorAll('.hs-row').forEach(b=>b.addEventListener('click',()=>{
     const r=rs[Number(b.dataset.i)];
     if(r.fn){ r.fn(); $('homeSearch').value=''; box.hidden=true; }
@@ -2799,9 +2803,9 @@ function renderNews(){
   const fresh=d=>{ const diff=(Date.now()-new Date(d).getTime())/864e5; return diff<=3; };
   list.innerHTML=items.length
     ? items.map((n,i)=>`<div class="news-it">
-        <span class="nd mono num">${n.at}</span>
+        <span class="nd mono num">${esc(n.at)}</span>
         ${fresh(n.at)?'<span class="nnew">ШИНЭ</span>':''}
-        <span style="flex:1">${n.t}</span>
+        <span style="flex:1">${esc(n.t)}</span>
         ${isAdmin()?`<button class="nx" data-i="${i}" title="Устгах" aria-label="Зарлал устгах">×</button>`:''}
       </div>`).join('')
     : '<div style="font-size:13px;color:var(--faint)">Одоогоор зарлал алга.</div>';
@@ -3109,7 +3113,6 @@ async function runExtract(url){
 }
 function renderExtract(ex){
   const body=$('extBody');
-  const esc=x=>String(x).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
   const f=ex.fields;
   const row=(k,v)=>v?`<div style="display:flex;gap:10px;padding:3px 0;font-size:12.5px"><span style="color:var(--faint);width:170px;flex:none">${k}</span><b>${esc(v)}</b></div>`:'';
   let h='';
@@ -3266,12 +3269,12 @@ function cfTable(){
     const dd=d[r.id]||{};
     const tr=document.createElement('tr');
     tr.innerHTML=`<td class="mono num">${mm}.${String(r.day).padStart(2,'0')}</td>
-      <td class="mono num">${r.acct}</td>
-      <td>${r.name}</td>
-      <td class="mono num" title="${prodFull(r.ptype)}">${prodCode(r.ptype)}</td>
+      <td class="mono num">${esc(r.acct)}</td>
+      <td>${esc(r.name)}</td>
+      <td class="mono num" title="${esc(prodFull(r.ptype))}">${esc(prodCode(r.ptype))}</td>
       <td class="num">${cfMoney(r.amount,r.cur)}</td>
-      <td class="num">${r.rate}%</td>
-      <td title="${r.unit}">${String(r.unit).replace(' салбар','')}</td>
+      <td class="num">${esc(r.rate)}%</td>
+      <td title="${esc(r.unit)}">${esc(String(r.unit).replace(' салбар',''))}</td>
       <td></td><td></td>`;
     const tdDec=tr.children[7], tdSt=tr.children[8];
     const sel=document.createElement('select'); sel.className='st-select cf-dec';
@@ -3501,13 +3504,14 @@ function renderChatLog(){
     ? '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:7px">Сүүлийн alert-ууд</div>'
       +l.map(e=>`<div style="display:flex;gap:10px;font-size:12.5px;padding:4px 0;border-top:1px solid var(--border)">
         <span class="mono num" style="color:var(--faint);flex:none">${e.at}</span>
-        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.msg}</span>
-        <span style="flex:none;font-weight:600;color:${e.ok?'var(--good)':'var(--warn)'}">${e.st}</span></div>`).join('')
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.msg)}</span>
+        <span style="flex:none;font-weight:600;color:${e.ok?'var(--good)':'var(--warn)'}">${esc(e.st)}</span></div>`).join('')
     : '';
 }
 async function sendChatAlert(text){
   const cfg=chatCfg();
   if(!cfg.url){ chatLogAdd(text,'Webhook тохируулаагүй',false); return 'nocfg'; }
+  if(!/^https:\/\/chat\.googleapis\.com\//.test(cfg.url)){ chatLogAdd(text,'Webhook хаяг зөвшөөрөгдөөгүй домэйнтэй',false); return 'badurl'; }
   try{
     /* Google Chat webhook нь no-cors POST-ыг хүлээж авдаг — хариу нь opaque тул
        "хүргэгдсэн" гэж баталгаажуулж чадахгүй ч мессеж space-д очно. */
@@ -3546,8 +3550,13 @@ function chatBindSettings(){
   $('chatOnDecision').checked=cfg.onDecision;
   renderChatLog();
 }
-$('chatUrl').addEventListener('input',e=>{ chatSave({url:e.target.value.trim()});
-  $('chatStatus').textContent=e.target.value.trim()?'Хадгалагдлаа':''; });
+$('chatUrl').addEventListener('input',e=>{
+  const u=e.target.value.trim();
+  /* Аюулгүй байдал: alert зөвхөн Google Chat webhook руу — өөр домэйн руу дата явуулахгүй */
+  const ok=!u||/^https:\/\/chat\.googleapis\.com\//.test(u);
+  if(ok) chatSave({url:u});
+  $('chatStatus').textContent=!u?'':ok?'Хадгалагдлаа':'Зөвхөн https://chat.googleapis.com/… хаяг зөвшөөрөгдөнө';
+});
 $('chatOnNew').addEventListener('change',e=>chatSave({onNew:e.target.checked}));
 $('chatOnlyUrgent').addEventListener('change',e=>chatSave({onlyUrgent:e.target.checked}));
 $('chatOnClarify').addEventListener('change',e=>chatSave({onClarify:e.target.checked}));

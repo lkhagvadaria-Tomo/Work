@@ -441,6 +441,48 @@ fs.writeFileSync(path.join(OUT, 'shot.png'), PNG);
   R.helpOpensWelcome = (await page.evaluate(() => document.getElementById('welcomeWrap').style.display)) === 'flex';
   await page.click('#wcStart'); await page.waitForTimeout(150);
 
+  // v2.8: Аюулгүй байдал — XSS хамгаалалт, webhook домэйн шалгалт
+  // 1) Мэдээнд HTML оруулбал текст хэлбэрээр л харагдана (script ажиллахгүй)
+  await page.click('#sideNav .snav[data-view="newview"]'); await page.waitForTimeout(250);
+  await page.fill('#newsInput', '<img src=x onerror="window.__xssNews=1">туршилтын зар');
+  await page.click('#newsAdd'); await page.waitForTimeout(400);
+  R.xssNewsInert = await page.evaluate(() => !window.__xssNews && !document.querySelector('#newsList img'));
+  R.xssNewsText = (await page.textContent('#newsList')).includes('<img');
+  await page.locator('#newsList .nx').first().click(); await page.waitForTimeout(150);
+  // 2) Хүсэлтийн тайлбар, тодруулга, түүх, шийдвэрийн текстэд HTML идэвхгүй
+  R.xssReqInert = await page.evaluate(() => {
+    const r = {kind:'REQ', id:'ЭҮ-2026-9999', cat:'F05', catName:'Тест', type:'Хүсэлт', dept:'ХОБПХГ',
+      by:state.user.name, byEmail:state.user.email, ts:Date.now(), at:nowStr(),
+      desc:'<img src=x onerror="window.__xssReq=1">тайлбар', atts:[], drive:'x',
+      status:'Тодруулга хүлээж байна', statusAt:nowStr(),
+      clarify:{q:'<b id="xClar">асуулт</b>', by:'Тест', at:nowStr()},
+      history:[{at:nowStr(), ev:'<i id="xHist">явц</i>'}],
+      decision:{verdict:'Шийдвэрлэсэн', text:'<u id="xDec">шийдвэр</u>', extra:'<em id="xExt">н</em>', dec:'DEC-X', by:'Т', at:nowStr()}};
+    state.recs.push(r); renderReqs(); renderRegistry('');
+    /* хууль ёсны хавсралтын thumbnail (data:image/…) зөвшөөрөгдөнө — injected img л хориотой */
+    const bad = !!(window.__xssReq || document.getElementById('xClar') || document.getElementById('xHist')
+      || document.getElementById('xDec') || document.getElementById('xExt')
+      || document.querySelector('#reqList img:not([src^="data:image/"])'));
+    state.recs.pop(); store.set('nc2.recs', state.recs); renderReqs(); renderRegistry('');
+    return !bad;
+  });
+  // 3) Cashflow импортын мөрөнд HTML идэвхгүй
+  await page.click('#sideNav .snav[data-view="cfview"]'); await page.waitForTimeout(250);
+  await page.click('#cfImport'); await page.waitForTimeout(200);
+  await page.fill('#cfImpTxt', '15\t500999888\t<img src=x onerror="window.__xssCf=1">Т.Тест\tИТГЭЛЦЭЛ MNT 12.0\t120,000,000\t17.5\tБаянгол салбар');
+  await page.waitForTimeout(200);
+  await page.click('#cfImpApply'); await page.waitForTimeout(400);
+  R.xssCfInert = await page.evaluate(() => !window.__xssCf && !document.querySelector('#cfBody img'));
+  R.xssCfText = (await page.textContent('#cfBody')).includes('Т.Тест');
+  // 4) Chat webhook — зөвхөн chat.googleapis.com домэйн хадгалагдана
+  await page.click('#sideNav .snav[data-view="dashview"]'); await page.waitForTimeout(300);
+  await page.fill('#chatUrl', 'https://evil.example.com/hook'); await page.waitForTimeout(150);
+  R.chatUrlRejected = (await page.textContent('#chatStatus')).includes('chat.googleapis.com');
+  R.chatUrlNotSaved = await page.evaluate(() => chatCfg().url !== 'https://evil.example.com/hook');
+  await page.fill('#chatUrl', 'https://chat.googleapis.com/v1/spaces/T/messages?key=1'); await page.waitForTimeout(150);
+  R.chatUrlOk = await page.evaluate(() => chatCfg().url.startsWith('https://chat.googleapis.com/'));
+  await shot('v28-security.png');
+
   R.errors = errors;
   console.log(JSON.stringify(R, null, 1));
   await browser.close();

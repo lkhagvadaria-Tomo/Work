@@ -70,6 +70,12 @@
 
 ## Техникийн тэмдэглэл
 
+- **Аюулгүй байдал (v2.8):** гар оруулгатай ямар ч утгыг innerHTML руу буулгахын өмнө глобал
+  `esc()`-ээр заавал шүү (шинэ render код бичихдээ энэ дүрмийг мөрд, тестийн xss* шалгалтууд
+  хамгаална); Chat webhook зөвхөн `chat.googleapis.com`; хавсралтын зураг зөвхөн `data:image/`.
+  Production болзол: жинхэнэ OAuth (@netgroup.mn), сервер тал руу шилжүүлэх, SheetJS-д SRI hash
+  (энэ орчноос cdnjs хаалттай тул тооцоогүй — deploy-д нэм), аудит лог.
+
 - Artifact хязгаар: гадагш fetch хориотой (Chat alert прототипод үнэнчээр «илгээгдэнэ» гэж
   бүртгэдэг), script зөвхөн cdnjs г.м., **татаж авах линк ажиллахгүй** → clipboard/paste ашигла.
 - Онол: `[hidden]{display:none!important}` override заавал; theme токен 3 блок (light /
