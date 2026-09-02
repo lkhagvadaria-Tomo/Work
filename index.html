@@ -630,7 +630,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v1.3</span>
+      <span class="proto-badge">Прототип v1.4</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -740,7 +740,7 @@
         <details><summary>Одоо мөрдөж буй хүү хэд вэ?</summary>
           <div class="fa">NC-01/54-2025 тушаалаар (2025.04.07-оос): <b>Итгэлцэл ₮</b> — 6 сар 15.0% · 9 сар 16.0% · 12 сар 17.5% (хугацааны эцэст; улирал/сар бүр бол 1%-иар бага). <b>Өрийн хэрэгсэл ₮</b> — 1 сар 10.0% … 12 сар 18.0%. <b>Итгэлцэл $</b> — 6 сар 3.0% · 9 сар 3.5% · 12 сар 4.0%. Данс хаах/цуцлахад ₮ 2.4%, $ 0.5%.</div></details>
         <details><summary>Хүү хэд хүртэл нэмэгдүүлж болох вэ?</summary>
-          <div class="fa">Хавсралт №2-ын матрицаар: 49 сая ₮ хүртэл — нэмэгдүүлэхгүй · 50–199 сая +0.5% · 200–499 сая +1.0% · 500 саяас +1.5% (ХОУГ-ын захирлын зөвшөөрлөөр). 100 саяас дээш дүнд Гүйцэтгэх захирлын зөвшөөрлөөр нэмж +1.0%. Түүнээс дээш — ТУЗ, Зөвлөхийн зөвшөөрөл. F01 маягт үүнийг автоматаар шалгана.</div></details>
+          <div class="fa">Хавсралт №2-ын матрицаар: 49 сая ₮ хүртэл — нэмэгдүүлэхгүй · 50–199 сая +0.5% · 200–499 сая +1.0% · 500 саяас +1.5% — хөрөнгө оруулалт хариуцсан гүйцэтгэх захирлын орлогч <b>Х.Нургүлийн</b> зөвшөөрлөөр. 100 саяас дээш дүнд Гүйцэтгэх захирал <b>Б.Хуншагайн</b> зөвшөөрлөөр нэмж +1.0%. Түүнээс дээш — ТУЗ, Зөвлөхийн зөвшөөрөл. Анхаар: ХОБХУГ-ын захирлын хүү зөвшөөрөх эрх болиулагдсан — хүүгийн зөвшөөрлийг зөвхөн дээрх хоёр түвшин олгоно. F01 маягт үүнийг автоматаар шалгана.</div></details>
         <details><summary>Хавсралт хаана, ямар нэрээр хадгалагдах вэ?</summary>
           <div class="fa">Байгууллагын архивын <b>21. Funding Support Portal</b> хавтаст он / сар / ангилал / дугаараар ангилагдана. Файлын нэр Naming Standard v1.0-ийн дагуу автоматаар: <span class="mono">[Салбар]_[Дугаар]_[Төрөл]_[ОООО-СС-ӨӨ]_v1.0</span>.</div></details>
       </div>
@@ -1166,6 +1166,8 @@
         <span class="reg-count num" id="cfProgress"></span>
         <span class="spacer"></span>
         <button class="ghost-btn" id="cfAllBtn" hidden>Бүх өдрийг харуулах</button>
+        <button class="ghost-btn" id="cfCopy" title="Жагсаалтыг шийдвэрийн хамт хуулж, Excel дээрээ Ctrl+V хийнэ">Excel рүү хуулах</button>
+        <button class="ghost-btn" id="cfImport" hidden title="Одоогийн Excel бүртгэлээс хуулсан мөрүүдийг буулгана">Excel-ээс буулгах</button>
       </div>
       <div class="tiles" id="cfTiles"></div>
       <div class="chart-card" style="margin-bottom:16px">
@@ -1182,7 +1184,7 @@
         </table>
       </div>
       <div class="integrity">
-        <b>Ажиллагаа.</b> Шийдвэр бүр даруй хадгалагдаж, ХОБПХГ-ын нэгтгэлд бодит цагаар тусна. «Сунгана» гэж сонгоход шинэ хугацаа, хүү, дүнгийн талбар нээгдэнэ; хүүг мөрдөж буй NC-01/54-2025 тушаалын хязгаартай харьцуулж шалгана. Production дээр дансны жагсаалт Нэткор системээс автоматаар татагдаж, сар хаагдахад нэгтгэл ХОБПХГ руу и-мэйлээр очиж, <b>21. Funding Support Portal / 3. Cashflow</b> хавтаст <span class="mono">HOBPHG_Cashflow_Summary_ОООО-СС-01_v1.0.xlsx</span> нэрээр хадгалагдана (Naming Standard v1.0).
+        <b>Ажиллагаа.</b> Шийдвэр бүр даруй хадгалагдаж, ХОБПХГ-ын нэгтгэлд бодит цагаар тусна. «Сунгана» гэж сонгоход шинэ хугацаа, хүү, дүнгийн талбар нээгдэнэ; хүүг мөрдөж буй NC-01/54-2025 тушаалын хязгаартай харьцуулж шалгана. Одоогийн Excel хөтлөлтийн зуршилд нийцүүлэн: «Excel рүү хуулах» товч жагсаалтыг шийдвэрийн хамт хүснэгтээр хуулна (Excel дээр Ctrl+V), админ «Excel-ээс буулгах»-аар Нэткороос татсан жагсаалтаа шууд буулгана. Production дээр дансны жагсаалт Нэткор системээс автоматаар татагдаж, сар хаагдахад нэгтгэл ХОБПХГ руу и-мэйлээр очиж, <b>21. Funding Support Portal / 3. Cashflow</b> хавтаст <span class="mono">HOBPHG_Cashflow_Summary_ОООО-СС-01_v1.0.xlsx</span> нэрээр хадгалагдана (Naming Standard v1.0).
       </div>
     </div>
   </main>
@@ -1248,6 +1250,26 @@
   </div>
 </div>
 
+<!-- cashflow: Excel-ээс буулгах (админ) -->
+<div id="cfImpWrap" role="dialog" aria-modal="true" aria-label="Excel-ээс буулгах"
+  style="position:fixed;inset:0;z-index:75;background:rgba(10,18,28,.6);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px">
+  <div class="modal" style="width:min(680px,100%)">
+    <div class="mh" style="text-align:left">
+      <h3>Excel-ээс буулгах — <span class="num" id="cfImpMon">—</span></h3>
+      <p>Одоогийн Excel бүртгэлээсээ мөрүүдээ хуулаад (Ctrl+C) доор буулгана уу (Ctrl+V). Багана дараалал: <span class="mono">Өдөр · Данс · Харилцагч · Бүтээгдэхүүн · Дүн · Хүү · Салбар</span>. Толгой мөрийг автоматаар алгасна. Буулгахад тухайн сарын жагсаалт бүрэн солигдож, шийдвэрүүд шинээр бөглөгдөнө.</p>
+    </div>
+    <div style="padding:14px 28px 0">
+      <textarea id="cfImpTxt" spellcheck="false" placeholder="15	500123456	Д.Болормаа	ИТГЭЛЦЭЛ MNT 12.0	120000000	17.5	Баянгол салбар"
+        style="width:100%;min-height:170px;resize:vertical;background:var(--surface);color:var(--text);border:1px solid var(--border-strong);border-radius:10px;padding:10px 12px;font:12px/1.7 'JetBrains Mono',monospace"></textarea>
+      <div id="cfImpInfo" style="margin-top:8px;font-size:12.5px;color:var(--muted)"></div>
+    </div>
+    <div class="mf" style="gap:10px">
+      <button class="ghost-btn" id="cfImpCancel">Болих</button>
+      <button class="b2" id="cfImpApply" disabled>Буулгах</button>
+    </div>
+  </div>
+</div>
+
 <!-- tour -->
 <div id="tour" role="dialog" aria-label="Танилцуулга">
   <div class="th"><span class="mono">Алхам <span id="tourNo">1</span> / 4</span><button id="tourSkip">Алгасах</button></div>
@@ -1275,7 +1297,7 @@ const EMPLOYEES = {
   'munkh-erdene.o@netgroup.mn':{name:'Мөнх-Эрдэнэ О.', unit:'ХОБПХГ', unitFull:'Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар', pos:'Газрын захирал', role:'admin'},
   'onon.or@netgroup.mn':{name:'Онон О.', unit:'ХОБПХГ', unitFull:'Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар', pos:'Ахлах мэргэжилтэн', role:'admin'},
   'lkhagvadari.a@netgroup.mn':{name:'Алтанхуяг Лхагвадарь', unit:'ХОБПХГ', unitFull:'Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар', pos:'Мэргэжилтэн', role:'admin'},
-  'baterdene.b@netgroup.mn':{name:'Бат-Эрдэнэ Б.', unit:'Хан-Уул салбар', unitFull:'Хан-Уул салбар', pos:'Санхүүгийн зөвлөх', role:'user'},
+  'baterdene.b@netgroup.mn':{name:'Бат-Эрдэнэ Б.', unit:'Баянгол салбар', unitFull:'Баянгол салбар (Netcor 1004)', pos:'Санхүүгийн зөвлөх', role:'user'},
   'sarnai.d@netgroup.mn':{name:'Сарнай Д.', unit:'Дархан салбар', unitFull:'Дархан салбар', pos:'Салбарын захирал', role:'user'},
 };
 const HANDLER_MAIL='lkhagvadari.a@netgroup.mn';
@@ -1314,6 +1336,8 @@ function baseRate(){
 function rateRule(){ /* {level:'base'|'dir'|'ceo'|'block'|'tuz'|null, text, max} */
   const pr=prodSel(), base=baseRate();
   const ask=parseFloat($('rateAsk').value);
+  if(pr&&pr.code===300)
+    return {level:'block', text:'NET ИТГЭЛЦЭЛ (300) — бүрэн дижитал бүтээгдэхүүн тул хүүгийн тохируулга энэ сувгаар хийгдэхгүй. 300-д зөвхөн харилцагчийн банкны данс солих хүсэлт (F10 · Дансны тохиргоо) хамаарна.', max:null};
   if(pr&&!pr.map&&!isNaN(ask))
     return {level:'dir', text:'Энэ бүтээгдэхүүнд тушаалд суурь хүү заагаагүй — хүсэлтийг хариуцагч хянаж шийднэ.', max:null};
   if(base===null||isNaN(ask)) return {level:null, text:'', max:null};
@@ -1324,8 +1348,8 @@ function rateRule(){ /* {level:'base'|'dir'|'ceo'|'block'|'tuz'|null, text, max}
   const step=ORDER.step(amtM);
   const dirMax=base+step, ceoMax=dirMax+(amtM>=100?1.0:0);
   if(step===0&&ask>base) return {level:'block', text:'49 сая ₮ хүртэлх эх үүсвэрт хүү нэмэгдүүлэхгүй (Хавсралт №2).', max:base};
-  if(ask<=dirMax) return {level:'dir', text:`Хөрөнгө оруулалтын удирдлагын газрын захирлын зөвшөөрлөөр боломжтой (дээд ${dirMax.toFixed(1)}%).`, max:dirMax};
-  if(ask<=ceoMax) return {level:'ceo', text:`Гүйцэтгэх захирлын зөвшөөрөл шаардлагатай (дээд ${ceoMax.toFixed(1)}%).`, max:ceoMax};
+  if(ask<=dirMax) return {level:'dir', text:`Хөрөнгө оруулалт хариуцсан гүйцэтгэх захирлын орлогч Х.Нургүлийн зөвшөөрлөөр боломжтой (дээд ${dirMax.toFixed(1)}%).`, max:dirMax};
+  if(ask<=ceoMax) return {level:'ceo', text:`Гүйцэтгэх захирал Б.Хуншагайн зөвшөөрөл шаардлагатай (дээд ${ceoMax.toFixed(1)}%).`, max:ceoMax};
   return {level:'tuz', text:`Тушаалын матрицын дээд хязгаараас (${ceoMax.toFixed(1)}%) дээш — ТУЗ, Зөвлөхийн зөвшөөрөл шаардлагатай.`, max:null};
 }
 /* Хариуцах ажилтнууд — хуваарилалтын дүрэмд ашиглана */
@@ -1365,8 +1389,21 @@ const GTYPES = [
   {c:'G05', t:'Системийн алдаа', d:'Аппликэйшн, тооцооллын алдаа', k:'bug', sev:true},
   {c:'G06', t:'Аюулгүй байдал, сэжигтэй үйлдэл', d:'Нууцлал, залилангийн сэжиг — нууцлалтай', k:'shield', sev:true},
 ];
-const UNITS = ['ХОБПХГ','Төв салбар','Хан-Уул салбар','Баянзүрх салбар','Сүхбаатар салбар','Чингэлтэй салбар',
-  'Сонгинохайрхан салбар','Дархан салбар','Эрдэнэт салбар','Мөрөн салбар','Ховд салбар','Чойбалсан салбар'];
+/* Салбарын бодит бүртгэл — [Netcor код, нэр, товч нэр] (УБ 20 + орон нутаг 29) */
+const BR_UB=[[1004,'Баянгол','BG'],[1005,'Баянзүрх','BZ'],[1006,'Чингэлтэй','CH'],[1007,'Гранд плаза','GP'],
+  [1008,'Сонгинохайрхан','SH'],[1009,'Сансар','SS'],[1010,'Хороолол','XO'],[1011,'Да хүрээ','DH'],
+  [1012,'Их Монгол','IM'],[1014,'22','22'],[1015,'Гэгээнтэн','GG'],[1016,'Парк Од','PR'],
+  [1020,'Сити',''],[1021,'Тэнгис',''],[1022,'Сүхбаатар','SB'],[1023,'Бага тойруу',''],
+  [1024,'Яармаг','YG'],[1025,'Централ',''],[1026,'Чингэлтэй НФ',''],[1027,'Москва','']];
+const BR_RURAL=[[10001,'Баян-Өлгий','BO'],[10002,'Увс','UV'],[10003,'Ховд','HO'],[10004,'Говь-Алтай','GA'],
+  [10005,'Баянхонгор','BH'],[10006,'Өвөрхангай','OV'],[10007,'Завхан','ZA'],[10008,'Архангай','AR'],
+  [10009,'Хөвсгөл','HL'],[10010,'Сэлэнгэ','SE'],[10011,'Дорнод','DO'],[10012,'Өмнөговь','OM'],
+  [10013,'Хэнтий','HE'],[10014,'Багануур','BN'],[10015,'Төв аймаг','TU'],[10016,'Налайх','NA'],
+  [10017,'Булган','BU'],[10018,'Дундговь','DN'],[10019,'Сүхбаатар аймаг','SR'],[10020,'Говьсүмбэр','GS'],
+  [1001,'Дорноговь','DG'],[1002,'Дархан','DA'],[1003,'Эрдэнэт','ET'],[1043,'Ханбогд','HB'],
+  [1044,'Цогт-Цэций','TT'],[1045,'Тосонцэнгэл','TN'],[1046,'Хархорин','HH'],[1047,'Зүүнхараа','ZH'],[1048,'Замын-Үүд','ZU']];
+const UNITS_UB=BR_UB.map(b=>b[1]+' салбар'), UNITS_RURAL=BR_RURAL.map(b=>b[1]+' салбар');
+const UNITS=['ХОБПХГ', ...UNITS_UB, ...UNITS_RURAL];
 const ATT_TYPES=['Харилцагчийн хүсэлт','Тооцоолол','Гэрээ, баримт','Дэлгэцийн зураг','Бусад'];
 const STATUSES=['Бүртгэгдсэн','Хянагдаж байна','Тодруулга хүлээж байна','Шийдвэрлэсэн','Татгалзсан'];
 const ST_CLASS={'Бүртгэгдсэн':'s-new','Хянагдаж байна':'s-rev','Тодруулга хүлээж байна':'s-rev','Шийдвэрлэсэн':'s-done','Татгалзсан':'s-rej'};
@@ -1516,12 +1553,18 @@ const deptMenu=$('deptMenu');
 $('btnDept').addEventListener('click',e=>{
   e.stopPropagation();
   deptMenu.innerHTML='';
-  UNITS.forEach(d=>{
+  const addHead=t=>{ const h=document.createElement('div'); h.textContent=t;
+    h.style.cssText='padding:8px 14px 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);pointer-events:none';
+    deptMenu.appendChild(h); };
+  const addBtn=d=>{
     const b=document.createElement('button');
     b.textContent=d; b.className=d===state.dept?'on':'';
     b.addEventListener('click',()=>{ state.dept=d; $('deptName').textContent=d; $('deptPos').textContent=''; deptMenu.classList.remove('open'); refresh(); });
     deptMenu.appendChild(b);
-  });
+  };
+  addBtn(UNITS[0]);
+  addHead('Улаанбаатар · '+UNITS_UB.length); UNITS_UB.forEach(addBtn);
+  addHead('Орон нутаг · '+UNITS_RURAL.length); UNITS_RURAL.forEach(addBtn);
   deptMenu.classList.toggle('open');
 });
 document.addEventListener('click',()=>deptMenu.classList.remove('open'));
@@ -1762,7 +1805,9 @@ function refresh(){
   const okCat=!!state.cat;
   const okDesc=desc.value.trim().length>=20;
   const prS=prodSel();
-  const okProd=!needProduct()||(!!prS && (!( prS.map&&!prS.map[1] )||$('term').value) && $('amount').value.replace(/,/g,'').length>0);
+  /* 300 · NET ИТГЭЛЦЭЛ бүрэн дижитал: зөвхөн F10 (банкны данс солих) дээр хүлээж авна */
+  const bad300=!!(prS&&prS.code===300&&state.cat&&state.cat.c!=='F10');
+  const okProd=(!needProduct()||(!!prS && (!( prS.map&&!prS.map[1] )||$('term').value) && $('amount').value.replace(/,/g,'').length>0))&&!bad300;
   const base=baseRate();
   $('rateNow').value = base===null ? '' : String(base);
   const rule=rateRule();
@@ -1843,7 +1888,7 @@ function refresh(){
   $('submitNote').textContent = ready?'Бүх шаардлага хангагдлаа — илгээхэд бэлэн.'
     : !okCat?'Ангилал сонгоно уу.'
     : !okDesc?'Тайлбараа дор хаяж 20 тэмдэгт бичнэ үү.'
-    : !okProd?'Бүтээгдэхүүн, хугацаа, дүнгээ оруулна уу.'
+    : !okProd?(bad300?'NET ИТГЭЛЦЭЛ (300) бүрэн дижитал — энэ бүтээгдэхүүнд зөвхөн банкны данс солих хүсэлт (F10 · Дансны тохиргоо) илгээнэ.':'Бүтээгдэхүүн, хугацаа, дүнгээ оруулна уу.')
     : !okRates?(rateRule().level==='block'?rateRule().text:'Хүсэж буй хүүгээ оруулна уу (0–30%).')
     : !okSupport?'Дэмжлэгийн төрлөө сонгоно уу.'
     : 'Энэ ангилалд хавсралт (Drive линк эсвэл зураг) заавал.';
@@ -2475,7 +2520,7 @@ function aiItems(){
   }
   /* 3. нэмэгдүүлэх лимитийн хариу */
   if(/нэмэгдүүл|лимит/.test(tl)){
-    items.push({dot:'var(--good)', html:`<b>Шууд хариу (Хавсралт №2):</b> 49 сая ₮ хүртэл нэмэгдүүлэхгүй · 50–199 сая +0.5% · 200–499 сая +1.0% · 500 саяас +1.5% (ХОУГ-ын захирал) · 100 саяас дээшид ГЗ-ийн зөвшөөрлөөр нэмж +1.0%.`});
+    items.push({dot:'var(--good)', html:`<b>Шууд хариу (Хавсралт №2):</b> 49 сая ₮ хүртэл нэмэгдүүлэхгүй · 50–199 сая +0.5% · 200–499 сая +1.0% · 500 саяас +1.5% (ГЗ-ын орлогч Х.Нургүл) · 100 саяас дээшид Гүйцэтгэх захирал Б.Хуншагайн зөвшөөрлөөр нэмж +1.0%. ХОБХУГ-ын захирлын хүү зөвшөөрөх эрх болиулагдсан.`});
   }
   if(/загвар|маягт/.test(tl)){
     items.push({dot:'var(--good)', html:`<b>Шууд хариу:</b> Гэрээ, маягтын байнгын загварууд Drive-ын «Гэрээ, маягт» хавтаст бий — F05 ангиллаар хүсвэл ажлын 1 өдөрт илгээнэ.`});
@@ -2495,6 +2540,14 @@ function aiItems(){
     const amtM=(Number(($('amount').value||'').replace(/,/g,''))||0)/1e6;
     if(amtM>=300&&(!state.cat||state.cat.c!=='F12'))
       items.push({dot:'var(--gold)', html:`Өндөр дүнтэй (${amtM.toFixed(0)} сая ₮) харилцагч — Б.Алдар, Э.Ганбаатар, Б.Насанбат дэд захирлуудтай уулзалт товлуулж, компанийн танилцуулга хийлгэх боломжтой (F12 ангилал).`});
+  }
+  /* 4c. 300 · NET ИТГЭЛЦЭЛ — дижитал бүтээгдэхүүний онцлог */
+  {
+    const prS=prodSel();
+    if(prS&&prS.code===300)
+      items.push(state.cat&&state.cat.c==='F10'
+        ? {dot:'var(--good)', html:`<b>NET ИТГЭЛЦЭЛ (300):</b> банкны данс солих хүсэлт энэ ангилалд зөв бүртгэгдэнэ — харилцагчийн нэр, шинэ банк, дансны мэдээллээ тайлбартаа бичнэ үү.`}
+        : {dot:'var(--warn)', html:`<b>NET ИТГЭЛЦЭЛ (300)</b> — бүрэн дижитал бүтээгдэхүүн: зөвхөн харилцагчийн банкны данс солих хүсэлт (F10 · Дансны тохиргоо) хамаарна.`});
   }
   /* 5. SLA мэдээлэл */
   if(state.cat) items.push({dot:'var(--faint)', html:`Энэ ангилал, зэрэглэлд хариу өгөх хугацаа: <b>${slaFor(state.cat,state.urg)}</b>. Хариуцагч автоматаар хуваарилагдана.`});
@@ -2667,7 +2720,9 @@ function cfAccounts(){
   let a=store.get(key,null); if(a) return a;
   const rnd=mulberry(cfKey().split('').reduce((x,c)=>x+c.charCodeAt(0),7));
   const dim=new Date(cfDate.getFullYear(), cfDate.getMonth()+1, 0).getDate();
-  const units=UNITS.slice(1);
+  /* прототипийн жишээ дата — салбаруудын төлөөлөл (production дээр Нэткороос бүх салбараар татагдана) */
+  const units=['Баянгол салбар','Сонгинохайрхан салбар','Чингэлтэй салбар','Сансар салбар','Их Монгол салбар',
+    'Баянзүрх салбар','Дархан салбар','Эрдэнэт салбар','Хөвсгөл салбар','Говь-Алтай салбар'];
   const prods=[['ИТГЭЛЦЭЛ MNT 6.0','6 сар',15.0],['ИТГЭЛЦЭЛ MNT 9.0','9 сар',16.0],['ИТГЭЛЦЭЛ MNT 12.0','12 сар',17.5],['БОГИНО ХУГАЦААТ ЗЭЭЛ MNT','12 сар',18.0],['ИТГЭЛЦЭЛ USD 12.0','12 сар',4.0]];
   a=[];
   const n=20+Math.floor(rnd()*6);
@@ -2827,11 +2882,13 @@ $('cfRemindLater').addEventListener('click',()=>{ $('cfRemindWrap').style.displa
 $('cfRemindGo').addEventListener('click',()=>{ $('cfRemindWrap').style.display='none'; gotoView('cfview'); });
 function renderCF(){
   if(!state.user) return;
+  $('cfImport').hidden=!isAdmin();
   const uSel=$('cfUnit');
   if(isAdmin()){
     uSel.hidden=false;
     const cur=uSel.value;
-    uSel.innerHTML='<option value="all">Бүх салбар</option>'+UNITS.slice(1).map(u=>`<option>${u}</option>`).join('');
+    const og=(lbl,arr)=>`<optgroup label="${lbl}">`+arr.map(u=>`<option>${u}</option>`).join('')+'</optgroup>';
+    uSel.innerHTML='<option value="all">Бүх салбар</option>'+og('Улаанбаатар',UNITS_UB)+og('Орон нутаг',UNITS_RURAL);
     if(cur) uSel.value=cur;
   } else uSel.hidden=true;
   cfHeader(); cfCalendar(); cfTable();
@@ -2840,6 +2897,74 @@ $('cfPrev').addEventListener('click',()=>{ cfDate=new Date(cfDate.getFullYear(),
 $('cfNext').addEventListener('click',()=>{ cfDate=new Date(cfDate.getFullYear(), cfDate.getMonth()+1, 1); cfDay=0; renderCF(); });
 $('cfUnit').addEventListener('change',()=>{ cfDay=0; renderCF(); });
 $('cfAllBtn').addEventListener('click',()=>{ cfDay=0; renderCF(); });
+
+/* --- Cashflow ↔ Excel: одоогийн Excel хөтлөлтийн зуршилтай нийцүүлсэн хуулах, буулгах --- */
+function cfTsv(){
+  const d=cfDecs(), mm=String(cfDate.getMonth()+1).padStart(2,'0');
+  const head=['Огноо','Данс','Харилцагч','Бүтээгдэхүүн','Дүн','Валют','Хүү %','Салбар','Шийдвэр','Шинэ хугацаа','Шинэ хүү %','Сунгах дүн','Хэрхэн гарах','Тайлбар','Бөглөсөн','Бөглөсөн цаг'];
+  const rows=cfScope().filter(r=>!cfDay||r.day===cfDay).map(r=>{
+    const dd=d[r.id]||{};
+    return [cfDate.getFullYear()+'.'+mm+'.'+String(r.day).padStart(2,'0'), r.acct, r.name, r.ptype,
+      r.amount, r.cur, r.rate, r.unit, dd.dec||'',
+      dd.dec==='Сунгана'?(dd.term||''):'', dd.dec==='Сунгана'?(dd.rate||''):'', dd.dec==='Сунгана'?(dd.amt||''):'',
+      dd.dec==='Гарна'?(dd.how||''):'', dd.note||'', dd.by||'', dd.at||''];
+  });
+  return [head, ...rows].map(r=>r.join('\t')).join('\n');
+}
+function cfCopyFallback(t,done){
+  const ta=document.createElement('textarea'); ta.value=t; ta.style.cssText='position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); done(); }catch(e){ toast('Хуулж чадсангүй — дахин оролдоно уу'); }
+  ta.remove();
+}
+$('cfCopy').addEventListener('click',()=>{
+  const t=cfTsv();
+  const done=()=>toast('Хуулагдлаа — Excel дээрээ Ctrl+V хийж буулгана уу');
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(t).then(done).catch(()=>cfCopyFallback(t,done));
+  else cfCopyFallback(t,done);
+});
+let cfImpRows=null;
+function cfImpParse(){
+  const lines=$('cfImpTxt').value.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  const out=[], dim=new Date(cfDate.getFullYear(), cfDate.getMonth()+1, 0).getDate();
+  lines.forEach(l=>{
+    const c=l.split('\t').map(x=>x.trim());
+    if(c.length<5) return;
+    const dayRaw=(c[0]||'').match(/(\d{1,2})\s*$/);
+    const amt=Number((c[4]||'').replace(/[^\d.]/g,''));
+    if(!dayRaw||!amt) return; /* толгой мөр эсвэл дутуу мөр */
+    const day=Math.min(Math.max(Number(dayRaw[1]),1),dim);
+    const unitRaw=(c[6]||'').trim();
+    const unit=UNITS.find(u=>u===unitRaw||(unitRaw&&u.startsWith(unitRaw)))||unitRaw||UNITS[1];
+    out.push({day, acct:(c[1]||'').replace(/\s/g,''), name:c[2]||'', ptype:c[3]||'',
+      amount:amt, rate:parseFloat((c[5]||'').replace(',','.'))||0,
+      cur:/\$|USD/i.test(l)?'$':'₮', term:'', unit});
+  });
+  return out;
+}
+$('cfImport').addEventListener('click',()=>{
+  $('cfImpTxt').value=''; $('cfImpInfo').textContent=''; $('cfImpApply').disabled=true; cfImpRows=null;
+  $('cfImpMon').textContent=cfDate.getFullYear()+' · '+String(cfDate.getMonth()+1).padStart(2,'0')+'-сар';
+  $('cfImpWrap').style.display='flex'; $('cfImpTxt').focus();
+});
+$('cfImpTxt').addEventListener('input',()=>{
+  cfImpRows=cfImpParse();
+  const tot=cfImpRows.reduce((s,r)=>s+(r.cur==='₮'?r.amount:0),0);
+  $('cfImpInfo').textContent=cfImpRows.length
+    ? cfImpRows.length+' данс танигдлаа · нийт '+(tot/1e6).toFixed(0)+' сая ₮'
+    : 'Мөр танигдсангүй — баганууд таб-аар (Excel-ээс шууд хуулбал) тусгаарлагдсан эсэхийг шалгана уу.';
+  $('cfImpApply').disabled=!cfImpRows.length;
+});
+$('cfImpCancel').addEventListener('click',()=>{ $('cfImpWrap').style.display='none'; });
+$('cfImpApply').addEventListener('click',()=>{
+  if(!cfImpRows||!cfImpRows.length) return;
+  const a=cfImpRows.map((r,i)=>Object.assign({id:cfKey()+'-i'+(i+1)}, r)).sort((x,y)=>x.day-y.day);
+  store.set('nc2.cfA.'+cfKey(), a);
+  store.set(cfDecKey(), {});
+  $('cfImpWrap').style.display='none'; cfDay=0; renderCF();
+  toast(a.length+' данс '+cfKey()+' сард буулгалаа');
+});
 
 /* ================= Google Chat мэдэгдэл ================= */
 const chatCfg=()=>store.get('nc2.chat',{url:'', onNew:true, onlyUrgent:false, onClarify:true});
