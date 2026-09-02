@@ -210,7 +210,7 @@
 
   .crumb{display:inline-flex; align-items:center; gap:10px; font-size:10.5px; font-weight:600; letter-spacing:.11em;
     text-transform:uppercase; color:var(--gold); margin-bottom:16px}
-  .crumb .dot{width:22px; height:1px; background:var(--gold)}
+  .crumb .dot{display:none}
   h2.page{font-family:var(--font-display); font-size:clamp(23px,3vw,31px); font-weight:800; letter-spacing:-.02em;
     margin:0 0 12px; text-wrap:balance; line-height:1.16}
   .lede{color:var(--muted); font-size:15px; line-height:1.7; max-width:64ch; margin:0 0 28px}
@@ -597,7 +597,7 @@
     box-shadow:0 18px 44px color-mix(in srgb, #232577 22%, transparent)}
   .hero-lion{position:absolute; right:-26px; bottom:-58px; color:rgba(255,255,255,.09); pointer-events:none}
   .hero>:not(.hero-bg){position:relative; z-index:1}
-  .hero .crumb{color:#7de8da} .hero .crumb .dot{background:#7de8da}
+  .hero .crumb{color:#7de8da}
   .hero h2.page{color:#fff; margin-bottom:10px}
   .hero .lede{color:rgba(238,243,248,.78); margin-bottom:22px}
   .hero .hs-in{border-color:transparent; box-shadow:0 10px 30px rgba(10,15,40,.28)}
@@ -694,16 +694,16 @@
       <p>Эх үүсвэрийн бүтээгдэхүүнтэй холбоотой хүсэлт, санал, гомдлоо нэг цэгээс илгээж, шийдвэрлэлтийг нь эхнээс нь дуустал хянана.</p>
     </div>
     <div class="vals">
-      <div class="v"><span class="tick">—</span><span><b>Дараалсан дугаарлалт</b> · бүртгэл бүр ЭҮ / СГ дугаартай</span></div>
-      <div class="v"><span class="tick">—</span><span><b>И-мэйл баталгаажуулалт</b> · хариуцсан газар руу автоматаар</span></div>
-      <div class="v"><span class="tick">—</span><span><b>Drive архив</b> · хавсралт он, сар, ангиллаар цэгцлэгдэнэ</span></div>
-      <div class="v"><span class="tick">—</span><span><b>Дашбоард</b> · үр дүнг ХОБПХГ-ын багт нэгтгэн харуулна</span></div>
+      <div class="v"><span class="tick">✓</span><span><b>Дараалсан дугаарлалт</b> · бүртгэл бүр ЭҮ / СГ дугаартай</span></div>
+      <div class="v"><span class="tick">✓</span><span><b>И-мэйл баталгаажуулалт</b> · хариуцсан газар руу автоматаар</span></div>
+      <div class="v"><span class="tick">✓</span><span><b>Drive архив</b> · хавсралт он, сар, ангиллаар цэгцлэгдэнэ</span></div>
+      <div class="v"><span class="tick">✓</span><span><b>Дашбоард</b> · үр дүнг ХОБПХГ-ын багт нэгтгэн харуулна</span></div>
     </div>
     <div class="lb-foot">Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар</div>
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v2.4</span>
+      <span class="proto-badge">Прототип v2.5</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -1038,9 +1038,9 @@
         </div>
         <div class="after">
           <div class="t">Илгээсний дараа автоматаар</div>
-          <div class="a"><span class="ic">—</span><span>Хүсэлт <b>ЭҮ-2026-XXXX</b> дугаартай бүртгэлд орно</span></div>
-          <div class="a"><span class="ic">—</span><span>ХОБПХГ-ын и-мэйл рүү баталгаажуулалт очно</span></div>
-          <div class="a"><span class="ic">—</span><span>Хавсралт Drive-ын ангилсан хавтаст хадгалагдана</span></div>
+          <div class="a"><span class="ic">•</span><span>Хүсэлт <b>ЭҮ-2026-XXXX</b> дугаартай бүртгэлд орно</span></div>
+          <div class="a"><span class="ic">•</span><span>ХОБПХГ-ын и-мэйл рүү баталгаажуулалт очно</span></div>
+          <div class="a"><span class="ic">•</span><span>Хавсралт Drive-ын ангилсан хавтаст хадгалагдана</span></div>
         </div>
       </div>
     </aside>
@@ -1122,9 +1122,9 @@
         </div>
         <div class="after">
           <div class="t">Илгээсний дараа автоматаар</div>
-          <div class="a"><span class="ic">—</span><span>Мэдэгдэл <b>СГ-2026-XXXX</b> дугаартай бүртгэлд орно</span></div>
-          <div class="a"><span class="ic">—</span><span>ХОБПХГ-ын и-мэйл рүү баталгаажуулалт очно</span></div>
-          <div class="a"><span class="ic">—</span><span>Хавсралт Drive-ын ангилсан хавтаст хадгалагдана</span></div>
+          <div class="a"><span class="ic">•</span><span>Мэдэгдэл <b>СГ-2026-XXXX</b> дугаартай бүртгэлд орно</span></div>
+          <div class="a"><span class="ic">•</span><span>ХОБПХГ-ын и-мэйл рүү баталгаажуулалт очно</span></div>
+          <div class="a"><span class="ic">•</span><span>Хавсралт Drive-ын ангилсан хавтаст хадгалагдана</span></div>
         </div>
       </div>
     </aside>
@@ -1265,11 +1265,11 @@
       <div class="card" style="border-left:3px solid var(--gold)">
         <div class="step-head"><span class="step-no">00</span><h3>Аль ч нөхцөлд нийтлэг дүрэм</h3></div>
         <div class="g-common">
-          <div class="a"><span class="ic">—</span><span>Дуусахаас <b>7-оос доошгүй хоногийн өмнө</b> харилцагчтайгаа холбогдож, шийдвэрийг нь урьдчилан тодруул.</span></div>
-          <div class="a"><span class="ic">—</span><span>Шийдвэрээ (сунгана / бага дүнгээр / гарна) <b>Cashflow хэсэгт заавал бүртгэ</b> — ХОБПХГ эх үүсвэрийн төлөвлөлтөө үүгээр хийдэг тул сар бүрийн үүрэг.</span></div>
-          <div class="a"><span class="ic">—</span><span>Гүйлгээ бүрд <b>харилцагчийн бичгээр өгсөн, гарын үсэгтэй хүсэлт</b> заавал — утсаар ярьсны үндсэн дээр сунгалт, хаалт хийхгүй.</span></div>
-          <div class="a"><span class="ic">—</span><span>Гэрээ, хүсэлтийн хуулбарыг Drive-ын <b>21. Funding Support Portal</b> хавтаст Naming Standard v1.0 нэрээр хадгал.</span></div>
-          <div class="a"><span class="ic">—</span><span><b>300 · NET ИТГЭЛЦЭЛ</b> бүрэн дижитал — сунгалт, хаалт нь аппаар автоматаар хийгдэнэ; салбараас зөвхөн банкны данс солих хүсэлт (F10) илгээнэ.</span></div>
+          <div class="a"><span class="ic">•</span><span>Дуусахаас <b>7-оос доошгүй хоногийн өмнө</b> харилцагчтайгаа холбогдож, шийдвэрийг нь урьдчилан тодруул.</span></div>
+          <div class="a"><span class="ic">•</span><span>Шийдвэрээ (сунгана / бага дүнгээр / гарна) <b>Cashflow хэсэгт заавал бүртгэ</b> — ХОБПХГ эх үүсвэрийн төлөвлөлтөө үүгээр хийдэг тул сар бүрийн үүрэг.</span></div>
+          <div class="a"><span class="ic">•</span><span>Гүйлгээ бүрд <b>харилцагчийн бичгээр өгсөн, гарын үсэгтэй хүсэлт</b> заавал — утсаар ярьсны үндсэн дээр сунгалт, хаалт хийхгүй.</span></div>
+          <div class="a"><span class="ic">•</span><span>Гэрээ, хүсэлтийн хуулбарыг Drive-ын <b>21. Funding Support Portal</b> хавтаст Naming Standard v1.0 нэрээр хадгал.</span></div>
+          <div class="a"><span class="ic">•</span><span><b>300 · NET ИТГЭЛЦЭЛ</b> бүрэн дижитал — сунгалт, хаалт нь аппаар автоматаар хийгдэнэ; салбараас зөвхөн банкны данс солих хүсэлт (F10) илгээнэ.</span></div>
         </div>
       </div>
 
@@ -1434,10 +1434,10 @@
         <div class="card">
           <div class="step-head"><span class="step-no">03</span><h3>Хяналтын шугам, эскалаци, баримтын багц</h3></div>
           <div class="g-common">
-            <div class="a"><span class="ic">—</span><span><b>3 шугамын хяналт:</b> ХОБХУГ (ЭТА, ХОМ) — 1-р шугам · ЭУГ + ХКГ — 2-р шугам · Дотоод аудит — 3-р шугам.</span></div>
-            <div class="a"><span class="ic">—</span><span><b>Эскалацийн зам:</b> Гүйцэтгэгч → ХОБХУГ → ХОБПХГ → CIO/CEO. SLA хэтэрсэн тохиолдол системээр автоматаар дээшилнэ.</span></div>
-            <div class="a"><span class="ic">—</span><span><b>Баримтын багц (Drive):</b> <span class="mono">DURAM / JURAM / RACI / SLA / CTL / MAP -IPPDD-ACCOPEN-2026</span> — <a href="https://drive.google.com/drive/folders/1d991V0T5vU4J0f0QYmfCAQKk8unobC-E" target="_blank" rel="noopener" style="color:var(--brand)">багцыг Drive дээр нээх</a>. Төлөв: Final Draft — ХОБПХГ-ын захирлаар батлагдах шатанд.</span></div>
-            <div class="a"><span class="ic">—</span><span><b>EOM v5.0 уялдаа:</b> ХОБПХГ = Investment Product &amp; Process Development, ХОБХУГ = Investment Sales &amp; Client Management — хоёул CIO-гийн удирдлагад (Investment VS). Хүүгийн тушаалыг Актив, пассивын хороо (ALCO) баталдаг; хороодын шийдвэр DEC-ОООО-XXX дугаартай логт бүртгэгдэнэ. Энэ портал To-Be зурагт NetWork Employee Super App-ийн Service Desk Workflow болон Netcore-ийн 6.0 Gate модультай нэгдэнэ.</span></div>
+            <div class="a"><span class="ic">•</span><span><b>3 шугамын хяналт:</b> ХОБХУГ (ЭТА, ХОМ) — 1-р шугам · ЭУГ + ХКГ — 2-р шугам · Дотоод аудит — 3-р шугам.</span></div>
+            <div class="a"><span class="ic">•</span><span><b>Эскалацийн зам:</b> Гүйцэтгэгч → ХОБХУГ → ХОБПХГ → CIO/CEO. SLA хэтэрсэн тохиолдол системээр автоматаар дээшилнэ.</span></div>
+            <div class="a"><span class="ic">•</span><span><b>Баримтын багц (Drive):</b> <span class="mono">DURAM / JURAM / RACI / SLA / CTL / MAP -IPPDD-ACCOPEN-2026</span> — <a href="https://drive.google.com/drive/folders/1d991V0T5vU4J0f0QYmfCAQKk8unobC-E" target="_blank" rel="noopener" style="color:var(--brand)">багцыг Drive дээр нээх</a>. Төлөв: Final Draft — ХОБПХГ-ын захирлаар батлагдах шатанд.</span></div>
+            <div class="a"><span class="ic">•</span><span><b>EOM v5.0 уялдаа:</b> ХОБПХГ = Investment Product &amp; Process Development, ХОБХУГ = Investment Sales &amp; Client Management — хоёул CIO-гийн удирдлагад (Investment VS). Хүүгийн тушаалыг Актив, пассивын хороо (ALCO) баталдаг; хороодын шийдвэр DEC-ОООО-XXX дугаартай логт бүртгэгдэнэ. Энэ портал To-Be зурагт NetWork Employee Super App-ийн Service Desk Workflow болон Netcore-ийн 6.0 Gate модультай нэгдэнэ.</span></div>
           </div>
         </div>
       </div>
