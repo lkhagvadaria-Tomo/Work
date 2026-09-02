@@ -528,6 +528,46 @@ fs.writeFileSync(path.join(OUT, 'shot.png'), PNG);
   R.protoFrozen = await page.evaluate(() => Object.isFrozen(Object.prototype));
   await shot('v29-audit-fixes.png');
 
+  // v3.0: тэсвэрлэлт ба бүрэн бүтэн байдал
+  await page.click('#sideNav .snav[data-view="dashview"]'); await page.waitForTimeout(300);
+  // A) Нөөшлөх — JSON бүтэц зөв
+  R.backupCard = await page.isVisible('#backupCard');
+  R.backupOk = await page.evaluate(() => {
+    const bk = backupData();
+    return bk.app === 'funding-portal' && bk.keys > 0 && typeof bk.data['nc2.recs'] === 'string';
+  });
+  // A) Сэргээх — нөөцөөс датаг буцаана
+  R.restoreOk = await page.evaluate(() => {
+    const before = store.get('nc2.recs', []).length;
+    const bk = JSON.stringify(backupData());
+    // датаг гэмтээгээд нөөцөөс сэргээнэ
+    store.set('nc2.recs', []); state.recs = [];
+    const obj = JSON.parse(bk);
+    Object.entries(obj.data).forEach(([k, v]) => { if (k.indexOf('nc2.') === 0) localStorage.setItem(k, v); });
+    state.recs = store.get('nc2.recs', []);
+    return state.recs.length === before && before > 0;
+  });
+  // C) Бүрэн бүтэн байдал: гараар агуулга өөрчлөхөд гажуудал илэрнэ
+  R.integrityDetectsTamper = await page.evaluate(() => {
+    const r = state.recs.find(x => x.sig);
+    if (!r) return 'no-signed-record';
+    const okBefore = recIntegrity(r) === 'ok';
+    const orig = r.desc;
+    r.desc = (r.desc || '') + ' ГАЖУУДУУЛСАН';
+    const badAfter = recIntegrity(r) === 'bad';
+    r.desc = orig; // сэргээх
+    return okBefore && badAfter;
+  });
+  await page.click('#sideNav .snav[data-view="regview"]'); await page.waitForTimeout(300);
+  R.integrityLine = (await page.textContent('#regIntegrityLine')).length > 0;
+  // B) Session автомат гарах (богино TTL-ээр)
+  R.autoLogout = await (async () => {
+    await page.evaluate(() => { SESSION_MS = 700; sessReset(); });
+    await page.waitForTimeout(1300);
+    return page.evaluate(() => document.getElementById('login').style.display === 'grid' && state.user === null);
+  })();
+  await shot('v30-resilience.png');
+
   R.errors = errors;
   console.log(JSON.stringify(R, null, 1));
   await browser.close();

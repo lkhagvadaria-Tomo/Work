@@ -703,7 +703,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v2.9</span>
+      <span class="proto-badge">Прототип v3.0</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -1191,6 +1191,25 @@
         <div id="chatLog" style="margin-top:12px"></div>
       </div>
 
+      <div class="card" id="backupCard" style="border-left:3px solid var(--good)">
+        <div class="step-head"><span class="step-no">DR</span><h3>Өгөгдөл нөөшлөх, сэргээх</h3>
+          <span class="aside">Хөтчийн дата устах эрсдэлээс хамгаална</span></div>
+        <p class="step-sub">Прототип горимд бүх бүртгэл, cashflow шийдвэр зөвхөн энэ хөтөчид хадгалагддаг тул <b>тогтмол нөөшил</b>. «Нөөшлөх» товч бүх датаг JSON болгож хуулна — Drive эсвэл файл дээрээ хадгал. Хөтөч цэвэрлэгдсэн, өөр компьютер руу шилжсэн үед «Сэргээх»-ээр буцаана. Production дээр сервер автоматаар нөөшилнө.</p>
+        <div class="att-btns" style="justify-content:flex-start;gap:12px;align-items:center">
+          <button class="ext-btn" id="bkExport" type="button">Нөөшлөх (JSON хуулах)</button>
+          <button class="ghost-btn" id="bkRestoreToggle" type="button">Сэргээх…</button>
+          <span id="bkStatus" style="font-size:12.5px;color:var(--faint)"></span>
+        </div>
+        <div id="bkRestoreBox" hidden style="margin-top:12px">
+          <textarea id="bkText" spellcheck="false" placeholder="Нөөцлөсөн JSON-оо энд буулгана уу (Ctrl+V)"
+            style="width:100%;min-height:110px;resize:vertical;background:var(--surface);color:var(--text);border:1px solid var(--border-strong);border-radius:10px;padding:10px 12px;font:12px/1.6 'JetBrains Mono',monospace"></textarea>
+          <div style="margin-top:9px;display:flex;gap:10px;align-items:center">
+            <button class="b2" id="bkImport" type="button" style="background:var(--grad);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-weight:600">Сэргээх (буулгасан датагаар солих)</button>
+            <span id="bkImpInfo" style="font-size:12.5px;color:var(--faint)"></span>
+          </div>
+        </div>
+      </div>
+
       <div class="tiles" id="dashTiles"></div>
       <div class="charts">
         <div class="chart-card wide">
@@ -1251,6 +1270,7 @@
         </table>
       </div>
       <div class="integrity">
+        <div id="regIntegrityLine" style="margin-bottom:8px"></div>
         <b>Бүрэн бүтэн байдлын зарчим.</b> Дугаар нь дараалсан бөгөөд алгасахгүй; бүртгэл үүссэний дараа агуулга нь засварлагдахгүй, устгагдахгүй — зөвхөн статус шинэчлэгдэж, түүх нь хадгалагдана; и-мэйл баталгаажуулалт бүрд илгээсэн цаг, хүлээн авагч бүртгэгдэнэ; хавсралт бүр Drive-ын нэг мөр байрлалтай — байгууллагын архивын «21. Funding Support Portal» хавтаст Naming Standard v1.0-ийн дагуу нэрлэгдэж хадгалагдана. Production дээр энэ бүртгэл сервер дээр хөтлөгдөж, аудитад CSV/Excel-ээр татагдана.
       </div>
     </div>
@@ -1820,6 +1840,23 @@ function autoAssign(rec){
   return {who, why};
 }
 function pushHist(rec,ev){ (rec.history=rec.history||[]).push({at:nowStr(), ev}); }
+/* Бүрэн бүтэн байдал: анхны илгээлтийн ӨӨРЧЛӨГДӨХГҮЙ талбаруудаас хэш тооцно. Статус, шийдвэр
+   зэрэг зөвшөөрөгдсөн өөрчлөлт хэшид ороогүй тул зөвхөн анхны агуулгын гажуудлыг илрүүлнэ.
+   Анхаар: энэ нь гараар (JSON засах) гажуудлыг ИЛРҮҮЛЭХ нотолгоо; криптограф баталгаа биш —
+   production-д сервер талын хадгалалтаар л жинхэнэ өөрчлөгдөшгүй болно. */
+function hstr(str){
+  let h1=0xdeadbeef, h2=0x41c6ce57;
+  for(let i=0;i<str.length;i++){ const c=str.charCodeAt(i);
+    h1=Math.imul(h1^c,2654435761); h2=Math.imul(h2^c,1597334677); }
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(16);
+}
+function recCore(r){ return [r.kind,r.id,r.at,r.by,r.byEmail,r.dept,r.cat,r.catName,
+  r.product||'',r.amount||'',r.cur||'',r.rateNow||'',r.rateAsk||'',r.bonus||'',
+  r.custName||'',r.custAcct||'',r.area||'',r.desc||''].join('\u241f'); }
+function recSig(r){ return hstr(recCore(r)); }
+function recIntegrity(r){ return r.sig ? (recSig(r)===r.sig?'ok':'bad') : 'legacy'; }
 
 const ICONS = {
   percent:'<circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M19 5 5 19"/>',
@@ -1900,12 +1937,23 @@ function loginAs(email){
   $('sumDeptF').textContent=e.unit;
   gotoView('newview');
   restoreDrafts(); renderReqs(); renderFreqCats(); renderHome();
+  sessReset();
   if(!store.get('nc2.welcomed.'+email,false)) setTimeout(()=>showWelcome(false),400);
   else setTimeout(cfRemindCheck, 600);
 }
 $('btnLogout').addEventListener('click',()=>{
-  state.user=null; $('app').style.display='none'; $('login').style.display='grid'; $('acctPicker').hidden=true;
+  state.user=null; clearTimeout(sessTimer);
+  $('app').style.display='none'; $('login').style.display='grid'; $('acctPicker').hidden=true;
 });
+/* Session эрүүл ахуй: идэвхгүй байдал үргэлжилбэл автоматаар гарна — дундын компьютерт
+   харилцагчийн мэдээлэл нээлттэй үлдэхээс сэргийлнэ. Production-д сервер талын session TTL. */
+let SESSION_MS=20*60*1000, sessTimer=null;
+function sessReset(){
+  if(!state.user) return;
+  clearTimeout(sessTimer);
+  sessTimer=setTimeout(()=>{ if(state.user){ toast('Идэвхгүй байснаас автоматаар гарлаа'); $('btnLogout').click(); } }, SESSION_MS);
+}
+['click','keydown','mousemove','touchstart','scroll'].forEach(ev=>document.addEventListener(ev,sessReset,{passive:true}));
 
 /* ================= views ================= */
 const VIEWS=['newview','reqview','fbkview','myview','cfview','guideview','dashview','regview'];
@@ -2358,6 +2406,7 @@ $('btnSubmit').addEventListener('click',()=>{
   pushHist(rec,'Бүртгэгдсэн — '+rec.id);
   pushHist(rec,'Автоматаар хуваарилагдав → '+asg.who.name+' ('+asg.who.role+') — шалтгаан: '+asg.why);
   pushHist(rec,'Хариуцагч болон илгээгчид и-мэйл мэдэгдэл явав (прототип)');
+  rec.sig=recSig(rec);
   state.recs.push(rec);
   const saved=store.set('nc2.recs',state.recs); store.set('nc2.seqR',store.get('nc2.seqR',0)+1);
   if(!saved) toast('АНХААР: төхөөрөмжийн хадгалалт дүүрсэн тул бүртгэл хөтөчид хадгалагдаагүй — хуучин бүртгэл, зургаа цэвэрлээд дахин илгээнэ үү');
@@ -2397,6 +2446,7 @@ $('btnSubmitF').addEventListener('click',()=>{
   pushHist(rec,'Бүртгэгдсэн — '+rec.id);
   pushHist(rec,'Автоматаар хуваарилагдав → '+asg.who.name+' ('+asg.who.role+') — шалтгаан: '+asg.why);
   pushHist(rec,'Хариуцагч болон илгээгчид и-мэйл мэдэгдэл явав (прототип)');
+  rec.sig=recSig(rec);
   state.recs.push(rec);
   const savedF=store.set('nc2.recs',state.recs); store.set('nc2.seqF',store.get('nc2.seqF',0)+1);
   if(!savedF) toast('АНХААР: төхөөрөмжийн хадгалалт дүүрсэн тул бүртгэл хөтөчид хадгалагдаагүй — хуучин бүртгэл, зургаа цэвэрлээд дахин илгээнэ үү');
@@ -2543,6 +2593,14 @@ function renderRegistry(filter=''){
   const rows=state.recs.filter(r=>(regKindV==='all'||r.kind===regKindV)
     &&(!q||[r.id,r.dept,r.cat,r.catName,r.product||'',r.by,r.status].join(' ').toLowerCase().includes(q)));
   $('regCount').textContent=`${rows.length} / ${state.recs.length} бүртгэл`;
+  const il=$('regIntegrityLine');
+  if(il){
+    const chk=state.recs.map(recIntegrity);
+    const bad=chk.filter(x=>x==='bad').length, ok=chk.filter(x=>x==='ok').length, leg=chk.filter(x=>x==='legacy').length;
+    il.innerHTML = bad
+      ? `<span style="color:var(--danger);font-weight:600">⚠ ${bad} бүртгэлийн анхны агуулга өөрчлөгдсөн байна</span> — аудитаар шалгана уу.${leg?` (${leg} хуучин бүртгэл хэшгүй)`:''}`
+      : `<span style="color:var(--good);font-weight:600">✓ ${ok} бүртгэлийн анхны агуулга өөрчлөгдөөгүй нь баталгаажлаа.</span>${leg?` (${leg} хуучин бүртгэл хэшгүй)`:''}`;
+  }
   const tb=$('regBody'); tb.innerHTML='';
   if(!rows.length){ tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--faint);padding:32px">Бүртгэл алга.</td></tr>'; return; }
   [...rows].sort((a,b)=>b.ts-a.ts).forEach(r=>{
@@ -2550,7 +2608,8 @@ function renderRegistry(filter=''){
     const det=r.kind==='REQ'
       ? (r.product?`${esc(r.product)}<div class="sub">${esc(r.amount?r.amount+' '+(r.cur||'₮'):'')}${r.rateNow?` · ${esc(r.rateNow)}%→${esc(r.rateAsk)}%`:''}</div>`:'—')
       : `${esc(r.area||'—')}`;
-    tr.innerHTML=`<td class="mono"><span class="kind-badge ${r.kind==='REQ'?'req':'fbk'}">${r.kind==='REQ'?'ЭҮ':'СГ'}</span> ${r.id}</td>
+    const integ=recIntegrity(r);
+    tr.innerHTML=`<td class="mono"><span class="kind-badge ${r.kind==='REQ'?'req':'fbk'}">${r.kind==='REQ'?'ЭҮ':'СГ'}</span> ${r.id}${integ==='bad'?' <span class="int-warn" title="Анхны агуулга өөрчлөгдсөн — аудитаар шалгана уу" style="color:var(--danger);font-weight:700">⚠</span>':''}</td>
       <td class="mono num">${r.at}</td>
       <td>${esc(r.dept)}<div class="sub">${esc(r.by)}</div></td>
       <td>${r.cat} · ${r.catName}<div class="sub">${r.type}</div></td>
@@ -2729,6 +2788,32 @@ $('btnClearDemo').addEventListener('click',()=>{
   state.recs=state.recs.filter(r=>!r.demo);
   store.set('nc2.recs',state.recs);
   renderDash(); renderReqs(); toast('Жишээ өгөгдөл арилгагдлаа');
+});
+
+/* ================= өгөгдөл нөөшлөх / сэргээх ================= */
+function backupData(){
+  const o={};
+  for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.indexOf('nc2.')===0) o[k]=localStorage.getItem(k); }
+  return {app:'funding-portal', v:1, at:nowStr(), by:state.user?state.user.name:'', keys:Object.keys(o).length, data:o};
+}
+$('bkExport').addEventListener('click',()=>{
+  const bk=backupData(), t=JSON.stringify(bk);
+  const done=()=>{ $('bkStatus').textContent=bk.keys+' түлхүүр хуулагдлаа ('+bk.at+') — аюулгүй газар хадгална уу'; toast('Нөөц JSON хуулагдлаа'); };
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(t).then(done).catch(()=>cfCopyFallback(t,done));
+  else cfCopyFallback(t,done);
+});
+$('bkRestoreToggle').addEventListener('click',()=>{ const b=$('bkRestoreBox'); b.hidden=!b.hidden; if(!b.hidden) setTimeout(()=>$('bkText').focus(),30); });
+$('bkImport').addEventListener('click',()=>{
+  let obj; try{ obj=JSON.parse($('bkText').value); }catch(e){ $('bkImpInfo').textContent='JSON буруу — нөөцөө бүтнээр нь буулгасан эсэхээ шалгана уу'; return; }
+  const data=obj&&obj.data;
+  if(!data||typeof data!=='object'){ $('bkImpInfo').textContent='Нөөцийн бүтэц таарахгүй байна'; return; }
+  let n=0;
+  Object.entries(data).forEach(([k,v])=>{ if(k.indexOf('nc2.')===0&&typeof v==='string'){ try{ localStorage.setItem(k,v); n++; }catch(e){} } });
+  state.recs=store.get('nc2.recs',[]);
+  $('bkImpInfo').textContent=n+' түлхүүр сэргээгдлээ ('+(obj.at||'')+')';
+  toast('Өгөгдөл нөөцөөс сэргээгдлээ');
+  renderDash(); renderReqs(); renderHome();
 });
 
 /* ================= нэгдсэн хайлт (нүүр) ================= */
