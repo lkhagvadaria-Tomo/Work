@@ -630,7 +630,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v1.5</span>
+      <span class="proto-badge">Прототип v1.6</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -1081,6 +1081,7 @@
               <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="chatOnNew" checked> Шинэ бүртгэл бүрд</label>
               <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="chatOnlyUrgent"> Зөвхөн Яаралтай / Критик</label>
               <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="chatOnClarify" checked> Тодруулгын хариу ирэхэд</label>
+              <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="chatOnDecision" checked> Шийдвэрийн хариу илгээхэд</label>
             </div></div>
         </div>
         <div class="att-btns" style="justify-content:flex-start;align-items:center;gap:14px">
@@ -1232,6 +1233,43 @@
     <div class="mf">
       <button class="ghost-btn" id="cModalCancel">Болих</button>
       <button class="b2" id="cModalSend">Илгээх</button>
+    </div>
+  </div>
+</div>
+
+<!-- шийдвэрийн хариу илгээх -->
+<div id="dModalWrap" role="dialog" aria-modal="true" aria-label="Шийдвэрийн хариу илгээх"
+  style="position:fixed;inset:0;z-index:76;background:rgba(10,18,28,.6);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px">
+  <div class="modal" style="width:min(620px,100%)">
+    <div id="dForm">
+      <div class="mh" style="text-align:left">
+        <h3 style="font-size:19px">Шийдвэрийн хариу — <span id="dModalId" class="mono" style="font-size:15px;color:var(--gold)"></span></h3>
+        <p style="margin:6px 0 14px;max-width:none">Хариу нь илгээгч рүү и-мэйлээр очиж, бүртгэлийн түүхэнд хадгалагдана. Статус хариу илгээгдсэний дараа шинэчлэгдэнэ.</p>
+      </div>
+      <div style="padding:0 28px 4px">
+        <div class="field" style="margin-bottom:13px"><div class="lb" id="dTextLb">Шийдвэрийн хариу (заавал)</div>
+          <textarea id="dModalText" class="ta" style="min-height:88px" placeholder="Жишээ: 18.0% хүүг ГЗ-ын орлогчийн зөвшөөрлөөр баталлаа. Гэрээг шинэ хүүгээр байгуулна уу."></textarea></div>
+        <div class="field"><div class="lb">Нэмэлт мэдээлэл, нөхцөл (сайн дурын)</div>
+          <textarea id="dModalExtra" class="ta" style="min-height:62px" placeholder="Жишээ: Урамшууллын хувь 0.5%-иас хэтрэхгүй. Дараагийн сунгалтад дахин зөвшөөрөл авна."></textarea></div>
+      </div>
+      <div class="mf" style="gap:10px">
+        <button class="ghost-btn" id="dModalCancel">Болих</button>
+        <button class="b2" id="dModalSend" disabled>Хариу илгээх</button>
+      </div>
+    </div>
+    <div id="dPreview" hidden>
+      <div class="mh">
+        <div class="okmark"><svg class="i" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5.5 5.5L20 6.5"/></svg></div>
+        <h3 id="dPrevTitle">—</h3>
+        <p>Шийдвэрийн хариу илгээгч рүү и-мэйлээр очлоо. Хариу нь бүртгэлийн түүхэнд хадгалагдаж, илгээгчийн «Миний бүртгэлүүд» хэсэгт харагдана.</p>
+      </div>
+      <div class="mailcard">
+        <div class="mc-h"><span>И-мэйл — шийдвэрийн хариу</span><span class="sim">Прототип — урьдчилсан харагдац</span></div>
+        <div class="mrow"><span class="k">Хэнд</span><span class="mono" id="dTo">—</span></div>
+        <div class="mrow"><span class="k">Гарчиг</span><span id="dSubj">—</span></div>
+        <div class="mbody" id="dBody"></div>
+      </div>
+      <div class="mf"><button class="b2" id="dModalOk">Ойлголоо</button></div>
     </div>
   </div>
 </div>
@@ -2143,6 +2181,16 @@ function renderReqs(){
       });
       d.appendChild(cbox);
     }
+    if(r.decision){
+      const rej=r.decision.verdict==='Татгалзсан';
+      const box=document.createElement('div');
+      box.style.cssText='margin-top:12px;background:'+(rej?'var(--danger-soft)':'var(--good-soft)')
+        +';border:1px solid var(--border);border-left:3px solid '+(rej?'var(--danger)':'var(--good)')+';border-radius:10px;padding:13px 16px';
+      box.innerHTML=`<div style="font-size:12px;font-weight:600;color:${rej?'var(--danger)':'var(--good)'};margin-bottom:5px">${rej?'Татгалзсан шалтгаан':'Шийдвэрийн хариу'} (${r.decision.by} · ${r.decision.at}) — и-мэйлээр илгээгдсэн</div>
+        <div style="font-size:13.5px">${r.decision.text}</div>
+        ${r.decision.extra?`<div style="font-size:12.5px;color:var(--muted);margin-top:6px"><b>Нэмэлт мэдээлэл, нөхцөл:</b> ${r.decision.extra}</div>`:''}`;
+      d.appendChild(box);
+    }
     list.appendChild(d);
   });
 }
@@ -2183,6 +2231,8 @@ function renderRegistry(filter=''){
       STATUSES.forEach(s=>{ const o=document.createElement('option'); o.textContent=s; sel.appendChild(o); });
       sel.value=r.status;
       sel.addEventListener('change',()=>{
+        /* эцсийн статус руу шилжихэд шийдвэрийн хариуны шат заавал */
+        if(sel.value==='Шийдвэрлэсэн'||sel.value==='Татгалзсан'){ openDecision(r, sel); return; }
         pushHist(r,'Статус: '+r.status+' → '+sel.value+' ('+state.user.name+')');
         pushHist(r,'Илгээгчид и-мэйлээр мэдэгдэв (прототип)');
         r.status=sel.value; r.statusAt=nowStr();
@@ -3061,7 +3111,7 @@ $('cfImpApply').addEventListener('click',()=>{
 });
 
 /* ================= Google Chat мэдэгдэл ================= */
-const chatCfg=()=>store.get('nc2.chat',{url:'', onNew:true, onlyUrgent:false, onClarify:true});
+const chatCfg=()=>Object.assign({url:'', onNew:true, onlyUrgent:false, onClarify:true, onDecision:true}, store.get('nc2.chat',{}));
 function chatSave(p){ store.set('nc2.chat', Object.assign(chatCfg(), p)); }
 function chatLogAdd(msg, st, ok){
   const l=store.get('nc2.chatLog',[]);
@@ -3118,6 +3168,7 @@ function chatBindSettings(){
   $('chatOnNew').checked=cfg.onNew;
   $('chatOnlyUrgent').checked=cfg.onlyUrgent;
   $('chatOnClarify').checked=cfg.onClarify;
+  $('chatOnDecision').checked=cfg.onDecision;
   renderChatLog();
 }
 $('chatUrl').addEventListener('input',e=>{ chatSave({url:e.target.value.trim()});
@@ -3125,6 +3176,7 @@ $('chatUrl').addEventListener('input',e=>{ chatSave({url:e.target.value.trim()})
 $('chatOnNew').addEventListener('change',e=>chatSave({onNew:e.target.checked}));
 $('chatOnlyUrgent').addEventListener('change',e=>chatSave({onlyUrgent:e.target.checked}));
 $('chatOnClarify').addEventListener('change',e=>chatSave({onClarify:e.target.checked}));
+$('chatOnDecision').addEventListener('change',e=>chatSave({onDecision:e.target.checked}));
 $('btnChatTest').addEventListener('click',async()=>{
   $('chatStatus').textContent='Илгээж байна…';
   const st=await sendChatAlert('✅ Туршилт — Funding Support Portal-ын Google Chat мэдэгдэл ажиллаж байна.');
@@ -3132,6 +3184,60 @@ $('btnChatTest').addEventListener('click',async()=>{
     : st==='nocfg'?'Эхлээд webhook URL-ээ оруулна уу'
     : 'Энэ орчинд гадагш илгээх хориотой — тохиргоо хадгалагдсан, production дээр ажиллана';
 });
+
+/* ================= шийдвэрийн хариуны шат ================= */
+let decRec=null, decSel=null, decPrev='';
+function openDecision(r, sel){
+  decRec=r; decSel=sel; decPrev=r.status;
+  const rej=sel.value==='Татгалзсан';
+  $('dModalId').textContent=r.id;
+  $('dTextLb').textContent=rej?'Татгалзсан шалтгаан (заавал)':'Шийдвэрийн хариу (заавал)';
+  $('dModalText').value=''; $('dModalExtra').value='';
+  $('dModalSend').disabled=true;
+  $('dModalSend').textContent=rej?'Татгалзлыг илгээх':'Хариу илгээх';
+  $('dForm').hidden=false; $('dPreview').hidden=true;
+  $('dModalWrap').style.display='flex';
+  setTimeout(()=>$('dModalText').focus(),50);
+}
+function decClose(revert){
+  $('dModalWrap').style.display='none';
+  if(revert&&decSel) decSel.value=decPrev;
+  decRec=null; decSel=null;
+}
+$('dModalText').addEventListener('input',()=>{ $('dModalSend').disabled=$('dModalText').value.trim().length<5; });
+$('dModalCancel').addEventListener('click',()=>decClose(true));
+$('dModalWrap').addEventListener('click',e=>{ if(e.target===$('dModalWrap')&&!$('dForm').hidden) decClose(true); });
+function decMailBody(r){
+  const d=r.decision;
+  const L=[`Бүртгэлийн дугаар: ${r.id}`,`Ангилал: ${r.cat} · ${r.catName}`,`Шийдвэр: ${d.verdict}`,'',
+    d.verdict==='Татгалзсан'?'Татгалзсан шалтгаан:':'Шийдвэрийн хариу:', d.text];
+  if(d.extra){ L.push('','Нэмэлт мэдээлэл, нөхцөл:', d.extra); }
+  L.push('',`Шийдвэрлэсэн: ${d.by} · ${d.at}`,
+    `Анхны хүсэлт (${r.at}): ${r.desc.slice(0,160)}${r.desc.length>160?'…':''}`);
+  return L.join('\n');
+}
+$('dModalSend').addEventListener('click',()=>{
+  if(!decRec||!decSel) return;
+  const r=decRec, v=decSel.value;
+  const text=$('dModalText').value.trim(), extra=$('dModalExtra').value.trim();
+  if(!text) return;
+  r.decision={verdict:v, text, extra, by:state.user.name, at:nowStr()};
+  pushHist(r,'Статус: '+r.status+' → '+v+' ('+state.user.name+')');
+  pushHist(r,(v==='Татгалзсан'?'Татгалзсан шалтгаан':'Шийдвэрийн хариу')+': '+text);
+  if(extra) pushHist(r,'Нэмэлт мэдээлэл, нөхцөл: '+extra);
+  pushHist(r,'Илгээгч рүү шийдвэрийн и-мэйл явав — '+r.byEmail+' (прототип)');
+  r.status=v; r.statusAt=nowStr();
+  store.set('nc2.recs',state.recs);
+  if(chatCfg().onDecision) sendChatAlert(`${v==='Татгалзсан'?'⛔':'✅'} *${v} — ${r.id}*\n*Хариуцагч:* ${state.user.name}\n*Хариу:* ${text.slice(0,200)}`);
+  $('dPrevTitle').textContent=r.id+' — '+v;
+  $('dTo').textContent=r.byEmail;
+  $('dSubj').textContent=`[${r.id}] ${v} — ${r.catName}`;
+  $('dBody').textContent=decMailBody(r);
+  $('dForm').hidden=true; $('dPreview').hidden=false;
+  renderRegistry($('regSearch').value);
+  toast(r.id+' → '+v);
+});
+$('dModalOk').addEventListener('click',()=>decClose(false));
 
 /* ================= тодруулгын урсгал ================= */
 let clarifyRec=null;
