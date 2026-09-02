@@ -1,15 +1,15 @@
 <title>Эх үүсвэрийн портал</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
 <style>
   /* ============================================================
      Нэткапитал Санхүүгийн Групп — Эх үүсвэрийн портал (прототип)
-     Type:  Montserrat (гарчиг) · Open Sans (бие) · JetBrains Mono (тоо, код)
+     Type:  Inter (netcapital.mn-ийн хэв маягаар, гарчиг+бие) · JetBrains Mono (тоо, код)
      Brand tokens: --brand / --gold блокийг группийн албан ёсны
      hex кодоор солиход бүх интерфэйс дагаж өөрчлөгдөнө.
      ============================================================ */
   :root{
-    --font-body:"Open Sans","Segoe UI",system-ui,sans-serif;
-    --font-display:"Montserrat","Segoe UI",Arial,sans-serif;
+    --font-body:"Inter","Segoe UI",system-ui,sans-serif;
+    --font-display:"Inter","Segoe UI",system-ui,sans-serif;
     --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
 
     --bg:#f3f4f0;
@@ -208,7 +208,7 @@
   .crumb{display:inline-flex; align-items:center; gap:10px; font-size:10.5px; font-weight:600; letter-spacing:.11em;
     text-transform:uppercase; color:var(--gold); margin-bottom:16px}
   .crumb .dot{width:22px; height:1px; background:var(--gold)}
-  h2.page{font-family:var(--font-display); font-size:clamp(23px,3vw,31px); font-weight:700; letter-spacing:-.015em;
+  h2.page{font-family:var(--font-display); font-size:clamp(23px,3vw,31px); font-weight:800; letter-spacing:-.02em;
     margin:0 0 12px; text-wrap:balance; line-height:1.16}
   .lede{color:var(--muted); font-size:15px; line-height:1.7; max-width:64ch; margin:0 0 28px}
 
@@ -226,8 +226,6 @@
   .flow-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px}
   .flow-card{position:relative; overflow:hidden; text-align:left; background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:28px;
     display:flex; flex-direction:column; gap:14px; transition:border-color .15s, box-shadow .15s, transform .15s}
-  .flow-card::before{content:''; position:absolute; inset:0 0 auto 0; height:4px; background:var(--grad)}
-  .flow-card.f2::before{background:linear-gradient(135deg,#0a7d72,#3b3fae)}
   .flow-card:hover{border-color:var(--brand); box-shadow:var(--shadow); transform:translateY(-2px)}
   .flow-card .fi{width:48px; height:48px; border-radius:13px; display:flex; align-items:center; justify-content:center}
   .flow-card.f1 .fi{background:var(--brand-soft); color:var(--brand)}
@@ -390,8 +388,6 @@
   .dash-tools{display:flex; gap:12px; align-items:center; margin-bottom:20px; flex-wrap:wrap}
   .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:22px}
   .tile{position:relative; background:var(--surface); border:1px solid var(--border); border-radius:15px; padding:18px 20px; overflow:hidden}
-  .tile::before{content:''; position:absolute; inset:0 0 auto 0; height:3px; border-radius:15px 15px 0 0;
-    background:var(--ac, var(--border)); opacity:.85}
   .tile .ti{position:absolute; top:15px; right:15px; width:36px; height:36px; border-radius:11px;
     display:flex; align-items:center; justify-content:center; color:var(--ac, var(--brand));
     background:color-mix(in srgb, var(--ac, var(--brand)) 12%, var(--surface))}
@@ -626,8 +622,7 @@
   .hs-row .hk.rec{color:var(--gold); background:var(--gold-soft)}
   .hs-row .hk.ans{color:var(--good); background:var(--good-soft)}
   .hs-row .hs-sub{color:var(--faint); font-size:12px; margin-top:1px}
-  .hsec{display:flex; align-items:center; gap:11px; font-family:var(--font-display); font-size:18px; font-weight:600; margin:28px 0 14px}
-  .hsec::before{content:''; width:20px; height:4px; border-radius:99px; background:var(--grad); flex:none}
+  .hsec{font-family:var(--font-display); font-size:17px; font-weight:700; margin:28px 0 14px}
   .svc-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:11px}
   .svc{display:flex; flex-direction:column; gap:9px; text-align:left; background:var(--surface); border:1px solid var(--border);
     border-radius:13px; padding:16px; transition:border-color .12s, transform .12s, box-shadow .12s}
@@ -705,7 +700,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v2.2</span>
+      <span class="proto-badge">Прототип v2.3</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
