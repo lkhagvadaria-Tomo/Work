@@ -644,7 +644,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v1.8</span>
+      <span class="proto-badge">Прототип v1.9</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -756,7 +756,7 @@
         <details><summary>Одоо мөрдөж буй хүү хэд вэ?</summary>
           <div class="fa">NC-01/54-2025 тушаалаар (2025.04.07-оос): <b>Итгэлцэл ₮</b> — 6 сар 15.0% · 9 сар 16.0% · 12 сар 17.5% (хугацааны эцэст; улирал/сар бүр бол 1%-иар бага). <b>Өрийн хэрэгсэл ₮</b> — 1 сар 10.0% … 12 сар 18.0%. <b>Итгэлцэл $</b> — 6 сар 3.0% · 9 сар 3.5% · 12 сар 4.0%. Данс хаах/цуцлахад ₮ 2.4%, $ 0.5%.</div></details>
         <details><summary>Хүү хэд хүртэл нэмэгдүүлж болох вэ?</summary>
-          <div class="fa">Хавсралт №2-ын матрицаар: 49 сая ₮ хүртэл — нэмэгдүүлэхгүй · 50–199 сая +0.5% · 200–499 сая +1.0% · 500 саяас +1.5% — хөрөнгө оруулалт хариуцсан гүйцэтгэх захирлын орлогч <b>Х.Нургүлийн</b> зөвшөөрлөөр. 100 саяас дээш дүнд Гүйцэтгэх захирал <b>Б.Хуншагайн</b> зөвшөөрлөөр нэмж +1.0%. Түүнээс дээш — ТУЗ, Зөвлөхийн зөвшөөрөл. Анхаар: ХОБХУГ-ын захирлын хүү зөвшөөрөх эрх болиулагдсан — хүүгийн зөвшөөрлийг зөвхөн дээрх хоёр түвшин олгоно. F01 маягт үүнийг автоматаар шалгана.</div></details>
+          <div class="fa">Хавсралт №2-ын матрицаар: 49 сая ₮ хүртэл — нэмэгдүүлэхгүй · 50–199 сая +0.5% · 200–499 сая +1.0% · 500 саяас +1.5% — хөрөнгө оруулалт хариуцсан гүйцэтгэх захирлын орлогч <b>Х.Нургүлийн</b> зөвшөөрлөөр. 100 саяас дээш дүнд Гүйцэтгэх захирал <b>Б.Хуншагайн</b> зөвшөөрлөөр нэмж +1.0%. Түүнээс дээш — ТУЗ, Зөвлөхийн зөвшөөрөл. Анхаар: ХОБХУГ-ын захирлын хүү зөвшөөрөх эрх болиулагдсан — хүүгийн зөвшөөрлийг зөвхөн дээрх хоёр түвшин олгоно. Амаар өгсөн зөвшөөрөл хүчингүй: зөвшөөрөл зөвхөн цахим урсгалаар (F01) бүртгэгдэж аудитын мөр үүсгэнэ (Дүрэм №1, В-8 SLA ≤2 ажлын өдөр). F01 маягт үүнийг автоматаар шалгана.</div></details>
         <details><summary>Хавсралт хаана, ямар нэрээр хадгалагдах вэ?</summary>
           <div class="fa">Байгууллагын архивын <b>21. Funding Support Portal</b> хавтаст он / сар / ангилал / дугаараар ангилагдана. Файлын нэр Naming Standard v1.0-ийн дагуу автоматаар: <span class="mono">[Салбар]_[Дугаар]_[Төрөл]_[ОООО-СС-ӨӨ]_v1.0</span>.</div></details>
         <details><summary>Шинэ ажилтан хаанаас эхлэх вэ?</summary>
@@ -909,7 +909,7 @@
 
       <div class="card" id="aiCard" hidden style="border-left:3px solid var(--brand)">
         <div class="step-head"><span class="step-no">AI</span><h3>Туслахын урьдчилсан шалгалт</h3>
-          <span class="aside">Прототипод дүрэмд суурилсан · production дээр Claude AI бүрэн уншиж хариулна</span></div>
+          <span class="aside">AI зөвлөнө — шийдвэрийг хүн гаргана (EOM §2.5a) · прототипод дүрэмд суурилсан</span></div>
         <div id="aiBody" style="display:flex;flex-direction:column;gap:9px"></div>
         <div style="margin-top:12px;display:flex;gap:8px;align-items:center;font-size:12px;color:var(--faint)">
           Хэрэгтэй байсан уу?
@@ -1195,6 +1195,7 @@
         <button data-v="ext" class="on">Сунгах — 4 төрөл</button>
         <button data-v="part">Бага дүнгээр сунгах</button>
         <button data-v="close">Хаах (гарах)</button>
+        <button data-v="open">Данс нээлт — 12 шат</button>
       </div>
 
       <div id="gExt">
@@ -1263,7 +1264,7 @@
           </div>
           <div class="gsys"><span>Нэткор — сунгалтын гүйлгээ, шинэ гэрээ</span><span>Портал — F01 (хүү), Cashflow</span><span>Drive — архив</span></div>
         </div>
-        <div class="integrity"><b>Хүү нэмэх дүрэм (Хавсралт №2).</b> 49 сая ₮ хүртэл — нэмэгдүүлэхгүй · 50–199 сая +0.5% · 200–499 сая +1.0% · 500 саяас +1.5% — ГЗ-ын орлогч Х.Нургүлийн зөвшөөрлөөр; 100 саяас дээш дүнд ГЗ Б.Хуншагайн зөвшөөрлөөр нэмж +1.0%; түүнээс дээш ТУЗ. Улирал, сар бүр хүү зарлагадах нөхцөлд суурь хүү 1 пунктээр бага. <b>Хугацаа:</b> тушаалын нөхцөл дотор бол салбар дээрээ шууд; F01 шаардсан бол ажлын 1 өдөр, яаралтайд ажлын 4 цаг.</div>
+        <div class="integrity"><b>Хүү нэмэх дүрэм (Хавсралт №2).</b> 49 сая ₮ хүртэл — нэмэгдүүлэхгүй · 50–199 сая +0.5% · 200–499 сая +1.0% · 500 саяас +1.5% — ГЗ-ын орлогч Х.Нургүлийн зөвшөөрлөөр; 100 саяас дээш дүнд ГЗ Б.Хуншагайн зөвшөөрлөөр нэмж +1.0%; түүнээс дээш ТУЗ. Улирал, сар бүр хүү зарлагадах нөхцөлд суурь хүү 1 пунктээр бага. <b>Хугацаа:</b> тушаалын нөхцөл дотор бол салбар дээрээ шууд; F01 шаардсан бол В-8 SLA ≤2 ажлын өдөр (SU шат ≤5), яаралтайд ажлын 4 цаг. Амаар өгсөн зөвшөөрөл хүчингүй — зөвшөөрөл зөвхөн цахим урсгалаар бүртгэгдэж аудитын мөр үүсгэнэ (Дүрэм №1).</div>
       </div>
 
       <div id="gPart" hidden>
@@ -1316,8 +1317,51 @@
         <div class="integrity"><b>Гарах шалтгаан бол алт.</b> Харилцагч яагаад гарч байгааг cashflow-ийн тайлбарт заавал бүртгэ — энэ мэдээллээр ХОБПХГ бүтээгдэхүүн, хүүгийн нөхцөлөө сайжруулдаг. Хугацаанаас өмнөх буцаалтын SLA: ажлын 1 өдөр, яаралтайд ажлын 4 цаг.</div>
       </div>
 
+      <div id="gOpen" hidden>
+        <div class="card">
+          <div class="step-head"><span class="step-no">01</span><h3>Эх үүсвэрийн бүтэн цикл — 12 үе шат</h3><span class="aside mono">PROC-IPPDD-FUND-001</span></div>
+          <p class="step-sub">ХОБПХГ-ын боловсруулсан «Данс нээлт/Эх үүсвэрийн бүтэн циклийн процесс»-ын багц баримтын (Final Draft v3.2–3.3) хураангуй. Шат бүрд SLA код (В-…) болон хяналтын цэг (CP-…) оноогдсон.</p>
+          <div class="gsteps">
+            <div class="gstep"><span class="gn">1</span><span><b>Сэжим цуглуулах</b> — эх үүсвэр татах ажилтан (ЭТА) сэжим бүрийг тухай бүрд нь бүртгэнэ; эхний хариу <b>В-1 ≤3 хоног</b> (CP-01).</span></div>
+            <div class="gstep"><span class="gn">2</span><span><b>Харилцагч судлах</b> — тохирлын үнэлгээ (Suitability), KYC урьдчилсан бүрдэл; PEP/өндөр эрсдэл илэрвэл ЭУГ-аас лавлагаа (В-11, CP-02).</span></div>
+            <div class="gstep"><span class="gn">3</span><span><b>Харилцаа тогтоох</b> — уулзалт, тэмдэглэлийг баримтжуулах (В-12, CP-03).</span></div>
+            <div class="gstep"><span class="gn">4</span><span><b>Зөвшөөрөл авах (хүүгийн урсгал)</b> — стандарт бус нөхцөлд зөвшөөрлийг ЗӨВХӨН цахим урсгалаар CIO / CEO / SU түвшинд авна; <b>амаар өгсөн зөвшөөрөл хүчингүй</b>, ХОБХУГ-ын захирал зөвшөөрөгч биш. SLA <b>В-8: ≤2 ажлын өдөр</b> (SU шат ≤5); хэтэрвэл ХОБПХГ→CIO/CEO рүү автомат эскалаци (CP-04). Энэ порталын F01 хүсэлт яг энэ урсгалыг цахимжуулна.</span></div>
+            <div class="gstep"><span class="gn">5</span><span><b>Гэрээ байгуулах</b> — төсөл бэлтгэх, эцэслэх, аддендум (В-13, CP-05).</span></div>
+            <div class="gstep"><span class="gn">6</span><span><b>Данс нээх, тохиргоо</b> — <b>6.0 Gate</b> (доорх 7 бүрдэл 100% PASS хүртэл данс идэвхжихгүй, В-10 ≤4 цаг, CP-08) → 6.1 бүтээгдэхүүн/хүү тохиргоо (В-14) → 6.2 гарын үсгийн 4 шатлал — дүнгээр: ≤49 сая дэд захирал · 50–199 сая захирал · 200–499 сая CIO · 500 сая+ CEO; эзгүйд нөөц зурагч руу ≤24 цагт эскалаци (В-15) → 6.3 тамгажуулалт, ХКГ (В-7) → 6.4 орлого таних (В-9) → 6.5 онцгой тохиолдол (В-3).</span></div>
+            <div class="gstep"><span class="gn">8</span><span><b>Хүүгийн тохируулга, олголт</b> (В-6, CP-06) — энэ порталын F01/F07 ангилал.</span></div>
+            <div class="gstep"><span class="gn">9</span><span><b>Зуучлагч, шимтгэл, тодорхойлолт</b> — тооцоолол ба батлах үүрэг тусгаарлагдсан, <b>CP-09 хос давхаргат хяналт</b> (В-16/В-17).</span></div>
+            <div class="gstep"><span class="gn">10</span><span><b>Харилцагчийн халамж, гомдол</b> — ХАГ хариуцна (В-18, CP-10) — энэ порталын Санал, гомдлын урсгалтай уялдана.</span></div>
+            <div class="gstep"><span class="gn">12</span><span><b>Матурити: мэдэгдэл, сунгалт, идэвхгүй данс, offboarding</b> (В-4/В-5/В-19/В-20, CP-11) — энэ порталын Cashflow модуль болон «Сунгах», «Хаах» табууд яг энэ шатыг дэмжинэ.</span></div>
+          </div>
+          <div style="font-size:12px;color:var(--faint);margin-top:12px">7-р (Бонд гаргалт), 11-р (Бондын тархалт) шат — шинэ платформ нэвтрэх хүртэл одоогийн горимоороо (As-Is), SLA код оноогоогүй.</div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--danger)">
+          <div class="step-head"><span class="step-no">02</span><h3>6.0 Gate — данс идэвхжихийн өмнөх 7 бүрдэл (a–g)</h3><span class="aside">CP-08 · В-10 ≤4 цаг</span></div>
+          <p class="step-sub">Дотоод аудитын O202601 тайлангаар гэрээ/KYC-гүй болон дутуу бүрдэлтэй данс илэрсний дараа нэвтэрч буй хатуу гарц — аль нэг нь FAIL бол Netcore данс идэвхжүүлэхгүй.</p>
+          <div class="checks" style="border-top:none;margin-top:0;padding-top:0">
+            <div class="c ok"><span class="m">a</span> Итгэлцлийн/эх үүсвэрийн гэрээ бүрэн эх хувиар байгаа</div>
+            <div class="c ok"><span class="m">b</span> Гэрээний БҮХ хуудсанд харилцагч, итгэл хүлээн авагчийн гарын үсэг</div>
+            <div class="c ok"><span class="m">c</span> Тамга дарагдсан</div>
+            <div class="c ok"><span class="m">d</span> KYC асуулга бүх талбараар бөглөгдөж, иргэний үнэмлэхийн хуулбар хавсаргасан</div>
+            <div class="c ok"><span class="m">e</span> Хүлээн авах данс гэрээ болон Netcore-д зөрүүгүй бүртгэгдсэн</div>
+            <div class="c ok"><span class="m">f</span> Шийтгэврийн жагсаалтын шалгалт — НҮБ-ын АЗ болон дотоодын жагсаалттай тулгасан</div>
+            <div class="c ok"><span class="m">g</span> Сөрөг мэдээллийн шалгалт (adverse media) хийгдсэн</div>
+          </div>
+          <div style="font-size:12.5px;color:var(--muted);margin-top:12px">Салбарын ажилтанд: гэрээ, KYC-ээ энэ 7 бүрдлээр урьдчилан шалгаж илгээвэл данс нэг ч удаа «хүлээгдэж буй» статуст гацахгүй.</div>
+        </div>
+        <div class="card">
+          <div class="step-head"><span class="step-no">03</span><h3>Хяналтын шугам, эскалаци, баримтын багц</h3></div>
+          <div class="g-common">
+            <div class="a"><span class="ic">—</span><span><b>3 шугамын хяналт:</b> ХОБХУГ (ЭТА, ХОМ) — 1-р шугам · ЭУГ + ХКГ — 2-р шугам · Дотоод аудит — 3-р шугам.</span></div>
+            <div class="a"><span class="ic">—</span><span><b>Эскалацийн зам:</b> Гүйцэтгэгч → ХОБХУГ → ХОБПХГ → CIO/CEO. SLA хэтэрсэн тохиолдол системээр автоматаар дээшилнэ.</span></div>
+            <div class="a"><span class="ic">—</span><span><b>Баримтын багц (Drive):</b> <span class="mono">DURAM / JURAM / RACI / SLA / CTL / MAP -IPPDD-ACCOPEN-2026</span> — <a href="https://drive.google.com/drive/folders/1d991V0T5vU4J0f0QYmfCAQKk8unobC-E" target="_blank" rel="noopener" style="color:var(--brand)">багцыг Drive дээр нээх</a>. Төлөв: Final Draft — ХОБПХГ-ын захирлаар батлагдах шатанд.</span></div>
+            <div class="a"><span class="ic">—</span><span><b>EOM v5.0 уялдаа:</b> ХОБПХГ = Investment Product &amp; Process Development, ХОБХУГ = Investment Sales &amp; Client Management — хоёул CIO-гийн удирдлагад (Investment VS). Хүүгийн тушаалыг Актив, пассивын хороо (ALCO) баталдаг; хороодын шийдвэр DEC-ОООО-XXX дугаартай логт бүртгэгдэнэ. Энэ портал To-Be зурагт NetWork Employee Super App-ийн Service Desk Workflow болон Netcore-ийн 6.0 Gate модультай нэгдэнэ.</span></div>
+          </div>
+        </div>
+      </div>
+
       <div class="card">
-        <div class="step-head"><span class="step-no">03</span><h3>Хэнд хандах вэ</h3></div>
+        <div class="step-head"><span class="step-no">04</span><h3>Хэнд хандах вэ</h3></div>
         <div class="table-wrap" style="box-shadow:none">
           <table class="reg" style="min-width:640px">
             <thead><tr><th>Асуудал</th><th>Хариуцагч</th><th>Суваг</th></tr></thead>
@@ -1433,8 +1477,10 @@
       <div style="padding:0 28px 4px">
         <div class="field" style="margin-bottom:13px"><div class="lb" id="dTextLb">Шийдвэрийн хариу (заавал)</div>
           <textarea id="dModalText" class="ta" style="min-height:88px" placeholder="Жишээ: 18.0% хүүг ГЗ-ын орлогчийн зөвшөөрлөөр баталлаа. Гэрээг шинэ хүүгээр байгуулна уу."></textarea></div>
-        <div class="field"><div class="lb">Нэмэлт мэдээлэл, нөхцөл (сайн дурын)</div>
+        <div class="field" style="margin-bottom:13px"><div class="lb">Нэмэлт мэдээлэл, нөхцөл (сайн дурын)</div>
           <textarea id="dModalExtra" class="ta" style="min-height:62px" placeholder="Жишээ: Урамшууллын хувь 0.5%-иас хэтрэхгүй. Дараагийн сунгалтад дахин зөвшөөрөл авна."></textarea></div>
+        <div class="field"><div class="lb">Шийдвэрийн лог дугаар (сайн дурын — хорооны шийдвэр бол)</div>
+          <div class="in"><input id="dModalDec" class="mono" placeholder="DEC-2026-XXX"></div></div>
       </div>
       <div class="mf" style="gap:10px">
         <button class="ghost-btn" id="dModalCancel">Болих</button>
@@ -1601,9 +1647,9 @@ function rateRule(){ /* {level:'base'|'dir'|'ceo'|'block'|'tuz'|null, text, max}
   const step=ORDER.step(amtM);
   const dirMax=base+step, ceoMax=dirMax+(amtM>=100?1.0:0);
   if(step===0&&ask>base) return {level:'block', text:'49 сая ₮ хүртэлх эх үүсвэрт хүү нэмэгдүүлэхгүй (Хавсралт №2).', max:base};
-  if(ask<=dirMax) return {level:'dir', text:`Хөрөнгө оруулалт хариуцсан гүйцэтгэх захирлын орлогч Х.Нургүлийн зөвшөөрлөөр боломжтой (дээд ${dirMax.toFixed(1)}%).`, max:dirMax};
-  if(ask<=ceoMax) return {level:'ceo', text:`Гүйцэтгэх захирал Б.Хуншагайн зөвшөөрөл шаардлагатай (дээд ${ceoMax.toFixed(1)}%).`, max:ceoMax};
-  return {level:'tuz', text:`Тушаалын матрицын дээд хязгаараас (${ceoMax.toFixed(1)}%) дээш — ТУЗ, Зөвлөхийн зөвшөөрөл шаардлагатай.`, max:null};
+  if(ask<=dirMax) return {level:'dir', text:`Хөрөнгө оруулалт хариуцсан ГЗ-ын орлогч Х.Нургүлийн (CIO) зөвшөөрлөөр боломжтой (дээд ${dirMax.toFixed(1)}%; В-8 SLA ≤2 ажлын өдөр).`, max:dirMax};
+  if(ask<=ceoMax) return {level:'ceo', text:`Гүйцэтгэх захирал Б.Хуншагайн (CEO) зөвшөөрөл шаардлагатай (дээд ${ceoMax.toFixed(1)}%; В-8 SLA ≤2 ажлын өдөр).`, max:ceoMax};
+  return {level:'tuz', text:`Тушаалын матрицын дээд хязгаараас (${ceoMax.toFixed(1)}%) дээш — SU (стандарт бус) түвшин: ТУЗ, Зөвлөхийн зөвшөөрөл (В-8 SLA ≤5 ажлын өдөр).`, max:null};
 }
 /* Хариуцах ажилтнууд — хуваарилалтын дүрэмд ашиглана */
 const P={
@@ -1619,7 +1665,7 @@ const DEPUTIES=[P.aldar, P.ganbaatar, P.nasanbat];
 const HOBPHG_MGRS=[P.lkhagvadari, P.onon];
 
 const CATS = [
-  {c:'F01', t:'Хүүгийн тохируулгын хүсэлт', k:'percent', type:'Шийдвэр', folder:'F01 Хүүгийн тохируулга', fields:['product','rates'], link:true, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:P.munkherdene},
+  {c:'F01', t:'Хүүгийн тохируулгын хүсэлт', k:'percent', type:'Шийдвэр', folder:'F01 Хүүгийн тохируулга', fields:['product','rates'], link:true, sla:['Ажлын 2 өдөр (В-8)','Ажлын 4 цаг'], route:P.munkherdene},
   {c:'F02', t:'Борлуулалтын дэмжлэг хүсэх', k:'chart', type:'Дэмжлэг', folder:'F02 Борлуулалтын дэмжлэг', fields:['support'], link:false, sla:['Ажлын 2–3 өдөр','Ажлын 1 өдөр'], route:{pool:DEPUTIES, why:'ХОБХУГ-ын дэд захирлууд'}},
   {c:'F03', t:'Зааварчилгаа, аргачлал хүсэх', k:'book', type:'Лавлагаа', folder:'F03 Зааварчилгаа', fields:[], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:P.erkhbayar},
   {c:'F04', t:'Бүтээгдэхүүний мэдээлэл, нөхцөлийн лавлагаа', k:'doc', type:'Лавлагаа', folder:'F04 Бүтээгдэхүүний мэдээлэл', fields:['product'], link:false, sla:['Ажлын 1 өдөр','Ажлын 4 цаг'], route:{pool:DEPUTIES, why:'ХОБХУГ-ын дэд захирлууд'}},
@@ -1877,7 +1923,7 @@ document.querySelectorAll('#chipsReq .chip').forEach(ch=>ch.addEventListener('cl
 const fmtAmt = v => { const d=v.replace(/[^\d]/g,''); return d? Number(d).toLocaleString('en-US'):''; };
 $('amount').addEventListener('input',e=>{ e.target.value=fmtAmt(e.target.value); refresh(); });
 $('rateAsk').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,5); refresh(); });
-$('bonus').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,4); refresh(); });
+$('bonus').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,4); refresh(); aiRefresh(); });
 $('custName').addEventListener('input',refresh);
 $('custAcct').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d]/g,'').slice(0,16); refresh(); });
 /* Нэткорын бүтээгдэхүүний сонголтыг дүүргэх */
@@ -2370,7 +2416,7 @@ function renderReqs(){
       const box=document.createElement('div');
       box.style.cssText='margin-top:12px;background:'+(rej?'var(--danger-soft)':'var(--good-soft)')
         +';border:1px solid var(--border);border-left:3px solid '+(rej?'var(--danger)':'var(--good)')+';border-radius:10px;padding:13px 16px';
-      box.innerHTML=`<div style="font-size:12px;font-weight:600;color:${rej?'var(--danger)':'var(--good)'};margin-bottom:5px">${rej?'Татгалзсан шалтгаан':'Шийдвэрийн хариу'} (${r.decision.by} · ${r.decision.at}) — и-мэйлээр илгээгдсэн</div>
+      box.innerHTML=`<div style="font-size:12px;font-weight:600;color:${rej?'var(--danger)':'var(--good)'};margin-bottom:5px">${rej?'Татгалзсан шалтгаан':'Шийдвэрийн хариу'} (${r.decision.by} · ${r.decision.at}) — и-мэйлээр илгээгдсэн${r.decision.dec?` · <span class="mono">${r.decision.dec}</span>`:''}</div>
         <div style="font-size:13.5px">${r.decision.text}</div>
         ${r.decision.extra?`<div style="font-size:12.5px;color:var(--muted);margin-top:6px"><b>Нэмэлт мэдээлэл, нөхцөл:</b> ${r.decision.extra}</div>`:''}`;
       d.appendChild(box);
@@ -2825,6 +2871,9 @@ function aiItems(){
   if(state.cat&&(state.cat.c==='F06'||state.cat.c==='F08'))
     items.push({dot:'var(--brand)', html:`Сунгах, бага дүнгээр сунгах, хаах процессын алхам, бүрдүүлэх материалын бүрэн заавар бэлэн бий.`,
       act:{label:'Заавар нээх', fn:()=>gotoView('guideview')}});
+  /* 4e. Урамшууллын хос давхаргат хяналт (CP-09) */
+  if(needRates()&&$('bonus').value)
+    items.push({dot:'var(--warn)', html:`<b>Урамшуулал CP-09 хяналттай:</b> зөвхөн батлагдсан зөвшөөрлийн G-Doc-д заасан хувийг оруулна. Гар тооцооллын зөрүү аудитаар (O202601) 21.0 сая ₮ хохирол үүсгэж байсан тул тооцоолол хос давхаргат хяналтаар шалгагдана.`});
   /* 5. SLA мэдээлэл */
   if(state.cat) items.push({dot:'var(--faint)', html:`Энэ ангилал, зэрэглэлд хариу өгөх хугацаа: <b>${slaFor(state.cat,state.urg)}</b>. Хариуцагч автоматаар хуваарилагдана.`});
   return items;
@@ -3386,7 +3435,7 @@ function openDecision(r, sel){
   const rej=sel.value==='Татгалзсан';
   $('dModalId').textContent=r.id;
   $('dTextLb').textContent=rej?'Татгалзсан шалтгаан (заавал)':'Шийдвэрийн хариу (заавал)';
-  $('dModalText').value=''; $('dModalExtra').value='';
+  $('dModalText').value=''; $('dModalExtra').value=''; $('dModalDec').value='';
   $('dModalSend').disabled=true;
   $('dModalSend').textContent=rej?'Татгалзлыг илгээх':'Хариу илгээх';
   $('dForm').hidden=false; $('dPreview').hidden=true;
@@ -3406,6 +3455,7 @@ function decMailBody(r){
   const L=[`Бүртгэлийн дугаар: ${r.id}`,`Ангилал: ${r.cat} · ${r.catName}`,`Шийдвэр: ${d.verdict}`,'',
     d.verdict==='Татгалзсан'?'Татгалзсан шалтгаан:':'Шийдвэрийн хариу:', d.text];
   if(d.extra){ L.push('','Нэмэлт мэдээлэл, нөхцөл:', d.extra); }
+  if(d.dec){ L.push('','Шийдвэрийн лог: '+d.dec); }
   L.push('',`Шийдвэрлэсэн: ${d.by} · ${d.at}`,
     `Анхны хүсэлт (${r.at}): ${r.desc.slice(0,160)}${r.desc.length>160?'…':''}`);
   return L.join('\n');
@@ -3413,12 +3463,13 @@ function decMailBody(r){
 $('dModalSend').addEventListener('click',()=>{
   if(!decRec||!decSel) return;
   const r=decRec, v=decSel.value;
-  const text=$('dModalText').value.trim(), extra=$('dModalExtra').value.trim();
+  const text=$('dModalText').value.trim(), extra=$('dModalExtra').value.trim(), dec=$('dModalDec').value.trim();
   if(!text) return;
-  r.decision={verdict:v, text, extra, by:state.user.name, at:nowStr()};
+  r.decision={verdict:v, text, extra, dec, by:state.user.name, at:nowStr()};
   pushHist(r,'Статус: '+r.status+' → '+v+' ('+state.user.name+')');
   pushHist(r,(v==='Татгалзсан'?'Татгалзсан шалтгаан':'Шийдвэрийн хариу')+': '+text);
   if(extra) pushHist(r,'Нэмэлт мэдээлэл, нөхцөл: '+extra);
+  if(dec) pushHist(r,'Шийдвэрийн лог дугаар: '+dec);
   pushHist(r,'Илгээгч рүү шийдвэрийн и-мэйл явав — '+r.byEmail+' (прототип)');
   r.status=v; r.statusAt=nowStr();
   store.set('nc2.recs',state.recs);
@@ -3513,7 +3564,7 @@ $('wcTour').addEventListener('click',()=>closeWelcome(true));
 
 /* ================= процессын заавар ================= */
 bindSegLocal('gSeg', v=>{
-  $('gExt').hidden=v!=='ext'; $('gPart').hidden=v!=='part'; $('gClose').hidden=v!=='close';
+  $('gExt').hidden=v!=='ext'; $('gPart').hidden=v!=='part'; $('gClose').hidden=v!=='close'; $('gOpen').hidden=v!=='open';
 });
 function guideGo(cat){
   state.cat=CATS.find(x=>x.c===cat)||null;
@@ -3546,9 +3597,9 @@ function gcalc(){
   const m=total/1e6, st=ORDER.step(m);
   if(st===0){ out.innerHTML=h+'<b style="color:var(--danger)">49 сая ₮ хүртэлх дүнд хүү нэмэгдүүлэхгүй (Хавсралт №2)</b> — суурь хүүгээр л сунгана.'; return; }
   const dirMax=base+st, ceoMax=dirMax+(m>=100?1:0);
-  if(ask<=dirMax) out.innerHTML=h+`<b style="color:var(--gold)">Хөрөнгө оруулалт хариуцсан ГЗ-ын орлогч Х.Нургүлийн зөвшөөрөл</b> — F01 хүсэлтээр (энэ дүнд дээд ${dirMax.toFixed(1)}%). Батлагдсаны ДАРАА Нэткор дээр сунгана.`;
-  else if(ask<=ceoMax) out.innerHTML=h+`<b style="color:var(--warn)">Гүйцэтгэх захирал Б.Хуншагайн зөвшөөрөл</b> — F01 хүсэлтээр (энэ дүнд дээд ${ceoMax.toFixed(1)}%). Батлагдсаны ДАРАА Нэткор дээр сунгана.`;
-  else out.innerHTML=h+`<b style="color:var(--danger)">Дээд хязгаараас (${ceoMax.toFixed(1)}%) дээш — ТУЗ, Зөвлөхийн зөвшөөрөл шаардлагатай.</b>`;
+  if(ask<=dirMax) out.innerHTML=h+`<b style="color:var(--gold)">Хөрөнгө оруулалт хариуцсан ГЗ-ын орлогч Х.Нургүлийн (CIO) зөвшөөрөл</b> — F01 хүсэлтээр (энэ дүнд дээд ${dirMax.toFixed(1)}%; В-8 SLA ≤2 ажлын өдөр). Батлагдсаны ДАРАА Нэткор дээр сунгана.`;
+  else if(ask<=ceoMax) out.innerHTML=h+`<b style="color:var(--warn)">Гүйцэтгэх захирал Б.Хуншагайн (CEO) зөвшөөрөл</b> — F01 хүсэлтээр (энэ дүнд дээд ${ceoMax.toFixed(1)}%; В-8 SLA ≤2 ажлын өдөр). Батлагдсаны ДАРАА Нэткор дээр сунгана.`;
+  else out.innerHTML=h+`<b style="color:var(--danger)">Дээд хязгаараас (${ceoMax.toFixed(1)}%) дээш — SU түвшин: ТУЗ, Зөвлөхийн зөвшөөрөл (В-8 SLA ≤5 ажлын өдөр).</b>`;
 }
 ['gcType','gcProd'].forEach(id=>$(id).addEventListener('change',gcalc));
 $('gcAmt').addEventListener('input',e=>{ e.target.value=fmtAmt(e.target.value); gcalc(); });
