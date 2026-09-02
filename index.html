@@ -474,6 +474,8 @@
   .g-common{display:flex; flex-direction:column; gap:9px; font-size:13.5px; line-height:1.6}
   .g-common .a{display:flex; gap:10px}
   .g-common .a .ic{color:var(--gold); flex:none; font-weight:700}
+  .gstep .gnc{display:inline-block; margin-top:5px; font-size:12.5px; color:var(--muted)}
+  .gstep .gnr{display:inline-block; margin-top:3px; font-size:12.5px; color:var(--gold); font-weight:600}
 
   /* ---------- mobile ---------- */
   .home-task{cursor:pointer; text-align:left; border:1px solid var(--border); transition:border-color .12s, transform .12s, box-shadow .12s}
@@ -642,7 +644,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v1.7</span>
+      <span class="proto-badge">Прототип v1.8</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -760,7 +762,7 @@
         <details><summary>Шинэ ажилтан хаанаас эхлэх вэ?</summary>
           <div class="fa">1) Нүүрийн хайлтад «хүү 12 сар» гэх мэтээр бичиж мөрдөж буй нөхцөлөө лавла. 2) Хүсэлтээ «Шинэ бүртгэл» хэсгээс тохирох ангиллаар илгээ — дугаар автоматаар олгогдож, хариуцагчид очно. 3) Явцаа «Миний бүртгэлүүд»-ээс хяна. 4) Сар бүр өөрийн салбарын cashflow-г бөглө. Угтах танилцуулгыг дахин үзэхийг хүсвэл «?» товчийг дар.</div></details>
         <details><summary>Дуусаж буй дансыг сунгах, хаах ямар процессоор явдаг вэ?</summary>
-          <div class="fa">Гурван зам бий: <b>бүтэн дүнгээр сунгах</b>, <b>бага дүнгээр сунгах</b> (хэсэгчлэн буцаах), <b>хаах</b>. Алхам бүр, бүрдүүлэх материал, хэнд хандах, аль системд юу хийхийг <button class="chip" id="faqGuideBtn" type="button" style="padding:3px 12px">Процессын заавар</button> хуудаснаас үзнэ. Товчхондоо: дуусахаас өмнө cashflow-д шийдвэрээ бүртгэж, харилцагчийн бичгээр хүсэлтийг авч, Нэткор дээр гүйлгээгээ хийнэ; хүү нэмэх бол F01, хугацаанаас өмнө буцаах бол F08 хүсэлт заавал.</div></details>
+          <div class="fa">Гурван зам бий: <b>сунгах</b>, <b>бага дүнгээр сунгах</b> (хэсэгчлэн буцаах), <b>хаах</b>. Сунгалт нь дотроо 4 төрөлтэй: бүтэн дүнгээр · хүү + үндсэн цугтаа · үндсэн дангаар · үндсэн нэмэгдүүлж. Алхам бүр, бүрдүүлэх материал, хэнд хандах, аль системд юу хийхийг <button class="chip" id="faqGuideBtn" type="button" style="padding:3px 12px">Процессын заавар</button> хуудаснаас үзнэ. Товчхондоо: дуусахаас өмнө cashflow-д шийдвэрээ бүртгэж, харилцагчийн бичгээр хүсэлтийг авч, Нэткор дээр гүйлгээгээ хийнэ; хүү нэмэх бол F01, хугацаанаас өмнө буцаах бол F08 хүсэлт заавал.</div></details>
         <details><summary>Товчилсон үгс юу гэсэн үг вэ?</summary>
           <div class="fa"><b>ЭҮ</b> — эх үүсвэрийн хүсэлтийн дугаар · <b>СГ</b> — санал, гомдлын дугаар · <b>ХОБПХГ</b> — Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар (хүсэлтийг тань хүлээн авдаг газар) · <b>ХОБХУГ</b> — Хөрөнгө оруулалтын борлуулалт, харилцагчийн удирдлагын газар · <b>ГЗ</b> — Гүйцэтгэх захирал · <b>ТУЗ</b> — Төлөөлөн удирдах зөвлөл · <b>SLA</b> — хариу өгөх амлалтат хугацаа.</div></details>
       </div>
@@ -1190,29 +1192,74 @@
       </div>
 
       <div class="seg" id="gSeg" style="margin-bottom:18px">
-        <button data-v="ext" class="on">Бүтэн дүнгээр сунгах</button>
+        <button data-v="ext" class="on">Сунгах — 4 төрөл</button>
         <button data-v="part">Бага дүнгээр сунгах</button>
         <button data-v="close">Хаах (гарах)</button>
       </div>
 
       <div id="gExt">
         <div class="card">
-          <div class="step-head"><span class="step-no">01</span><h3>Алхмууд — бүтэн дүнгээр сунгах</h3><span class="aside">Хамгийн түгээмэл зам</span></div>
+          <div class="step-head"><span class="step-no">01</span><h3>Сунгалтын 4 төрөл — Нэткор дээр хэрхэн ажиллах</h3><span class="aside">Төрлөө зөв сонгох нь гүйлгээний үндэс</span></div>
+          <div class="gsteps">
+            <div class="gstep"><span class="gn">Т1</span><span><b>Эх үүсвэрийн бүтэн дүнгээр.</b> Үндсэн дүнг өөрчлөхгүй бүтнээр нь сунгаж, бодогдсон хүүг харилцагчийн данс руу зарлагадана.<br>
+              <span class="gnc">Нэткор: данс сонгож «Сунгалт» гүйлгээ → хүү зарлагадах дансыг заана → шинэ хугацаа, хүүг оруулж баталгаажуулна → шинэ гэрээ хэвлэнэ.</span><br>
+              <span class="gnr">Дүн хэвээр — хүүгийн матрицын шат өөрчлөгдөхгүй.</span></span></div>
+            <div class="gstep"><span class="gn">Т2</span><span><b>Хүүгийн төлбөр + үндсэн төлбөр цугтаа.</b> Бодогдсон хүүг зарлагадахгүй үндсэн дүн дээр нэмж (капиталжуулж), нийт дүнгээр сунгана.<br>
+              <span class="gnc">Нэткор: «Сунгалт» гүйлгээнд хүүг капиталжуулах сонголтыг идэвхжүүлнэ — шинэ гэрээний дүн = үндсэн + хүү. Сонголт идэвхгүй бол дансыг хааж, нийт дүнгээр шинэ данс нээнэ (эрх, тохиргооны асуудалд F11 хүсэлт).</span><br>
+              <span class="gnr">Дүн өснө — матрицын шат шинэ нийт дүнгээр ахиж болзошгүй (ж: 195 сая + 10 сая хүү = 205 сая → +1.0%-ийн шат).</span></span></div>
+            <div class="gstep"><span class="gn">Т3</span><span><b>Үндсэн төлбөр дангаар.</b> Улирал, сар бүр хүү нь зарлагадагддаг данснуудад — хүү аль хэдийн олгогдсон тул зөвхөн үндсэн төлбөрийг шинэ хугацаанд сунгана.<br>
+              <span class="gnc">Нэткор: «Сунгалт» гүйлгээ — зарлагадах хүү үлдээгүй тул үндсэн дүн шууд шинэ хугацаанд шилжинэ.</span><br>
+              <span class="gnr">Дүн хэвээр — матрицын шат өөрчлөгдөхгүй. Улирал, сар бүр нөхцөлийн суурь хүү 1 пунктээр бага гэдгийг санаарай.</span></span></div>
+            <div class="gstep"><span class="gn">Т4</span><span><b>Үндсэн төлбөр нэмэгдүүлж.</b> Харилцагч нэмэлт мөнгө байршуулж, өмнөх үндсэн дээр нэмсэн шинэ дүнгээр сунгана.<br>
+              <span class="gnc">Нэткор: нэмэлт орлогыг эхлээд бүртгэж (орлогын гүйлгээ), дараа нь нийт шинэ дүнгээр сунгалтын гүйлгээ хийнэ — эсвэл хуучин дансыг хааж, шинэ дүнгээр шинэ гэрээ байгуулна.</span><br>
+              <span class="gnr">Дүн өснө — матрицын шат шинэ нийт дүнгээр; нэмэлт мөнгөний эх үүсвэрийг (AML) лавлаж, шаардлагатай бол баримтжуулна.</span></span></div>
+          </div>
+          <div style="font-size:12px;color:var(--faint);margin-top:12px">Нэткор дээрх цэс, сонголтын нэршил хувилбараас хамаарч ялгаатай байж болно — нарийвчилсан замыг ХОБПХГ баталгаажуулна. Гацвал F03 (зааварчилгаа) хүсэлт илгээгээрэй.</div>
+        </div>
+
+        <div class="card" style="border-left:3px solid var(--brand)">
+          <div class="step-head"><span class="step-no">02</span><h3>Хүүгийн зөвшөөрлийг хэн өгөхийг шалгах</h3><span class="aside">NC-01/54-2025 · Хавсралт №2</span></div>
+          <p class="step-sub">Сунгалтын төрөл, дүн, хүсэж буй хүүгээ оруулахад шинэ гэрээний дүн, мөрдөх суурь хүү, зөвшөөрлийн түвшин автоматаар гарна.</p>
+          <div class="fgrid">
+            <div class="field"><div class="lb">Сунгалтын төрөл</div><div class="in"><select id="gcType">
+              <option value="T1">Т1 · Бүтэн дүнгээр</option>
+              <option value="T2">Т2 · Хүү + үндсэн цугтаа</option>
+              <option value="T3">Т3 · Үндсэн дангаар</option>
+              <option value="T4">Т4 · Үндсэн нэмэгдүүлж</option></select></div></div>
+            <div class="field"><div class="lb">Бүтээгдэхүүн, хугацаа</div><div class="in"><select id="gcProd">
+              <option value="Итгэлцэл ₮|6 сар">Итгэлцэл ₮ · 6 сар</option>
+              <option value="Итгэлцэл ₮|9 сар">Итгэлцэл ₮ · 9 сар</option>
+              <option value="Итгэлцэл ₮|12 сар" selected>Итгэлцэл ₮ · 12 сар</option>
+              <option value="Өрийн хэрэгсэл ₮|12 сар">Өрийн хэрэгсэл ₮ · 12 сар</option>
+              <option value="Итгэлцэл $|12 сар">Итгэлцэл $ · 12 сар</option></select></div></div>
+            <div class="field"><div class="lb">Одоогийн үндсэн дүн</div><div class="in"><input id="gcAmt" inputmode="numeric" class="num" placeholder="150,000,000"><span class="sfx" id="gcAmtSfx">₮</span></div></div>
+            <div class="field" id="gcExtraWrap" hidden><div class="lb" id="gcExtraLb">Бодогдсон хүүгийн дүн</div><div class="in"><input id="gcExtra" inputmode="numeric" class="num" placeholder="0"><span class="sfx" id="gcExtraSfx">₮</span></div></div>
+            <div class="field"><div class="lb">Хүсэж буй хүү (жилийн)</div><div class="in"><input id="gcAsk" inputmode="decimal" class="num" placeholder="18.0"><span class="sfx">%</span></div></div>
+          </div>
+          <div class="drive-preview" style="margin:0"><span id="gcOut">Төрөл, дүн, хүүгээ оруулахад дүгнэлт энд гарна.</span></div>
+          <div class="att-btns" style="margin-top:14px">
+            <button class="ext-btn" data-gcat="F01" type="button">F01 · Хүүгийн хүсэлт илгээх</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="step-head"><span class="step-no">03</span><h3>Нийтлэг алхмууд</h3></div>
           <div class="gsteps">
             <div class="gstep"><span class="gn">1</span><span><b>Cashflow-д бүртгэ.</b> Дуусах сарын өмнө «Сунгана» гэж сонгоод шинэ хугацаа, хүү, дүнг бич — ХОБПХГ-ын төлөвлөлтөд шууд тусна.</span></div>
-            <div class="gstep"><span class="gn">2</span><span><b>Харилцагчийн хүсэлтийг ав.</b> Шинэ хугацаа, хүү, дүнг заасан гарын үсэгтэй хүсэлт.</span></div>
-            <div class="gstep"><span class="gn">3</span><span><b>Хүүг шалга.</b> NC-01/54-2025-ын ерөнхий нөхцөл дотор (ж: Итгэлцэл ₮ 12 сар 17.5%) бол нэмэлт зөвшөөрөл шаардахгүй — шууд үргэлжлүүл. Хүү нэмүүлэх бол <b>F01 хүсэлт</b> илгээж, зөвшөөрөл батлагдсаны ДАРАА гүйлгээ хий.</span></div>
-            <div class="gstep"><span class="gn">4</span><span><b>Нэткор дээр сунгалтын гүйлгээ.</b> Дуусах өдөр нь сунгалтын гүйлгээг хийж, шинэ гэрээг 2 хувь хэвлэн гарын үсэг зуруул.</span></div>
+            <div class="gstep"><span class="gn">2</span><span><b>Харилцагчийн хүсэлтийг ав.</b> Сунгалтын төрөл (Т1–Т4), шинэ хугацаа, хүү, дүнг заасан гарын үсэгтэй хүсэлт.</span></div>
+            <div class="gstep"><span class="gn">3</span><span><b>Хүүг шалга.</b> Дээрх шалгагчаар зөвшөөрлийн түвшингээ урьдчилан хар: ерөнхий нөхцөл дотор бол зөвшөөрөл шаардахгүй; нэмүүлэх бол <b>F01 хүсэлт</b> илгээж, зөвшөөрөл батлагдсаны ДАРАА гүйлгээ хий. Т2, Т4 төрөлд дүн өсдөг тул матрицыг ШИНЭ дүнгээр тооцно.</span></div>
+            <div class="gstep"><span class="gn">4</span><span><b>Нэткор дээр сунгалтын гүйлгээ.</b> Дээрх 4 төрлөөс тохирохоо сонгож дуусах өдөр нь гүйлгээг хийж, шинэ гэрээг 2 хувь хэвлэн гарын үсэг зуруул.</span></div>
             <div class="gstep"><span class="gn">5</span><span><b>Архивла, баталгаажуул.</b> Гэрээ, хүсэлтээ Drive-д хадгалж, cashflow бүртгэлээ шинэ гэрээний мэдээллээр баталгаажуул.</span></div>
           </div>
         </div>
         <div class="card">
-          <div class="step-head"><span class="step-no">02</span><h3>Бүрдүүлэх материал, систем</h3></div>
+          <div class="step-head"><span class="step-no">04</span><h3>Бүрдүүлэх материал, систем</h3></div>
           <div class="checks" style="border-top:none;margin-top:0;padding-top:0">
-            <div class="c ok"><span class="m">✓</span> Харилцагчийн сунгалтын хүсэлт — гарын үсэгтэй; шинэ хугацаа, хүү, дүн заасан</div>
+            <div class="c ok"><span class="m">✓</span> Харилцагчийн сунгалтын хүсэлт — гарын үсэгтэй; сунгалтын төрөл, шинэ хугацаа, хүү, дүн заасан</div>
             <div class="c ok"><span class="m">✓</span> Иргэний үнэмлэх / байгууллагын гэрчилгээ — мэдээлэл өөрчлөгдсөн бол шинэчилж ав</div>
             <div class="c ok"><span class="m">✓</span> Шинэ итгэлцлийн гэрээ 2 хувь (Нэткороос хэвлэгдэнэ)</div>
             <div class="c ok"><span class="m">✓</span> Хүү нэмэгдсэн бол — батлагдсан зөвшөөрлийн G-Doc (F01-ийн хариу)</div>
+            <div class="c ok"><span class="m">✓</span> Т4 (дүн нэмэгдүүлэх) бол — нэмэлт мөнгөний эх үүсвэрийн баримт (шаардлагатай тохиолдолд, AML)</div>
           </div>
           <div class="gsys"><span>Нэткор — сунгалтын гүйлгээ, шинэ гэрээ</span><span>Портал — F01 (хүү), Cashflow</span><span>Drive — архив</span></div>
         </div>
@@ -2544,7 +2591,7 @@ function homeResults(q){
   if(/лимит|нэмэгдүүл/.test(ql))
     out.unshift({k:'ans', t:'Нэмэгдүүлэх лимит: +0.5 / +1.0 / +1.5%', s:'Хавсралт №2 — дүнгээс хамаарна; 49 сая хүртэл нэмэгдүүлэхгүй'});
   if(/сунга|хаах|хаалт|буцаал|дуус|процесс|заавар/.test(ql))
-    out.unshift({k:'ans', t:'Процессын заавар — сунгах · бага дүнгээр сунгах · хаах', s:'Алхам, бүрдүүлэх материал, хэнд хандах, аль системээр', fn:()=>gotoView('guideview')});
+    out.unshift({k:'ans', t:'Процессын заавар — сунгах (4 төрөл) · бага дүнгээр · хаах', s:'Алхам, Нэткорын зөвлөгөө, бүрдүүлэх материал, хэнд хандах', fn:()=>gotoView('guideview')});
   return out.slice(0,7);
 }
 function renderHomeResults(q){
@@ -3476,6 +3523,37 @@ document.querySelectorAll('[data-gcat]').forEach(b=>b.addEventListener('click',(
 $('gGoCf').addEventListener('click',()=>gotoView('cfview'));
 $('faqGuideBtn').addEventListener('click',()=>gotoView('guideview'));
 $('cfGuideBtn').addEventListener('click',()=>gotoView('guideview'));
+
+/* сунгалтын хүүгийн зөвшөөрөл шалгагч — NC-01/54-2025, Хавсралт №2 */
+function gcalc(){
+  const type=$('gcType').value;
+  $('gcExtraWrap').hidden=(type==='T1'||type==='T3');
+  $('gcExtraLb').textContent=type==='T4'?'Нэмж байршуулах дүн':'Бодогдсон хүүгийн дүн';
+  const [pk,t]=$('gcProd').value.split('|');
+  const pr=ORDER.products[pk];
+  $('gcAmtSfx').textContent=pr.cur; $('gcExtraSfx').textContent=pr.cur;
+  const base=(pr.terms[t]||[null])[0];
+  const amt=Number(($('gcAmt').value||'').replace(/,/g,''))||0;
+  const extra=(type==='T2'||type==='T4')?(Number(($('gcExtra').value||'').replace(/,/g,''))||0):0;
+  const total=amt+extra;
+  const ask=parseFloat($('gcAsk').value);
+  const out=$('gcOut');
+  if(!amt){ out.innerHTML='Төрөл, дүн, хүүгээ оруулахад дүгнэлт энд гарна.'; return; }
+  let h=`Шинэ гэрээний дүн: <b>${total.toLocaleString('en-US')} ${pr.cur}</b>${extra?` (үндсэн ${amt.toLocaleString('en-US')} + ${extra.toLocaleString('en-US')})`:''} · суурь хүү (${t}, хугацааны эцэст): <b>${base}%</b>.<br>`;
+  if(isNaN(ask)||ask<=0){ out.innerHTML=h+'Хүсэж буй хүүгээ оруулна уу.'; return; }
+  if(ask<=base){ out.innerHTML=h+'<b style="color:var(--good)">Ерөнхий нөхцөл дотор — нэмэлт зөвшөөрөл шаардахгүй.</b> Нэткор дээр шууд сунгаж болно.'; return; }
+  if(pr.cur==='$'){ out.innerHTML=h+'<b style="color:var(--warn)">Ам.долларын нэмэгдүүлэлтийг ХОБПХГ шийднэ</b> — F01 хүсэлт илгээнэ.'; return; }
+  const m=total/1e6, st=ORDER.step(m);
+  if(st===0){ out.innerHTML=h+'<b style="color:var(--danger)">49 сая ₮ хүртэлх дүнд хүү нэмэгдүүлэхгүй (Хавсралт №2)</b> — суурь хүүгээр л сунгана.'; return; }
+  const dirMax=base+st, ceoMax=dirMax+(m>=100?1:0);
+  if(ask<=dirMax) out.innerHTML=h+`<b style="color:var(--gold)">Хөрөнгө оруулалт хариуцсан ГЗ-ын орлогч Х.Нургүлийн зөвшөөрөл</b> — F01 хүсэлтээр (энэ дүнд дээд ${dirMax.toFixed(1)}%). Батлагдсаны ДАРАА Нэткор дээр сунгана.`;
+  else if(ask<=ceoMax) out.innerHTML=h+`<b style="color:var(--warn)">Гүйцэтгэх захирал Б.Хуншагайн зөвшөөрөл</b> — F01 хүсэлтээр (энэ дүнд дээд ${ceoMax.toFixed(1)}%). Батлагдсаны ДАРАА Нэткор дээр сунгана.`;
+  else out.innerHTML=h+`<b style="color:var(--danger)">Дээд хязгаараас (${ceoMax.toFixed(1)}%) дээш — ТУЗ, Зөвлөхийн зөвшөөрөл шаардлагатай.</b>`;
+}
+['gcType','gcProd'].forEach(id=>$(id).addEventListener('change',gcalc));
+$('gcAmt').addEventListener('input',e=>{ e.target.value=fmtAmt(e.target.value); gcalc(); });
+$('gcExtra').addEventListener('input',e=>{ e.target.value=fmtAmt(e.target.value); gcalc(); });
+$('gcAsk').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,5); gcalc(); });
 
 applyCatFields(); refresh(); refreshF();
 </script>
