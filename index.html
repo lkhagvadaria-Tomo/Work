@@ -463,6 +463,18 @@
   .month-nav button{border:none; background:none; padding:8px 14px; font-weight:700; font-size:14px}
   .month-nav .lblm{padding:8px 6px; font-size:13px; font-weight:700; min-width:120px; text-align:center}
 
+  /* process guide */
+  .gsteps{display:flex; flex-direction:column}
+  .gstep{display:flex; gap:13px; padding:10px 0; border-top:1px solid var(--border); font-size:14px; line-height:1.65}
+  .gstep:first-child{border-top:none; padding-top:2px}
+  .gstep .gn{flex:none; width:24px; height:24px; border-radius:50%; background:var(--brand-soft); color:var(--brand);
+    font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center; margin-top:2px}
+  .gsys{display:flex; gap:9px; flex-wrap:wrap; margin-top:14px}
+  .gsys span{font-size:12px; border:1px solid var(--border); border-radius:99px; padding:5px 12px; background:var(--surface-2); color:var(--muted)}
+  .g-common{display:flex; flex-direction:column; gap:9px; font-size:13.5px; line-height:1.6}
+  .g-common .a{display:flex; gap:10px}
+  .g-common .a .ic{color:var(--gold); flex:none; font-weight:700}
+
   /* ---------- mobile ---------- */
   .home-task{cursor:pointer; text-align:left; border:1px solid var(--border); transition:border-color .12s, transform .12s, box-shadow .12s}
   .home-task:hover{border-color:var(--brand); transform:translateY(-1px); box-shadow:0 2px 8px rgba(24,36,48,.08)}
@@ -630,7 +642,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v1.6</span>
+      <span class="proto-badge">Прототип v1.7</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -658,6 +670,7 @@
     <button class="snav on" data-view="newview"><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9v11h13V9"/></svg> Нүүр</button>
     <button class="snav" data-view="myview"><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg> Миний бүртгэлүүд <span class="sn-cnt num" id="myCntS">0</span><span class="sn-alert" id="myAlertS" hidden>!</span></button>
     <button class="snav" data-view="cfview"><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg> Cashflow <span class="sn-alert num" id="cfNavCntS" hidden>0</span></button>
+    <button class="snav" data-view="guideview"><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4a2 2 0 0 1 2-2h13v18H6a2 2 0 0 0-2 2z"/><path d="M4 20V4M8 6h8"/></svg> Процессын заавар</button>
     <button class="snav" data-view="dashview" id="sideDash" hidden><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7.5" height="9" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="5.5" rx="1.5"/><rect x="13.5" y="12" width="7.5" height="9" rx="1.5"/><rect x="3" y="15.5" width="7.5" height="5.5" rx="1.5"/></svg> Дашбоард</button>
     <button class="snav" data-view="regview" id="sideReg" hidden><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg> Бүртгэлийн сан</button>
     <div class="sn-foot">
@@ -684,6 +697,7 @@
       <button data-view="newview" class="on" id="navNew"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">Шинэ бүртгэл</span></button>
       <button data-view="myview" id="navMy"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span class="lbl">Миний бүртгэлүүд</span> <span class="cnt num" id="myCnt">0</span> <span class="cnt num" id="myAlert" style="color:var(--danger);font-weight:700" hidden>!</span></button>
       <button data-view="cfview" id="navCf"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span class="lbl">Cashflow</span> <span class="cnt num" id="cfNavCnt" style="color:var(--danger);font-weight:700" hidden>0</span></button>
+      <button data-view="guideview" id="navGuide"><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4a2 2 0 0 1 2-2h13v18H6a2 2 0 0 0-2 2z"/><path d="M4 20V4M8 6h8"/></svg><span class="lbl">Заавар</span></button>
       <button data-view="dashview" id="navDash" hidden><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7.5" height="9" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="5.5" rx="1.5"/><rect x="13.5" y="12" width="7.5" height="9" rx="1.5"/><rect x="3" y="15.5" width="7.5" height="5.5" rx="1.5"/></svg><span class="lbl">Дашбоард</span></button>
       <button data-view="regview" id="navReg" hidden><svg class="i" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="lbl">Бүртгэлийн сан</span></button>
     </nav>
@@ -745,6 +759,8 @@
           <div class="fa">Байгууллагын архивын <b>21. Funding Support Portal</b> хавтаст он / сар / ангилал / дугаараар ангилагдана. Файлын нэр Naming Standard v1.0-ийн дагуу автоматаар: <span class="mono">[Салбар]_[Дугаар]_[Төрөл]_[ОООО-СС-ӨӨ]_v1.0</span>.</div></details>
         <details><summary>Шинэ ажилтан хаанаас эхлэх вэ?</summary>
           <div class="fa">1) Нүүрийн хайлтад «хүү 12 сар» гэх мэтээр бичиж мөрдөж буй нөхцөлөө лавла. 2) Хүсэлтээ «Шинэ бүртгэл» хэсгээс тохирох ангиллаар илгээ — дугаар автоматаар олгогдож, хариуцагчид очно. 3) Явцаа «Миний бүртгэлүүд»-ээс хяна. 4) Сар бүр өөрийн салбарын cashflow-г бөглө. Угтах танилцуулгыг дахин үзэхийг хүсвэл «?» товчийг дар.</div></details>
+        <details><summary>Дуусаж буй дансыг сунгах, хаах ямар процессоор явдаг вэ?</summary>
+          <div class="fa">Гурван зам бий: <b>бүтэн дүнгээр сунгах</b>, <b>бага дүнгээр сунгах</b> (хэсэгчлэн буцаах), <b>хаах</b>. Алхам бүр, бүрдүүлэх материал, хэнд хандах, аль системд юу хийхийг <button class="chip" id="faqGuideBtn" type="button" style="padding:3px 12px">Процессын заавар</button> хуудаснаас үзнэ. Товчхондоо: дуусахаас өмнө cashflow-д шийдвэрээ бүртгэж, харилцагчийн бичгээр хүсэлтийг авч, Нэткор дээр гүйлгээгээ хийнэ; хүү нэмэх бол F01, хугацаанаас өмнө буцаах бол F08 хүсэлт заавал.</div></details>
         <details><summary>Товчилсон үгс юу гэсэн үг вэ?</summary>
           <div class="fa"><b>ЭҮ</b> — эх үүсвэрийн хүсэлтийн дугаар · <b>СГ</b> — санал, гомдлын дугаар · <b>ХОБПХГ</b> — Хөрөнгө оруулалтын бүтээгдэхүүн, процесс хөгжүүлэлтийн газар (хүсэлтийг тань хүлээн авдаг газар) · <b>ХОБХУГ</b> — Хөрөнгө оруулалтын борлуулалт, харилцагчийн удирдлагын газар · <b>ГЗ</b> — Гүйцэтгэх захирал · <b>ТУЗ</b> — Төлөөлөн удирдах зөвлөл · <b>SLA</b> — хариу өгөх амлалтат хугацаа.</div></details>
       </div>
@@ -1155,12 +1171,133 @@
     </div>
   </main>
 
+  <!-- ---- process guide ---- -->
+  <main id="guideview" class="single" style="display:none">
+    <div class="anim">
+      <span class="crumb"><span class="dot"></span> Процессын заавар · ХОБПХГ баталгаажуулсан</span>
+      <h2 class="page">Хугацаа дуусах дансны сунгалт, хаалтын процесс</h2>
+      <p class="lede">Салбараас хамгийн их асуудаг гурван нөхцөлийн алхам бүр: хэнд хандах, аль системд юу хийх, ямар материал бүрдүүлэх. Агуулгыг ХОБПХГ хянан баталж, өөрчлөлт бүрд шинэчилнэ — зөрүү ажиглавал Санал хэсгээр мэдэгдээрэй.</p>
+
+      <div class="card" style="border-left:3px solid var(--gold)">
+        <div class="step-head"><span class="step-no">00</span><h3>Аль ч нөхцөлд нийтлэг дүрэм</h3></div>
+        <div class="g-common">
+          <div class="a"><span class="ic">—</span><span>Дуусахаас <b>7-оос доошгүй хоногийн өмнө</b> харилцагчтайгаа холбогдож, шийдвэрийг нь урьдчилан тодруул.</span></div>
+          <div class="a"><span class="ic">—</span><span>Шийдвэрээ (сунгана / бага дүнгээр / гарна) <b>Cashflow хэсэгт заавал бүртгэ</b> — ХОБПХГ эх үүсвэрийн төлөвлөлтөө үүгээр хийдэг тул сар бүрийн үүрэг.</span></div>
+          <div class="a"><span class="ic">—</span><span>Гүйлгээ бүрд <b>харилцагчийн бичгээр өгсөн, гарын үсэгтэй хүсэлт</b> заавал — утсаар ярьсны үндсэн дээр сунгалт, хаалт хийхгүй.</span></div>
+          <div class="a"><span class="ic">—</span><span>Гэрээ, хүсэлтийн хуулбарыг Drive-ын <b>21. Funding Support Portal</b> хавтаст Naming Standard v1.0 нэрээр хадгал.</span></div>
+          <div class="a"><span class="ic">—</span><span><b>300 · NET ИТГЭЛЦЭЛ</b> бүрэн дижитал — сунгалт, хаалт нь аппаар автоматаар хийгдэнэ; салбараас зөвхөн банкны данс солих хүсэлт (F10) илгээнэ.</span></div>
+        </div>
+      </div>
+
+      <div class="seg" id="gSeg" style="margin-bottom:18px">
+        <button data-v="ext" class="on">Бүтэн дүнгээр сунгах</button>
+        <button data-v="part">Бага дүнгээр сунгах</button>
+        <button data-v="close">Хаах (гарах)</button>
+      </div>
+
+      <div id="gExt">
+        <div class="card">
+          <div class="step-head"><span class="step-no">01</span><h3>Алхмууд — бүтэн дүнгээр сунгах</h3><span class="aside">Хамгийн түгээмэл зам</span></div>
+          <div class="gsteps">
+            <div class="gstep"><span class="gn">1</span><span><b>Cashflow-д бүртгэ.</b> Дуусах сарын өмнө «Сунгана» гэж сонгоод шинэ хугацаа, хүү, дүнг бич — ХОБПХГ-ын төлөвлөлтөд шууд тусна.</span></div>
+            <div class="gstep"><span class="gn">2</span><span><b>Харилцагчийн хүсэлтийг ав.</b> Шинэ хугацаа, хүү, дүнг заасан гарын үсэгтэй хүсэлт.</span></div>
+            <div class="gstep"><span class="gn">3</span><span><b>Хүүг шалга.</b> NC-01/54-2025-ын ерөнхий нөхцөл дотор (ж: Итгэлцэл ₮ 12 сар 17.5%) бол нэмэлт зөвшөөрөл шаардахгүй — шууд үргэлжлүүл. Хүү нэмүүлэх бол <b>F01 хүсэлт</b> илгээж, зөвшөөрөл батлагдсаны ДАРАА гүйлгээ хий.</span></div>
+            <div class="gstep"><span class="gn">4</span><span><b>Нэткор дээр сунгалтын гүйлгээ.</b> Дуусах өдөр нь сунгалтын гүйлгээг хийж, шинэ гэрээг 2 хувь хэвлэн гарын үсэг зуруул.</span></div>
+            <div class="gstep"><span class="gn">5</span><span><b>Архивла, баталгаажуул.</b> Гэрээ, хүсэлтээ Drive-д хадгалж, cashflow бүртгэлээ шинэ гэрээний мэдээллээр баталгаажуул.</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="step-head"><span class="step-no">02</span><h3>Бүрдүүлэх материал, систем</h3></div>
+          <div class="checks" style="border-top:none;margin-top:0;padding-top:0">
+            <div class="c ok"><span class="m">✓</span> Харилцагчийн сунгалтын хүсэлт — гарын үсэгтэй; шинэ хугацаа, хүү, дүн заасан</div>
+            <div class="c ok"><span class="m">✓</span> Иргэний үнэмлэх / байгууллагын гэрчилгээ — мэдээлэл өөрчлөгдсөн бол шинэчилж ав</div>
+            <div class="c ok"><span class="m">✓</span> Шинэ итгэлцлийн гэрээ 2 хувь (Нэткороос хэвлэгдэнэ)</div>
+            <div class="c ok"><span class="m">✓</span> Хүү нэмэгдсэн бол — батлагдсан зөвшөөрлийн G-Doc (F01-ийн хариу)</div>
+          </div>
+          <div class="gsys"><span>Нэткор — сунгалтын гүйлгээ, шинэ гэрээ</span><span>Портал — F01 (хүү), Cashflow</span><span>Drive — архив</span></div>
+        </div>
+        <div class="integrity"><b>Хүү нэмэх дүрэм (Хавсралт №2).</b> 49 сая ₮ хүртэл — нэмэгдүүлэхгүй · 50–199 сая +0.5% · 200–499 сая +1.0% · 500 саяас +1.5% — ГЗ-ын орлогч Х.Нургүлийн зөвшөөрлөөр; 100 саяас дээш дүнд ГЗ Б.Хуншагайн зөвшөөрлөөр нэмж +1.0%; түүнээс дээш ТУЗ. Улирал, сар бүр хүү зарлагадах нөхцөлд суурь хүү 1 пунктээр бага. <b>Хугацаа:</b> тушаалын нөхцөл дотор бол салбар дээрээ шууд; F01 шаардсан бол ажлын 1 өдөр, яаралтайд ажлын 4 цаг.</div>
+      </div>
+
+      <div id="gPart" hidden>
+        <div class="card">
+          <div class="step-head"><span class="step-no">01</span><h3>Алхмууд — бага дүнгээр сунгах</h3><span class="aside">Хэсэгчлэн буцааж, үлдэгдлээр сунгана</span></div>
+          <div class="gsteps">
+            <div class="gstep"><span class="gn">1</span><span><b>Cashflow-д бүртгэ.</b> «Сунгана» гэж сонгоод «Сунгах дүн» талбарт үлдэх дүнг бич; тайлбарт буцаах дүн, шалтгааныг тэмдэглэ.</span></div>
+            <div class="gstep"><span class="gn">2</span><span><b>Нэг хүсэлтэд бүгдийг багтаа.</b> Сунгах дүн + буцаан авах дүн + шилжүүлэх банкны данс — харилцагчийн гарын үсэгтэй нэг хүсэлтэд.</span></div>
+            <div class="gstep"><span class="gn">3</span><span><b>Хугацааг анхаар.</b> Дуусах өдөр нь хийвэл буцаалтын хэсэгт торгууль тооцохгүй. Хугацаанаас ӨМНӨ хэсэгчлэн буцаах бол эхлээд <b>F08 зөвшөөрөл</b> ав — гэрээний дагуу ₮ 2.4%, $ 0.5% хүү хамаарч болно.</span></div>
+            <div class="gstep"><span class="gn">4</span><span><b>Нэткор дээр гүйцэтгэ.</b> Хуучин дансыг хааж, буцаах дүнг харилцагчийн банкны данс руу шилжүүлж, үлдэх дүнгээр шинэ данс нээж гэрээ байгуул.</span></div>
+            <div class="gstep"><span class="gn">5</span><span><b>Хүүг ШИНЭ дүнгээр тооц.</b> Дүнгийн ангилал өөрчлөгдвөл матрицын шат мөн өөрчлөгдөнө (ж: 250 сая → 180 сая бол дээд нэмэгдэл +1.0% биш +0.5%). Хүү нэмүүлэх бол F01.</span></div>
+            <div class="gstep"><span class="gn">6</span><span><b>Архивла.</b> Гэрээ, хүсэлт, шилжүүлгийн баримтыг Drive-д хадгалж, cashflow-г баталгаажуул.</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="step-head"><span class="step-no">02</span><h3>Бүрдүүлэх материал, систем</h3></div>
+          <div class="checks" style="border-top:none;margin-top:0;padding-top:0">
+            <div class="c ok"><span class="m">✓</span> Харилцагчийн хүсэлт — сунгах дүн, буцаах дүн, банкны данс бүгд заасан</div>
+            <div class="c ok"><span class="m">✓</span> Банкны дансны мэдээлэл — данс эзэмшигч нь ЗААВАЛ харилцагч өөрөө (мөнгө угаахтай тэмцэх дүрэм)</div>
+            <div class="c ok"><span class="m">✓</span> Үлдэх дүнгийн шинэ гэрээ 2 хувь</div>
+            <div class="c ok"><span class="m">✓</span> Хугацаанаас өмнө бол — F08-ийн батлагдсан зөвшөөрөл</div>
+          </div>
+          <div class="gsys"><span>Нэткор — хаалт + шилжүүлэг + шинэ данс</span><span>Портал — F08 / F01, Cashflow</span><span>Drive — архив</span></div>
+        </div>
+        <div class="integrity"><b>Анхаар.</b> Буцаалтын шилжүүлгийг зөвхөн харилцагчийн өөрийн нэрийн данс руу хийнэ — гуравдагч этгээдийн данс руу шилжүүлэхийг хориглоно. Шинэ дүн 500 сая ₮-с дээш хэвээр бол хүүгийн аливаа нэмэгдэлд ГЗ-ын орлогч, ГЗ-ын зөвшөөрөл хэрэгтэй хэвээр.</div>
+      </div>
+
+      <div id="gClose" hidden>
+        <div class="card">
+          <div class="step-head"><span class="step-no">01</span><h3>Алхмууд — данс хаах (гарах)</h3><span class="aside">Хадгалах оролдлогыг мартуузай</span></div>
+          <div class="gsteps">
+            <div class="gstep"><span class="gn">1</span><span><b>Cashflow-д бүртгэ.</b> «Гарна» гэж сонгоод «Хэрхэн гарах» (бэлнээр / данс руу / өөр бүтээгдэхүүн)-ыг зааж, гарах шалтгааныг тайлбарт заавал бич.</span></div>
+            <div class="gstep"><span class="gn">2</span><span><b>Хадгалах оролдлого хий.</b> Өрсөлдөгчийн санал, хүүний хүлээлтээс болж гарч байвал F02 (борлуулалтын дэмжлэг), 300 сая ₮-с дээш бол F12 (дэд захирлуудтай уулзалт) санал болго — гарахаас өмнө.</span></div>
+            <div class="gstep"><span class="gn">3</span><span><b>Хаалтын хүсэлт ав.</b> Буцаан авах хэлбэр (бэлэн / банкны данс)-ийг заасан гарын үсэгтэй хүсэлт.</span></div>
+            <div class="gstep"><span class="gn">4</span><span><b>Торгуулийг ялга.</b> Хугацаа ДУУССАН: бүрэн хүүтэйгээ, торгуульгүй — салбар дээрээ шууд. Хугацаанаас ӨМНӨ: <b>F08 хүсэлт заавал</b>; гэрээний дагуу данс хаахад ₮ 2.4%, $ 0.5% хүү тооцогдоно (онцгой нөхцөлөөр чөлөөлөхийг хариуцагч шийднэ).</span></div>
+            <div class="gstep"><span class="gn">5</span><span><b>Нэткор дээр хаалтын гүйлгээ.</b> Хүүгийн эцсийн тооцооллыг харилцагчид тайлбарлаж, гүйлгээг хийж, баримтыг өг.</span></div>
+            <div class="gstep"><span class="gn">6</span><span><b>Архивла.</b> Хаалтын баримтыг Drive-д хадгал. 500 сая ₮-с дээш гаралт cashflow бүртгэлээр ХОБПХГ-т автоматаар харагдана.</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="step-head"><span class="step-no">02</span><h3>Бүрдүүлэх материал, систем</h3></div>
+          <div class="checks" style="border-top:none;margin-top:0;padding-top:0">
+            <div class="c ok"><span class="m">✓</span> Харилцагчийн хаалтын хүсэлт — буцаан авах хэлбэр заасан, гарын үсэгтэй</div>
+            <div class="c ok"><span class="m">✓</span> Иргэний үнэмлэх (биечлэн ирсэн бол тулгаж шалга)</div>
+            <div class="c ok"><span class="m">✓</span> Банкны дансны мэдээлэл — харилцагчийн өөрийн нэрийн данс</div>
+            <div class="c ok"><span class="m">✓</span> Хугацаанаас өмнө бол — F08-ийн батлагдсан зөвшөөрөл</div>
+          </div>
+          <div class="gsys"><span>Нэткор — хаалтын гүйлгээ, хүүгийн тооцоо</span><span>Портал — F08 / F02 / F12, Cashflow</span><span>Drive — архив</span></div>
+        </div>
+        <div class="integrity"><b>Гарах шалтгаан бол алт.</b> Харилцагч яагаад гарч байгааг cashflow-ийн тайлбарт заавал бүртгэ — энэ мэдээллээр ХОБПХГ бүтээгдэхүүн, хүүгийн нөхцөлөө сайжруулдаг. Хугацаанаас өмнөх буцаалтын SLA: ажлын 1 өдөр, яаралтайд ажлын 4 цаг.</div>
+      </div>
+
+      <div class="card">
+        <div class="step-head"><span class="step-no">03</span><h3>Хэнд хандах вэ</h3></div>
+        <div class="table-wrap" style="box-shadow:none">
+          <table class="reg" style="min-width:640px">
+            <thead><tr><th>Асуудал</th><th>Хариуцагч</th><th>Суваг</th></tr></thead>
+            <tbody>
+              <tr><td>Сунгалт, хугацаанаас өмнөх буцаалт, дансны тохиргоо</td><td>Э.Эрхбаяр · ХОБХУГ-ын менежер</td><td>F06 / F08 / F10 хүсэлт</td></tr>
+              <tr><td>Хүүгийн тохируулга, онцгой нөхцөл</td><td>О.Мөнх-Эрдэнэ · ХОБПХГ-ын захирал (зөвшөөрөл олгох: Х.Нургүл, Б.Хуншагай)</td><td>F01 / F07 хүсэлт</td></tr>
+              <tr><td>Өндөр дүнтэй харилцагчийн уулзалт, танилцуулга</td><td>Б.Алдар, Э.Ганбаатар, Б.Насанбат · ХОБХУГ-ын дэд захирлууд</td><td>F12 хүсэлт</td></tr>
+              <tr><td>Системийн алдаа, процессын саад</td><td>А.Лхагвадарь, О.Онон · ХОБПХГ-ын менежерүүд</td><td>Санал, гомдол (G04 / G05)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="att-btns" style="margin-top:16px">
+          <button class="ext-btn" data-gcat="F06" type="button">F06 · Сунгалтын хүсэлт илгээх</button>
+          <button class="ext-btn" data-gcat="F08" type="button">F08 · Өмнөх буцаалтын хүсэлт</button>
+          <button class="ext-btn" data-gcat="F01" type="button">F01 · Хүүгийн хүсэлт</button>
+          <button class="ext-btn" id="gGoCf" type="button">Cashflow бөглөх</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
   <!-- ---- cashflow ---- -->
   <main id="cfview" class="single" style="display:none">
     <div class="anim">
       <span class="crumb"><span class="dot"></span> Cashflow · Эх үүсвэрийн төлөвлөлт</span>
       <h2 class="page">Дуусах хугацааны cashflow</h2>
-      <p class="lede">Сонгосон сард хугацаа нь дуусах данс бүр дээр салбар шийдвэрээ бүртгэнэ: сунгах эсэх, ямар нөхцөлөөр, хэдий дүнгээр. Прототип горимд жишээ данснууд харагдана — production дээр Нэткор системээс автоматаар татагдана.</p>
+      <p class="lede">Сонгосон сард хугацаа нь дуусах данс бүр дээр салбар шийдвэрээ бүртгэнэ: сунгах эсэх, ямар нөхцөлөөр, хэдий дүнгээр. Сунгах, хаах, бага дүнгээр сунгах алхмуудыг <button class="chip" id="cfGuideBtn" type="button" style="padding:3px 12px">Процессын заавар</button> хуудаснаас үзнэ. Прототип горимд жишээ данснууд харагдана — production дээр Нэткор системээс автоматаар татагдана.</p>
       <div class="dash-tools">
         <div class="month-nav">
           <button id="cfPrev" aria-label="Өмнөх сар">‹</button>
@@ -1592,7 +1729,7 @@ $('btnLogout').addEventListener('click',()=>{
 });
 
 /* ================= views ================= */
-const VIEWS=['newview','reqview','fbkview','myview','cfview','dashview','regview'];
+const VIEWS=['newview','reqview','fbkview','myview','cfview','guideview','dashview','regview'];
 function gotoView(v){
   VIEWS.forEach(x=>$(x).style.display = x===v ? 'grid':'none');
   window.scrollTo(0,0);
@@ -2406,6 +2543,8 @@ function homeResults(q){
   }
   if(/лимит|нэмэгдүүл/.test(ql))
     out.unshift({k:'ans', t:'Нэмэгдүүлэх лимит: +0.5 / +1.0 / +1.5%', s:'Хавсралт №2 — дүнгээс хамаарна; 49 сая хүртэл нэмэгдүүлэхгүй'});
+  if(/сунга|хаах|хаалт|буцаал|дуус|процесс|заавар/.test(ql))
+    out.unshift({k:'ans', t:'Процессын заавар — сунгах · бага дүнгээр сунгах · хаах', s:'Алхам, бүрдүүлэх материал, хэнд хандах, аль системээр', fn:()=>gotoView('guideview')});
   return out.slice(0,7);
 }
 function renderHomeResults(q){
@@ -2435,12 +2574,16 @@ function renderSvc(){
     return `<button class="svc" type="button" data-c="${c.c}">
       <span class="ic">${svg(c.k,17)}</span><span class="st2">${c.t}</span>
       <span class="ss">${c.c} · ${c.type} · ${c.sla[0]}</span></button>`; }).join('')
+    +`<button class="svc" type="button" data-c="GUIDE">
+      <span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4a2 2 0 0 1 2-2h13v18H6a2 2 0 0 0-2 2z"/><path d="M4 20V4M8 6h8"/></svg></span>
+      <span class="st2">Сунгалт, хаалтын заавар</span><span class="ss">Алхам · материал · хэнд хандах</span></button>`
     +`<button class="svc" type="button" data-c="CF">
       <span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></span>
       <span class="st2">Cashflow бөглөх</span><span class="ss">Дуусах дансны шийдвэр</span></button>`;
   el.innerHTML=cards;
   el.querySelectorAll('.svc').forEach(b=>b.addEventListener('click',()=>{
     if(b.dataset.c==='CF'){ gotoView('cfview'); return; }
+    if(b.dataset.c==='GUIDE'){ gotoView('guideview'); return; }
     state.cat=CATS.find(x=>x.c===b.dataset.c);
     renderCats(''); applyCatFields(); gotoView('reqview'); refresh();
     if(!store.get('nc2.tourDone',false)) setTimeout(()=>startTour(),400);
@@ -2631,6 +2774,10 @@ function aiItems(){
         ? {dot:'var(--good)', html:`<b>NET ИТГЭЛЦЭЛ (300):</b> банкны данс солих хүсэлт энэ ангилалд зөв бүртгэгдэнэ — харилцагчийн нэр, шинэ банк, дансны мэдээллээ тайлбартаа бичнэ үү.`}
         : {dot:'var(--warn)', html:`<b>NET ИТГЭЛЦЭЛ (300)</b> — бүрэн дижитал бүтээгдэхүүн: зөвхөн харилцагчийн банкны данс солих хүсэлт (F10 · Дансны тохиргоо) хамаарна.`});
   }
+  /* 4d. Сунгалт, хаалтын процессын заавар */
+  if(state.cat&&(state.cat.c==='F06'||state.cat.c==='F08'))
+    items.push({dot:'var(--brand)', html:`Сунгах, бага дүнгээр сунгах, хаах процессын алхам, бүрдүүлэх материалын бүрэн заавар бэлэн бий.`,
+      act:{label:'Заавар нээх', fn:()=>gotoView('guideview')}});
   /* 5. SLA мэдээлэл */
   if(state.cat) items.push({dot:'var(--faint)', html:`Энэ ангилал, зэрэглэлд хариу өгөх хугацаа: <b>${slaFor(state.cat,state.urg)}</b>. Хариуцагч автоматаар хуваарилагдана.`});
   return items;
@@ -3316,6 +3463,19 @@ function closeWelcome(toTour){
 }
 $('wcStart').addEventListener('click',()=>closeWelcome(false));
 $('wcTour').addEventListener('click',()=>closeWelcome(true));
+
+/* ================= процессын заавар ================= */
+bindSegLocal('gSeg', v=>{
+  $('gExt').hidden=v!=='ext'; $('gPart').hidden=v!=='part'; $('gClose').hidden=v!=='close';
+});
+function guideGo(cat){
+  state.cat=CATS.find(x=>x.c===cat)||null;
+  renderCats(''); applyCatFields(); gotoView('reqview'); refresh(); aiRefresh();
+}
+document.querySelectorAll('[data-gcat]').forEach(b=>b.addEventListener('click',()=>guideGo(b.dataset.gcat)));
+$('gGoCf').addEventListener('click',()=>gotoView('cfview'));
+$('faqGuideBtn').addEventListener('click',()=>gotoView('guideview'));
+$('cfGuideBtn').addEventListener('click',()=>gotoView('guideview'));
 
 applyCatFields(); refresh(); refreshF();
 </script>
