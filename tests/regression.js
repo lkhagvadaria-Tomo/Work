@@ -292,6 +292,10 @@ fs.writeFileSync(path.join(OUT, 'shot.png'), PNG);
   R.cfRows = await page.locator('#cfBody tr:not(.cf-det)').count();
   R.cfMonth = await page.textContent('#cfMonthLbl');
   await page.locator('#cfBody select.cf-dec').first().selectOption('Сунгана'); await page.waitForTimeout(200);
+  // v2.1: бүтээгдэхүүн кодоор, салбар «салбар»-гүй богино
+  R.cfProdCode = /^\d{3}$/.test((await page.locator('#cfBody tr:not(.cf-det) td:nth-child(4)').first().textContent()).trim());
+  R.cfUnitNoSuffix = !(await page.locator('#cfBody tr:not(.cf-det) td:nth-child(7)').first().textContent()).includes('салбар');
+  R.cfTsvCode = await page.evaluate(() => /\t\d{3}\t/.test(cfTsv().split('\n')[1]));
   R.cfDetVisible = await page.locator('#cfBody tr.cf-det').first().isVisible();
   R.cfSunFields = await page.locator('#cfBody tr.cf-det').first().locator('.cf-sun:visible').count();
   await page.locator('#cfBody select.cf-dec').nth(1).selectOption('Гарна'); await page.waitForTimeout(200);

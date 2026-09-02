@@ -689,7 +689,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v2.0</span>
+      <span class="proto-badge">Прототип v2.1</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -3106,7 +3106,7 @@ function cfAccounts(){
   const n=20+Math.floor(rnd()*6);
   for(let i=0;i<n;i++){
     const p=prods[Math.floor(rnd()*prods.length)];
-    const isUsd=p[0].includes('$');
+    const isUsd=p[0].includes('USD');
     a.push({
       id:cfKey()+'-'+(i+1), day:1+Math.floor(rnd()*dim),
       acct:String(500000000+Math.floor(rnd()*99999999)),
@@ -3132,6 +3132,21 @@ function cfScope(){
   const u=isAdmin()? ($('cfUnit').value||'all') : (state.user?state.user.unit:'all');
   return all.filter(x=>u==='all'||x.unit===u);
 }
+/* Бүтээгдэхүүний нэр → Нэткор код (хуучин хадгалагдсан нэрсийг мөн таньдаг) */
+const CF_PCODE={'ИТГЭЛЦЭЛ MNT 6.0':206,'ИТГЭЛЦЭЛ MNT 9.0':207,'ИТГЭЛЦЭЛ MNT 12.0':203,
+  'ИТГЭЛЦЭЛ USD 12.0':213,'БОГИНО ХУГАЦААТ ЗЭЭЛ MNT':280};
+function prodCode(pt){
+  const t=String(pt==null?'':pt).trim();
+  if(/^\d{3}$/.test(t)) return t;
+  const p=PRODUCTS.find(x=>x.name===t); if(p) return String(p.code);
+  if(CF_PCODE[t]) return String(CF_PCODE[t]);
+  return t;
+}
+function prodFull(pt){
+  const c=prodCode(pt);
+  const p=PRODUCTS.find(x=>String(x.code)===c);
+  return p ? c+' · '+p.name : String(pt);
+}
 const cfMoney=(v,cur)=> cur==='$' ? '$'+v.toLocaleString('en-US')
   : v>=1e9 ? (v/1e9).toFixed(2)+' тэрбум ₮' : (v/1e6).toFixed(0)+' сая ₮';
 function cfHeader(){
@@ -3147,7 +3162,7 @@ function cfHeader(){
   $('cfProgress').textContent=filled+' / '+rows.length+' данс бөглөгдсөн';
   $('cfTiles').innerHTML=`
     <div class="tile" style="--ac:var(--a3)"><span class="ti">${svg('clock',17)}</span><div class="tk">Дуусах дүн</div><div class="tv num">${(tot/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">${rows.length} данс${usd.length?' · үүнээс '+usd.length+' валютын':''}</div></div>
-    <div class="tile good" style="--ac:var(--a7)"><span class="ti">${svg('undo',17)}</span><div class="tk">Сунгана</div><div class="tv num">${(roll/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">rollover ${tot?Math.round(roll/tot*100):0}%</div></div>
+    <div class="tile good" style="--ac:var(--a7)"><span class="ti">${svg('undo',17)}</span><div class="tk">Сунгана</div><div class="tv num">${(roll/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">сунгалт ${tot?Math.round(roll/tot*100):0}%</div></div>
     <div class="tile warn" style="--ac:var(--a4)"><span class="ti">${svg('down',17)}</span><div class="tk">Гарна</div><div class="tv num">${(out/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">гарах урсгал</div></div>
     <div class="tile" style="--ac:var(--a5)"><span class="ti">${svg('help',17)}</span><div class="tk">Шийдвэр хүлээгдэж буй</div><div class="tv num">${rows.length-filled}</div><div class="ts">данс бөглөгдөөгүй</div></div>`;
   $('cfAllBtn').hidden=!cfDay;
@@ -3189,10 +3204,10 @@ function cfTable(){
     tr.innerHTML=`<td class="mono num">${mm}.${String(r.day).padStart(2,'0')}</td>
       <td class="mono num">${r.acct}</td>
       <td>${r.name}</td>
-      <td>${r.ptype}</td>
+      <td class="mono num" title="${prodFull(r.ptype)}">${prodCode(r.ptype)}</td>
       <td class="num">${cfMoney(r.amount,r.cur)}</td>
       <td class="num">${r.rate}%</td>
-      <td>${r.unit}</td>
+      <td title="${r.unit}">${String(r.unit).replace(' салбар','')}</td>
       <td></td><td></td>`;
     const tdDec=tr.children[7], tdSt=tr.children[8];
     const sel=document.createElement('select'); sel.className='st-select cf-dec';
@@ -3282,7 +3297,7 @@ function cfTsv(){
   const head=['Огноо','Данс','Харилцагч','Бүтээгдэхүүн','Дүн','Валют','Хүү %','Салбар','Шийдвэр','Шинэ хугацаа','Шинэ хүү %','Сунгах дүн','Хэрхэн гарах','Тайлбар','Бөглөсөн','Бөглөсөн цаг'];
   const rows=cfScope().filter(r=>!cfDay||r.day===cfDay).map(r=>{
     const dd=d[r.id]||{};
-    return [cfDate.getFullYear()+'.'+mm+'.'+String(r.day).padStart(2,'0'), r.acct, r.name, r.ptype,
+    return [cfDate.getFullYear()+'.'+mm+'.'+String(r.day).padStart(2,'0'), r.acct, r.name, prodCode(r.ptype),
       r.amount, r.cur, r.rate, r.unit, dd.dec||'',
       dd.dec==='Сунгана'?(dd.term||''):'', dd.dec==='Сунгана'?(dd.rate||''):'', dd.dec==='Сунгана'?(dd.amt||''):'',
       dd.dec==='Гарна'?(dd.how||''):'', dd.note||'', dd.by||'', dd.at||''];
