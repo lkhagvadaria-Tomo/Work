@@ -1,0 +1,11 @@
+{
+  "name": "funding-support-portal",
+  "private": true,
+  "description": "Нэткапитал СГ — Эх үүсвэрийн дэмжлэгийн портал (прототип, нэг файл)",
+  "scripts": {
+    "test": "node tests/regression.js"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.49.0"
+  }
+}
