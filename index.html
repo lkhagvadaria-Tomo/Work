@@ -30,6 +30,11 @@
     /* chart colors (validated) */
     --ch-bar:#3d40b0; --ch-area:rgba(46,49,146,.12);
     --st-new:#3d40b0; --st-review:#b7791f; --st-done:#0ca30c; --st-rej:#d03b3b;
+    /* accent hues — ангилал, дүрс, tile-уудын өнгөлөг систем */
+    --a1:#4338ca; --a2:#0f766e; --a3:#0369a1; --a4:#b45309;
+    --a5:#be185d; --a6:#6d28d9; --a7:#15803d; --a8:#0e7490;
+    --grad:linear-gradient(135deg,#232577 0%,#3b3fae 48%,#0a7d72 135%);
+    --bg-dots:radial-gradient(rgba(46,49,146,.055) 1px, transparent 1.4px);
     color-scheme:light;
   }
   @media (prefers-color-scheme: dark){
@@ -51,6 +56,10 @@
       --shadow-lg:0 28px 72px rgba(0,0,0,.55);
       --ch-bar:#6b70d8; --ch-area:rgba(107,112,216,.16);
       --st-new:#6b70d8; --st-review:#b8860c; --st-done:#0ca30c; --st-rej:#d03b3b;
+      --a1:#a5b4fc; --a2:#5eead4; --a3:#7dd3fc; --a4:#fcd34d;
+      --a5:#f9a8d4; --a6:#c4b5fd; --a7:#86efac; --a8:#67e8f9;
+      --grad:linear-gradient(135deg,#2c2f86 0%,#4d53c4 48%,#0e8578 135%);
+      --bg-dots:radial-gradient(rgba(157,163,242,.06) 1px, transparent 1.4px);
       color-scheme:dark;
     }
   }
@@ -72,12 +81,17 @@
     --shadow-lg:0 28px 72px rgba(0,0,0,.55);
     --ch-bar:#6b70d8; --ch-area:rgba(107,112,216,.16);
     --st-new:#6b70d8; --st-review:#b8860c; --st-done:#0ca30c; --st-rej:#d03b3b;
+    --a1:#a5b4fc; --a2:#5eead4; --a3:#7dd3fc; --a4:#fcd34d;
+    --a5:#f9a8d4; --a6:#c4b5fd; --a7:#86efac; --a8:#67e8f9;
+    --grad:linear-gradient(135deg,#2c2f86 0%,#4d53c4 48%,#0e8578 135%);
+    --bg-dots:radial-gradient(rgba(157,163,242,.06) 1px, transparent 1.4px);
     color-scheme:dark;
   }
 
   *{box-sizing:border-box}
   [hidden]{display:none!important}
-  body{margin:0; background:var(--bg); background-image:var(--bg-glow); background-attachment:fixed;
+  body{margin:0; background:var(--bg); background-image:var(--bg-glow),var(--bg-dots);
+    background-size:auto,auto,26px 26px; background-attachment:fixed;
     color:var(--text); font:15.5px/1.65 var(--font-body); -webkit-font-smoothing:antialiased; min-height:100vh}
   .mono{font-family:var(--font-mono)}
   .num{font-variant-numeric:tabular-nums}
@@ -192,11 +206,11 @@
     margin:0 0 12px; text-wrap:balance; line-height:1.16}
   .lede{color:var(--muted); font-size:15px; line-height:1.7; max-width:64ch; margin:0 0 28px}
 
-  .card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px 26px; margin-bottom:20px;
-    box-shadow:0 1px 2px rgba(24,36,48,.04)}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px 26px; margin-bottom:20px;
+    box-shadow:0 1px 2px rgba(24,36,48,.05), 0 8px 24px rgba(24,36,48,.04)}
   .card.flash{border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft)}
   .step-head{display:flex; align-items:baseline; gap:13px; margin-bottom:5px; flex-wrap:wrap}
-  .step-no{font-family:var(--font-mono); font-size:10.5px; color:var(--gold); border:1px solid var(--border); border-radius:7px; padding:2px 8px}
+  .step-no{font-family:var(--font-mono); font-size:10.5px; color:var(--brand); background:var(--brand-soft); border:none; border-radius:7px; padding:3px 9px; font-weight:600}
   .step-head h3{font-family:var(--font-display); font-size:18.5px; font-weight:600; margin:0}
   .step-head .aside{margin-left:auto; font-size:12px; color:var(--faint)}
   .step-sub{font-size:14px; color:var(--muted); margin:0 0 16px; line-height:1.65}
@@ -204,8 +218,10 @@
 
   /* ---------- flow chooser ---------- */
   .flow-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px}
-  .flow-card{text-align:left; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px;
+  .flow-card{position:relative; overflow:hidden; text-align:left; background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:28px;
     display:flex; flex-direction:column; gap:14px; transition:border-color .15s, box-shadow .15s, transform .15s}
+  .flow-card::before{content:''; position:absolute; inset:0 0 auto 0; height:4px; background:var(--grad)}
+  .flow-card.f2::before{background:linear-gradient(135deg,#0a7d72,#3b3fae)}
   .flow-card:hover{border-color:var(--brand); box-shadow:var(--shadow); transform:translateY(-2px)}
   .flow-card .fi{width:48px; height:48px; border-radius:13px; display:flex; align-items:center; justify-content:center}
   .flow-card.f1 .fi{background:var(--brand-soft); color:var(--brand)}
@@ -241,10 +257,15 @@
   .cat{display:flex; align-items:center; gap:13px; text-align:left; background:var(--surface); border:1px solid var(--border);
     border-radius:12px; padding:14px 15px; transition:border-color .12s, background .12s, box-shadow .12s, transform .12s}
   .cat:hover{border-color:var(--border-strong); box-shadow:0 2px 8px rgba(24,36,48,.06); transform:translateY(-1px)}
-  .cat.on{border-color:var(--brand); background:var(--brand-soft); box-shadow:0 0 0 3px var(--brand-soft)}
-  .cat .ic{width:38px; height:38px; flex:none; border-radius:10px; background:var(--surface-2); border:1px solid var(--border);
-    display:flex; align-items:center; justify-content:center; color:var(--muted)}
-  .cat.on .ic{color:var(--brand); border-color:var(--brand); background:var(--surface)}
+  .cat.on{border-color:color-mix(in srgb, var(--ac, var(--brand)) 55%, var(--border));
+    background:color-mix(in srgb, var(--ac, var(--brand)) 8%, var(--surface));
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--ac, var(--brand)) 14%, transparent)}
+  .cat .ic{width:38px; height:38px; flex:none; border-radius:11px;
+    background:color-mix(in srgb, var(--ac, var(--brand)) 11%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--ac, var(--brand)) 26%, var(--border));
+    display:flex; align-items:center; justify-content:center; color:var(--ac, var(--muted))}
+  .cat:hover .ic{background:color-mix(in srgb, var(--ac, var(--brand)) 18%, var(--surface))}
+  .cat.on .ic{color:var(--surface); border-color:transparent; background:var(--ac, var(--brand))}
   .cat .tt{font-size:14px; font-weight:600; line-height:1.4}
   .cat .cd{font-family:var(--font-mono); font-size:10px; color:var(--faint); margin-top:3px}
   .cat-empty{color:var(--faint); font-size:13.5px; padding:16px 4px; display:none}
@@ -268,7 +289,7 @@
   .chips{display:flex; gap:9px; flex-wrap:wrap; margin-top:13px}
   .chip{border:1px dashed var(--border-strong); background:none; color:var(--muted); border-radius:99px; padding:6px 14px;
     font-size:12.5px; font-weight:500; transition:color .12s, border-color .12s}
-  .chip:hover{color:var(--brand); border-color:var(--brand)}
+  .chip:hover{color:var(--brand); border-color:var(--brand); background:var(--brand-soft)}
   .seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden; background:var(--surface-2)}
   .seg button{border:none; background:none; padding:9px 17px; font-size:13px; font-weight:600; color:var(--muted); transition:background .12s, color .12s}
   .seg button.on{background:var(--brand); color:#fff}
@@ -301,10 +322,10 @@
   .drive-preview .path{color:var(--gold); font-weight:500; word-break:break-all}
 
   .submit-bar{display:flex; align-items:center; gap:16px; margin-top:8px; flex-wrap:wrap}
-  .submit{display:flex; align-items:center; gap:10px; background:var(--btn-primary); color:var(--btn-primary-text); border:none;
+  .submit{display:flex; align-items:center; gap:10px; background:var(--grad); color:#fff; border:none;
     border-radius:11px; padding:14px 30px; font-size:15px; font-weight:700; box-shadow:0 2px 8px rgba(20,73,143,.25);
     transition:background .15s, box-shadow .15s}
-  .submit:hover:not(:disabled){background:var(--btn-primary-hover); box-shadow:0 4px 14px rgba(20,73,143,.3)}
+  .submit:hover:not(:disabled){filter:brightness(1.1); box-shadow:0 6px 18px rgba(20,73,143,.32)}
   .submit:disabled{opacity:.4; cursor:not-allowed; box-shadow:none}
   .submit-note{font-size:12.5px; color:var(--faint)}
 
@@ -362,7 +383,12 @@
   /* dashboard */
   .dash-tools{display:flex; gap:12px; align-items:center; margin-bottom:20px; flex-wrap:wrap}
   .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:22px}
-  .tile{background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:18px 20px}
+  .tile{position:relative; background:var(--surface); border:1px solid var(--border); border-radius:15px; padding:18px 20px; overflow:hidden}
+  .tile::before{content:''; position:absolute; inset:0 0 auto 0; height:3px; border-radius:15px 15px 0 0;
+    background:var(--ac, var(--border)); opacity:.85}
+  .tile .ti{position:absolute; top:15px; right:15px; width:36px; height:36px; border-radius:11px;
+    display:flex; align-items:center; justify-content:center; color:var(--ac, var(--brand));
+    background:color-mix(in srgb, var(--ac, var(--brand)) 12%, var(--surface))}
   .tile .tk{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; color:var(--faint)}
   .tile .tv{font-size:30px; font-weight:700; margin-top:6px; line-height:1.1; font-variant-numeric:tabular-nums}
   .tile .ts{font-size:11.5px; color:var(--faint); margin-top:4px}
@@ -394,9 +420,10 @@
   .table-wrap{overflow-x:auto; background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:0 1px 2px rgba(24,36,48,.04)}
   table.reg{width:100%; border-collapse:collapse; font-size:12.5px; min-width:1000px}
   table.reg th{position:sticky; top:0; text-align:left; font-size:10px; letter-spacing:.08em; text-transform:uppercase;
-    color:var(--faint); font-weight:600; background:var(--surface-2); padding:12px 15px; border-bottom:1px solid var(--border); white-space:nowrap}
+    color:var(--muted); font-weight:600; background:color-mix(in srgb, var(--brand) 6%, var(--surface-2));
+    padding:12px 15px; border-bottom:1px solid var(--border); white-space:nowrap}
   table.reg td{padding:12px 15px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5}
-  table.reg tbody tr:hover{background:var(--surface-2)}
+  table.reg tbody tr:hover{background:color-mix(in srgb, var(--brand) 5%, var(--surface))}
   table.reg tr:last-child td{border-bottom:none}
   table.reg td .sub{color:var(--faint); font-size:11px; margin-top:2px}
   .st-select{background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:5px 8px; font-size:12px}
@@ -411,8 +438,9 @@
   .modal{width:min(660px,100%); max-height:88vh; overflow:auto; background:var(--surface); border:1px solid var(--border-strong);
     border-radius:18px; box-shadow:var(--shadow-lg); animation:popIn .25s ease both}
   .modal .mh{padding:26px 28px 0; text-align:center}
-  .modal .okmark{width:54px; height:54px; margin:0 auto 14px; border-radius:50%; background:var(--good-soft); color:var(--good);
-    display:flex; align-items:center; justify-content:center}
+  .modal .okmark{width:54px; height:54px; margin:0 auto 14px; border-radius:50%;
+    background:linear-gradient(135deg, var(--good-soft), var(--gold-soft)); color:var(--good);
+    display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 6px color-mix(in srgb, var(--good) 6%, transparent)}
   .modal h3{font-family:var(--font-display); margin:0 0 5px; font-size:22px; font-weight:600}
   .modal .mh p{color:var(--muted); font-size:13.5px; line-height:1.6; margin:0 auto 20px; max-width:52ch}
   .mailcard{margin:0 24px 16px; border:1px solid var(--border); border-radius:12px; overflow:hidden}
@@ -423,8 +451,8 @@
   .mailcard .mrow .k{color:var(--faint); width:64px; flex:none}
   .mailcard .mbody{border-top:1px solid var(--border); padding:14px 18px; font-size:12.5px; color:var(--muted); line-height:1.8; white-space:pre-wrap}
   .modal .mf{padding:4px 24px 24px; display:flex; justify-content:flex-end}
-  .modal .mf .b2{background:var(--btn-primary); color:var(--btn-primary-text); border:none; border-radius:10px; padding:12px 26px; font-size:14px; font-weight:600}
-  .modal .mf .b2:hover{background:var(--btn-primary-hover)}
+  .modal .mf .b2{background:var(--grad); color:#fff; border:none; border-radius:10px; padding:12px 26px; font-size:14px; font-weight:600}
+  .modal .mf .b2:hover{filter:brightness(1.1)}
 
   /* tour */
   #tour{position:absolute; z-index:60; width:min(336px, calc(100vw - 32px)); background:var(--surface); border:1px solid var(--border-strong);
@@ -467,8 +495,8 @@
   .gsteps{display:flex; flex-direction:column}
   .gstep{display:flex; gap:13px; padding:10px 0; border-top:1px solid var(--border); font-size:14px; line-height:1.65}
   .gstep:first-child{border-top:none; padding-top:2px}
-  .gstep .gn{flex:none; width:24px; height:24px; border-radius:50%; background:var(--brand-soft); color:var(--brand);
-    font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center; margin-top:2px}
+  .gstep .gn{flex:none; min-width:24px; height:24px; padding:0 4px; border-radius:99px; background:var(--grad); color:#fff;
+    font-weight:700; font-size:11.5px; display:flex; align-items:center; justify-content:center; margin-top:2px}
   .gsys{display:flex; gap:9px; flex-wrap:wrap; margin-top:14px}
   .gsys span{font-size:12px; border:1px solid var(--border); border-radius:99px; padding:5px 12px; background:var(--surface-2); color:var(--muted)}
   .g-common{display:flex; flex-direction:column; gap:9px; font-size:13.5px; line-height:1.6}
@@ -523,7 +551,8 @@
     border-radius:10px; padding:11px 12px; font-size:14px; font-weight:600; color:var(--muted);
     transition:background .12s, color .12s}
   .snav:hover{background:var(--surface-2); color:var(--text)}
-  .snav.on{background:var(--brand-soft); color:var(--brand); font-weight:700}
+  .snav.on{background:var(--grad); color:#fff; font-weight:700; box-shadow:0 6px 16px color-mix(in srgb, #232577 25%, transparent)}
+  .snav.on .sn-cnt{color:rgba(255,255,255,.75)}
   .snav .sn-cnt{margin-left:auto; font-size:11.5px; color:var(--faint); font-variant-numeric:tabular-nums}
   .snav .sn-alert{margin-left:6px; min-width:18px; height:18px; border-radius:99px; background:var(--danger); color:#fff;
     font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; padding:0 5px}
@@ -551,6 +580,18 @@
     main{padding-bottom:96px}
   }
 
+  /* ---------- home hero ---------- */
+  .hero{position:relative; border-radius:20px; padding:30px clamp(22px,4vw,42px) 34px; margin-bottom:26px}
+  .hero-bg{position:absolute; inset:0; overflow:hidden; border-radius:inherit; background:var(--grad);
+    box-shadow:0 18px 44px color-mix(in srgb, #232577 22%, transparent)}
+  .hero-lion{position:absolute; right:-26px; bottom:-58px; color:rgba(255,255,255,.09); pointer-events:none}
+  .hero>:not(.hero-bg){position:relative; z-index:1}
+  .hero .crumb{color:#7de8da} .hero .crumb .dot{background:#7de8da}
+  .hero h2.page{color:#fff; margin-bottom:10px}
+  .hero .lede{color:rgba(238,243,248,.78); margin-bottom:22px}
+  .hero .hs-in{border-color:transparent; box-shadow:0 10px 30px rgba(10,15,40,.28)}
+  @media (max-width:760px){ .hero{padding:22px 18px 24px} .hero-lion{right:-50px} }
+
   /* ---------- home: search, service catalog, FAQ ---------- */
   .home-search{position:relative; margin-bottom:24px}
   .home-search .hs-in{display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border-strong);
@@ -569,18 +610,22 @@
   .hs-row .hk.rec{color:var(--gold); background:var(--gold-soft)}
   .hs-row .hk.ans{color:var(--good); background:var(--good-soft)}
   .hs-row .hs-sub{color:var(--faint); font-size:12px; margin-top:1px}
-  .hsec{font-family:var(--font-display); font-size:18px; font-weight:600; margin:26px 0 13px}
+  .hsec{display:flex; align-items:center; gap:11px; font-family:var(--font-display); font-size:18px; font-weight:600; margin:28px 0 14px}
+  .hsec::before{content:''; width:20px; height:4px; border-radius:99px; background:var(--grad); flex:none}
   .svc-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:11px}
   .svc{display:flex; flex-direction:column; gap:9px; text-align:left; background:var(--surface); border:1px solid var(--border);
     border-radius:13px; padding:16px; transition:border-color .12s, transform .12s, box-shadow .12s}
   .svc:hover{border-color:var(--brand); transform:translateY(-1px); box-shadow:0 3px 10px rgba(24,36,48,.07)}
-  .svc .ic{width:34px; height:34px; border-radius:9px; background:var(--brand-soft); color:var(--brand);
-    display:flex; align-items:center; justify-content:center}
+  .svc .ic{width:34px; height:34px; border-radius:10px;
+    background:color-mix(in srgb, var(--ac, var(--brand)) 12%, var(--surface));
+    color:var(--ac, var(--brand)); display:flex; align-items:center; justify-content:center}
+  .svc:hover .ic{background:color-mix(in srgb, var(--ac, var(--brand)) 20%, var(--surface))}
   .svc .st2{font-size:13px; font-weight:600; line-height:1.35}
   .svc .ss{font-size:11px; color:var(--faint)}
   .faq details{border-bottom:1px solid var(--border); padding:13px 4px}
   .faq details:last-child{border-bottom:none}
-  .faq summary{cursor:pointer; font-weight:600; font-size:14px; list-style:none; display:flex; justify-content:space-between; align-items:center}
+  .faq summary{cursor:pointer; font-weight:600; font-size:14px; list-style:none; display:flex; justify-content:space-between; align-items:center; transition:color .12s}
+  .faq summary:hover{color:var(--brand)}
   .faq summary::after{content:'+'; color:var(--faint); font-size:17px}
   .faq details[open] summary::after{content:'–'}
   .faq .fa{font-size:13.5px; color:var(--muted); line-height:1.7; padding-top:9px; max-width:75ch}
@@ -644,7 +689,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v1.9</span>
+      <span class="proto-badge">Прототип v2.0</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -721,15 +766,18 @@
   <!-- ---- flow chooser ---- -->
   <main id="newview" class="single">
     <div class="anim">
-      <span class="crumb"><span class="dot"></span> Нүүр</span>
-      <h2 class="page" id="homeGreet">Сайн байна уу</h2>
-      <p class="lede">Өнөөдрийн хүлээгдэж буй ажил тань доор байна. Шинэ бүртгэлээ хоёр урсгалын аль тохирохоор нь эхлүүлээрэй — аль аль нь дугаарлагдан бүртгэгдэж, ХОБПХГ-т автоматаар хуваарилагдана.</p>
-      <div class="home-search">
-        <div class="hs-in">
-          <svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--faint)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="homeSearch" placeholder="Хайх — үйлчилгээ, бүртгэл, асуулт… (ж: «хүү 12 сар», «тамга», «ЭҮ-2026»)" aria-label="Нэгдсэн хайлт">
+      <div class="hero">
+        <div class="hero-bg" aria-hidden="true"><svg class="hero-lion" width="240" height="272" fill="currentColor"><use href="#nclion"/></svg></div>
+        <span class="crumb hero-crumb"><span class="dot"></span> Эх үүсвэрийн портал · Нүүр</span>
+        <h2 class="page" id="homeGreet">Сайн байна уу</h2>
+        <p class="lede">Өнөөдрийн хүлээгдэж буй ажил тань доор байна. Шинэ бүртгэлээ хоёр урсгалын аль тохирохоор нь эхлүүлээрэй — аль аль нь дугаарлагдан бүртгэгдэж, ХОБПХГ-т автоматаар хуваарилагдана.</p>
+        <div class="home-search">
+          <div class="hs-in">
+            <svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--faint)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="homeSearch" placeholder="Хайх — үйлчилгээ, бүртгэл, асуулт… (ж: «хүү 12 сар», «тамга», «ЭҮ-2026»)" aria-label="Нэгдсэн хайлт">
+          </div>
+          <div class="hs-results" id="homeResults" hidden></div>
         </div>
-        <div class="hs-results" id="homeResults" hidden></div>
       </div>
       <div class="tiles" id="homeTasks" style="margin-bottom:6px"></div>
       <h3 class="hsec">Түгээмэл үйлчилгээ</h3>
@@ -930,8 +978,11 @@
         <div class="sum-head">
           <div class="ring">
             <svg width="48" height="48" viewBox="0 0 46 46">
+              <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="var(--brand)"/><stop offset="1" stop-color="var(--gold)"/>
+              </linearGradient></defs>
               <circle cx="23" cy="23" r="19" fill="none" stroke="var(--border)" stroke-width="3.5"/>
-              <circle id="ringArc" cx="23" cy="23" r="19" fill="none" stroke="var(--gold)" stroke-width="3.5"
+              <circle id="ringArc" cx="23" cy="23" r="19" fill="none" stroke="url(#ringGrad)" stroke-width="3.5"
                 stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4"/>
             </svg>
             <div class="pc mono num" id="ringPct">0%</div>
@@ -1880,6 +1931,7 @@ function renderCats(filter=''){
     shown++;
     const b=document.createElement('button');
     b.className='cat'+(state.cat&&state.cat.c===cat.c?' on':'');
+    b.style.setProperty('--ac','var(--a'+(CATS.indexOf(cat)%8+1)+')');
     b.innerHTML=`<span class="ic">${svg(cat.k)}</span><span><span class="tt">${cat.t}</span><br><span class="cd">${cat.c} · ${cat.type}</span></span>`;
     b.addEventListener('click',()=>{ state.cat=cat; learnPick($('catSearch').value,cat.c); renderCats($('catSearch').value); applyCatFields(); refresh(); aiRefresh(); });
     catGrid.appendChild(b);
@@ -1905,6 +1957,7 @@ function renderGtypes(){
   GTYPES.forEach(g=>{
     const b=document.createElement('button');
     b.className='cat'+(state.gtype&&state.gtype.c===g.c?' on':'');
+    b.style.setProperty('--ac','var(--a'+(GTYPES.indexOf(g)%8+1)+')');
     b.innerHTML=`<span class="ic">${svg(g.k)}</span><span><span class="tt">${g.t}</span><br><span class="cd">${g.c} · ${g.d}</span></span>`;
     b.addEventListener('click',()=>{ state.gtype=g; renderGtypes(); refreshF(); });
     gtypeGrid.appendChild(b);
@@ -2500,10 +2553,10 @@ function renderDash(){
   const m=new Date().getMonth(), y=new Date().getFullYear();
   const thisMonth=rs.filter(r=>{ const d=new Date(r.ts); return d.getMonth()===m&&d.getFullYear()===y; }).length;
   $('dashTiles').innerHTML=`
-    <div class="tile"><div class="tk">Нийт бүртгэл</div><div class="tv">${total}</div><div class="ts">энэ сард ${thisMonth}</div></div>
-    <div class="tile warn"><div class="tk">Хүлээгдэж буй</div><div class="tv">${open}</div><div class="ts">шийдвэрлээгүй</div></div>
-    <div class="tile"><div class="tk">Яаралтай / Критик</div><div class="tv">${urgent}</div><div class="ts">эн тэргүүнд</div></div>
-    <div class="tile good"><div class="tk">Шийдвэрлэсэн</div><div class="tv">${total?Math.round(done/total*100):0}%</div><div class="ts">${done} бүртгэл</div></div>`;
+    <div class="tile" style="--ac:var(--a3)"><span class="ti">${svg('report',17)}</span><div class="tk">Нийт бүртгэл</div><div class="tv">${total}</div><div class="ts">энэ сард ${thisMonth}</div></div>
+    <div class="tile warn" style="--ac:var(--a4)"><span class="ti">${svg('clock',17)}</span><div class="tk">Хүлээгдэж буй</div><div class="tv">${open}</div><div class="ts">шийдвэрлээгүй</div></div>
+    <div class="tile" style="--ac:var(--a5)"><span class="ti">${svg('shield',17)}</span><div class="tk">Яаралтай / Критик</div><div class="tv">${urgent}</div><div class="ts">эн тэргүүнд</div></div>
+    <div class="tile good" style="--ac:var(--a7)"><span class="ti">${svg('chart',17)}</span><div class="tk">Шийдвэрлэсэн</div><div class="tv">${total?Math.round(done/total*100):0}%</div><div class="ts">${done} бүртгэл</div></div>`;
   $('btnClearDemo').hidden=!state.recs.some(r=>r.demo);
 
   /* trend — сүүлийн 14 хоног */
@@ -2663,14 +2716,14 @@ document.addEventListener('click',e=>{ if(!e.target.closest('.home-search')) $('
 const SVC_TOP=['F01','F02','F06','F05','F12'];
 function renderSvc(){
   const el=$('svcGrid');
-  const cards=SVC_TOP.map(code=>{ const c=CATS.find(x=>x.c===code);
-    return `<button class="svc" type="button" data-c="${c.c}">
+  const cards=SVC_TOP.map((code,i)=>{ const c=CATS.find(x=>x.c===code);
+    return `<button class="svc" type="button" data-c="${c.c}" style="--ac:var(--a${i%8+1})">
       <span class="ic">${svg(c.k,17)}</span><span class="st2">${c.t}</span>
       <span class="ss">${c.c} · ${c.type} · ${c.sla[0]}</span></button>`; }).join('')
-    +`<button class="svc" type="button" data-c="GUIDE">
+    +`<button class="svc" type="button" data-c="GUIDE" style="--ac:var(--a6)">
       <span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4a2 2 0 0 1 2-2h13v18H6a2 2 0 0 0-2 2z"/><path d="M4 20V4M8 6h8"/></svg></span>
       <span class="st2">Сунгалт, хаалтын заавар</span><span class="ss">Алхам · материал · хэнд хандах</span></button>`
-    +`<button class="svc" type="button" data-c="CF">
+    +`<button class="svc" type="button" data-c="CF" style="--ac:var(--a2)">
       <span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></span>
       <span class="st2">Cashflow бөглөх</span><span class="ss">Дуусах дансны шийдвэр</span></button>`;
   el.innerHTML=cards;
@@ -3093,10 +3146,10 @@ function cfHeader(){
   $('cfMonthLbl').textContent=cfDate.getFullYear()+' · '+String(cfDate.getMonth()+1).padStart(2,'0')+'-сар';
   $('cfProgress').textContent=filled+' / '+rows.length+' данс бөглөгдсөн';
   $('cfTiles').innerHTML=`
-    <div class="tile"><div class="tk">Дуусах дүн</div><div class="tv num">${(tot/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">${rows.length} данс${usd.length?' · үүнээс '+usd.length+' валютын':''}</div></div>
-    <div class="tile good"><div class="tk">Сунгана</div><div class="tv num">${(roll/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">rollover ${tot?Math.round(roll/tot*100):0}%</div></div>
-    <div class="tile warn"><div class="tk">Гарна</div><div class="tv num">${(out/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">гарах урсгал</div></div>
-    <div class="tile"><div class="tk">Шийдвэр хүлээгдэж буй</div><div class="tv num">${rows.length-filled}</div><div class="ts">данс бөглөгдөөгүй</div></div>`;
+    <div class="tile" style="--ac:var(--a3)"><span class="ti">${svg('clock',17)}</span><div class="tk">Дуусах дүн</div><div class="tv num">${(tot/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">${rows.length} данс${usd.length?' · үүнээс '+usd.length+' валютын':''}</div></div>
+    <div class="tile good" style="--ac:var(--a7)"><span class="ti">${svg('undo',17)}</span><div class="tk">Сунгана</div><div class="tv num">${(roll/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">rollover ${tot?Math.round(roll/tot*100):0}%</div></div>
+    <div class="tile warn" style="--ac:var(--a4)"><span class="ti">${svg('down',17)}</span><div class="tk">Гарна</div><div class="tv num">${(out/1e6).toFixed(0)}<span style="font-size:15px"> сая ₮</span></div><div class="ts">гарах урсгал</div></div>
+    <div class="tile" style="--ac:var(--a5)"><span class="ti">${svg('help',17)}</span><div class="tk">Шийдвэр хүлээгдэж буй</div><div class="tv num">${rows.length-filled}</div><div class="ts">данс бөглөгдөөгүй</div></div>`;
   $('cfAllBtn').hidden=!cfDay;
   cfBadge();
 }
