@@ -483,6 +483,51 @@ fs.writeFileSync(path.join(OUT, 'shot.png'), PNG);
   R.chatUrlOk = await page.evaluate(() => chatCfg().url.startsWith('https://chat.googleapis.com/'));
   await shot('v28-security.png');
 
+  // v2.9: аудитын засварууд
+  // 1) store.set амжилтаа буцаадаг (M-01)
+  R.storeSetBool = await page.evaluate(() => store.set('nc2.__probe', 1) === true);
+  // 2) Registry Excel гаргалт (H-03)
+  await page.click('#sideNav .snav[data-view="regview"]'); await page.waitForTimeout(300);
+  R.regCopyBtn = await page.isVisible('#regCopy');
+  R.regTsvOk = await page.evaluate(() => {
+    const t = regTsv(); const L = t.split('\n');
+    return L[0].includes('Дугаар') && L[0].includes('Статус') && L.length >= 3
+      && L[0].split('\t').length === L[1].split('\t').length;
+  });
+  await page.click('#regCopy'); await page.waitForTimeout(300);
+  R.regCopyToast = (await page.textContent('#toast')).includes('Бүртгэл хуулагдлаа');
+  // 3) maxlength хязгаарууд (M-02)
+  R.maxlens = await page.evaluate(() =>
+    ['desc','fdesc','custName','cModalText','dModalText','dModalExtra','dModalDec']
+      .every(id => Number(document.getElementById(id).getAttribute('maxlength')) > 0));
+  // 4) Давхардлын хамгаалалт (M-07): ижил F03 хүсэлт → 2 дахь удаад эхний даралт хаагдана
+  await page.evaluate(() => store.set('nc2.tourDone', true));
+  await page.click('#sideNav .snav[data-view="newview"]'); await page.waitForTimeout(250);
+  await page.click('#cardGoReq'); await page.waitForTimeout(500);
+  if (await page.isVisible('#tour')) { await page.click('#tourSkip'); await page.waitForTimeout(150); }
+  const DUP_DESC = 'Давхардлын тест — регрессийн зориулалттай туршилтын хүсэлт болно.';
+  await page.fill('#catSearch', 'заавар'); await page.waitForTimeout(150);
+  await page.click('.cat:has-text("Зааварчилгаа")'); await page.waitForTimeout(150);
+  await page.fill('#desc', DUP_DESC); await page.waitForTimeout(150);
+  // v2.9: хуучин 300 бүтээгдэхүүний сонголт бүтээгдэхүүнгүй ангиллыг (F03) гацаахгүй байх ёстой
+  R.stale300NotBlocking = !(await page.isDisabled('#btnSubmit'));
+  await page.click('#btnSubmit'); await page.waitForTimeout(400);
+  R.dupFirstEnabled = R.stale300NotBlocking;
+  R.dupFirstModal = await page.evaluate(() => document.getElementById('modalWrap').classList.contains('open'));
+  await page.click('#mOk'); await page.waitForTimeout(200);
+  await page.fill('#catSearch', 'заавар'); await page.waitForTimeout(150);
+  await page.click('.cat:has-text("Зааварчилгаа")'); await page.waitForTimeout(150);
+  await page.fill('#desc', DUP_DESC); await page.waitForTimeout(150);
+  await page.click('#btnSubmit'); await page.waitForTimeout(300);
+  R.dupBlocked = !(await page.evaluate(() => document.getElementById('modalWrap').classList.contains('open')));
+  R.dupToast = (await page.textContent('#toast')).includes('Ижил хүсэлт');
+  await page.click('#btnSubmit'); await page.waitForTimeout(400);
+  R.dupSecondOk = await page.evaluate(() => document.getElementById('modalWrap').classList.contains('open'));
+  await page.click('#mOk'); await page.waitForTimeout(200);
+  // 5) xlsx parse-ын дараа prototype хөлдсөн (H-04 даруулга) — xlsx тест дээр freeze хийгдсэн
+  R.protoFrozen = await page.evaluate(() => Object.isFrozen(Object.prototype));
+  await shot('v29-audit-fixes.png');
+
   R.errors = errors;
   console.log(JSON.stringify(R, null, 1));
   await browser.close();

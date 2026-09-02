@@ -703,7 +703,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v2.8</span>
+      <span class="proto-badge">Прототип v2.9</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -909,7 +909,7 @@
               <button data-v="Байгууллага" style="flex:1">Байгууллага</button>
             </div></div>
           <div class="field"><div class="lb">Харилцагчийн нэр /РД/</div>
-            <div class="in"><input id="custName" placeholder="Овог Нэр /РД/" aria-label="Харилцагчийн нэр"></div></div>
+            <div class="in"><input id="custName" maxlength="80" placeholder="Овог Нэр /РД/" aria-label="Харилцагчийн нэр"></div></div>
           <div class="field"><div class="lb">Дансны дугаар</div>
             <div class="in"><input id="custAcct" inputmode="numeric" placeholder="—" class="num" aria-label="Дансны дугаар"></div></div>
         </div>
@@ -942,7 +942,7 @@
             </select></div></div>
         </div>
 
-        <textarea id="desc" class="ta" placeholder="Жишээ: 3 жил хамтарсан харилцагч 250 сая ₮-ийн итгэлцлээ сунгах хүсэлтэй ба өрсөлдөгчийн 15.2%-ийн саналтай харьцуулж хүү нэмэх боломж байгаа эсэх?"></textarea>
+        <textarea id="desc" class="ta" maxlength="2000" placeholder="Жишээ: 3 жил хамтарсан харилцагч 250 сая ₮-ийн итгэлцлээ сунгах хүсэлтэй ба өрсөлдөгчийн 15.2%-ийн саналтай харьцуулж хүү нэмэх боломж байгаа эсэх?"></textarea>
         <div class="desc-foot">
           <span class="hint">Эхний өгүүлбэрт нь хүсэлтээ нэг мөрөөр бичвэл хамгийн хурдан.</span>
           <span class="count mono num"><span id="descCnt">0</span> тэмдэгт</span>
@@ -1078,7 +1078,7 @@
               <button data-v="Критик" style="flex:1">Критик</button>
             </div></div>
         </div>
-        <textarea id="fdesc" class="ta" placeholder="Жишээ: Итгэлцлийн гэрээ хэвлэхэд системийн тооцоолсон хүү гараар оруулсан хүүгээс зөрж гарч байна — алхам алхмаар: …"></textarea>
+        <textarea id="fdesc" class="ta" maxlength="2000" placeholder="Жишээ: Итгэлцлийн гэрээ хэвлэхэд системийн тооцоолсон хүү гараар оруулсан хүүгээс зөрж гарч байна — алхам алхмаар: …"></textarea>
         <div class="desc-foot">
           <span class="hint">Асуудал, алдааг: юу хийсэн → юу болсон → юу болох ёстой байсан дарааллаар бичвэл ойлгомжтой.</span>
           <span class="count mono num"><span id="fdescCnt">0</span> тэмдэгт</span>
@@ -1238,6 +1238,7 @@
           <svg class="i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <input id="regSearch" type="search" placeholder="Шүүх — дугаар, салбар, ангилал…" aria-label="Бүртгэл шүүх">
         </div>
+        <button class="ghost-btn" id="regCopy" title="Шүүсэн бүртгэлийг шийдвэрийн хамт хуулж, Excel дээрээ Ctrl+V хийнэ">Excel рүү хуулах</button>
         <span class="reg-count num" id="regCount"></span>
       </div>
       <div class="table-wrap">
@@ -1538,7 +1539,7 @@
       <p style="margin:6px 0 14px;max-width:none" id="cModalSub">Асуултаа бичихэд илгээгч рүү и-мэйлээр очиж, статус «Тодруулга хүлээж байна» болно.</p>
     </div>
     <div style="padding:0 28px 4px" id="cModalBody">
-      <textarea id="cModalText" class="ta" style="min-height:100px" placeholder="Жишээ: Харилцагчийн гэрээний хуулбарыг хавсаргаж өгнө үү…"></textarea>
+      <textarea id="cModalText" class="ta" maxlength="500" style="min-height:100px" placeholder="Жишээ: Харилцагчийн гэрээний хуулбарыг хавсаргаж өгнө үү…"></textarea>
     </div>
     <div class="mf">
       <button class="ghost-btn" id="cModalCancel">Болих</button>
@@ -1558,11 +1559,11 @@
       </div>
       <div style="padding:0 28px 4px">
         <div class="field" style="margin-bottom:13px"><div class="lb" id="dTextLb">Шийдвэрийн хариу (заавал)</div>
-          <textarea id="dModalText" class="ta" style="min-height:88px" placeholder="Жишээ: 18.0% хүүг ГЗ-ын орлогчийн зөвшөөрлөөр баталлаа. Гэрээг шинэ хүүгээр байгуулна уу."></textarea></div>
+          <textarea id="dModalText" class="ta" maxlength="1000" style="min-height:88px" placeholder="Жишээ: 18.0% хүүг ГЗ-ын орлогчийн зөвшөөрлөөр баталлаа. Гэрээг шинэ хүүгээр байгуулна уу."></textarea></div>
         <div class="field" style="margin-bottom:13px"><div class="lb">Нэмэлт мэдээлэл, нөхцөл (сайн дурын)</div>
-          <textarea id="dModalExtra" class="ta" style="min-height:62px" placeholder="Жишээ: Урамшууллын хувь 0.5%-иас хэтрэхгүй. Дараагийн сунгалтад дахин зөвшөөрөл авна."></textarea></div>
+          <textarea id="dModalExtra" class="ta" maxlength="500" style="min-height:62px" placeholder="Жишээ: Урамшууллын хувь 0.5%-иас хэтрэхгүй. Дараагийн сунгалтад дахин зөвшөөрөл авна."></textarea></div>
         <div class="field"><div class="lb">Шийдвэрийн лог дугаар (сайн дурын — хорооны шийдвэр бол)</div>
-          <div class="in"><input id="dModalDec" class="mono" placeholder="DEC-2026-XXX"></div></div>
+          <div class="in"><input id="dModalDec" class="mono" maxlength="20" placeholder="DEC-2026-XXX"></div></div>
       </div>
       <div class="mf" style="gap:10px">
         <button class="ghost-btn" id="dModalCancel">Болих</button>
@@ -1850,7 +1851,7 @@ const svg=(k,s=18)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="n
 /* ================= storage / state ================= */
 const store = {
   get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
-  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } },
   del(k){ try{ localStorage.removeItem(k); }catch(e){} },
 };
 const state = {
@@ -1877,9 +1878,9 @@ function renderAcctPicker(){
   Object.entries(EMPLOYEES).forEach(([email,e])=>{
     const b=document.createElement('button');
     b.className='acct'+(e.role==='admin'?' adm':''); b.dataset.email=email;
-    b.innerHTML=`<span class="av">${e.name[0]}</span>
-      <span><span class="an">${e.name}</span><br><span class="ae mono">${email}</span></span>
-      <span class="meta2"><span class="au">${e.unit} · ${e.pos}</span><br><span class="role ${e.role==='admin'?'a':'u'}">${e.role==='admin'?'Админ':'Ажилтан'}</span></span>`;
+    b.innerHTML=`<span class="av">${esc(e.name[0])}</span>
+      <span><span class="an">${esc(e.name)}</span><br><span class="ae mono">${esc(email)}</span></span>
+      <span class="meta2"><span class="au">${esc(e.unit)} · ${esc(e.pos)}</span><br><span class="role ${e.role==='admin'?'a':'u'}">${e.role==='admin'?'Админ':'Ажилтан'}</span></span>`;
     b.addEventListener('click',()=>loginAs(email));
     list.appendChild(b);
   });
@@ -2192,8 +2193,10 @@ function refresh(){
   const okCat=!!state.cat;
   const okDesc=desc.value.trim().length>=20;
   const prS=prodSel();
-  /* 300 · NET ИТГЭЛЦЭЛ бүрэн дижитал: зөвхөн F10 (банкны данс солих) дээр хүлээж авна */
-  const bad300=!!(prS&&prS.code===300&&state.cat&&state.cat.c!=='F10');
+  /* 300 · NET ИТГЭЛЦЭЛ бүрэн дижитал: зөвхөн F10 (банкны данс солих) дээр хүлээж авна.
+     Зөвхөн бүтээгдэхүүний талбартай ангилалд шалгана — үгүй бол хуучин сонголт бусад
+     ангиллын илгээлтийг гацаана. */
+  const bad300=!!(prS&&prS.code===300&&needProduct()&&state.cat&&state.cat.c!=='F10');
   const okProd=(!needProduct()||(!!prS && (!( prS.map&&!prS.map[1] )||$('term').value) && $('amount').value.replace(/,/g,'').length>0))&&!bad300;
   const base=baseRate();
   $('rateNow').value = base===null ? '' : String(base);
@@ -2316,7 +2319,18 @@ function nowStr(d){ return (d||new Date()).toLocaleString('sv-SE').slice(0,16); 
 function packAtts(items){ return items.filter(i=>i.kind==='img'||(i.kind==='link'&&i.ok))
   .map(i=>i.kind==='link'?{kind:'link',type:i.type,url:i.url}:{kind:'img',type:i.type,name:i.name,size:i.size,thumb:i.thumb}); }
 
+let dupConfirmUntil=0;
 $('btnSubmit').addEventListener('click',()=>{
+  /* Давхардлын хамгаалалт: ижил ангилал+тайлбартай хүсэлт сүүлийн 10 минутад аль хэдийн
+     илгээгдсэн бол санамсаргүй давхарлахаас сэргийлж, 8 секундын дотор дахин дарвал л илгээнэ */
+  const dupRec=state.recs.find(x=>x.byEmail===state.user.email&&x.cat===state.cat.c
+    &&x.desc===desc.value.trim()&&Date.now()-x.ts<6e5);
+  if(dupRec&&Date.now()>dupConfirmUntil){
+    dupConfirmUntil=Date.now()+8000;
+    toast('Ижил хүсэлт ('+dupRec.id+') саяхан илгээгдсэн байна — санаатай давтаж байгаа бол 8 секундын дотор дахин дарна уу');
+    return;
+  }
+  dupConfirmUntil=0;
   const id=nextIdR();
   const rule=needRates()?rateRule():null;
   /* и-мэйл нь хуваарилагдсан хариуцагч руу очно (доор autoAssign тогтооно) */
@@ -2345,7 +2359,8 @@ $('btnSubmit').addEventListener('click',()=>{
   pushHist(rec,'Автоматаар хуваарилагдав → '+asg.who.name+' ('+asg.who.role+') — шалтгаан: '+asg.why);
   pushHist(rec,'Хариуцагч болон илгээгчид и-мэйл мэдэгдэл явав (прототип)');
   state.recs.push(rec);
-  store.set('nc2.recs',state.recs); store.set('nc2.seqR',store.get('nc2.seqR',0)+1);
+  const saved=store.set('nc2.recs',state.recs); store.set('nc2.seqR',store.get('nc2.seqR',0)+1);
+  if(!saved) toast('АНХААР: төхөөрөмжийн хадгалалт дүүрсэн тул бүртгэл хөтөчид хадгалагдаагүй — хуучин бүртгэл, зургаа цэвэрлээд дахин илгээнэ үү');
   showConfirm(rec);
   state.cat=null; desc.value=''; $('descCnt').textContent='0';
   ['product','term','supportType'].forEach(i=>$(i).value='');
@@ -2383,7 +2398,8 @@ $('btnSubmitF').addEventListener('click',()=>{
   pushHist(rec,'Автоматаар хуваарилагдав → '+asg.who.name+' ('+asg.who.role+') — шалтгаан: '+asg.why);
   pushHist(rec,'Хариуцагч болон илгээгчид и-мэйл мэдэгдэл явав (прототип)');
   state.recs.push(rec);
-  store.set('nc2.recs',state.recs); store.set('nc2.seqF',store.get('nc2.seqF',0)+1);
+  const savedF=store.set('nc2.recs',state.recs); store.set('nc2.seqF',store.get('nc2.seqF',0)+1);
+  if(!savedF) toast('АНХААР: төхөөрөмжийн хадгалалт дүүрсэн тул бүртгэл хөтөчид хадгалагдаагүй — хуучин бүртгэл, зургаа цэвэрлээд дахин илгээнэ үү');
   showConfirm(rec);
   state.gtype=null; fdesc.value=''; $('fdescCnt').textContent='0'; $('area').value='';
   state.sev='Бага'; $('segSev').querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===0));
@@ -2484,7 +2500,7 @@ function renderReqs(){
       cbox.style.cssText='margin-top:12px;background:var(--warn-soft);border:1px solid var(--border);border-left:3px solid var(--warn);border-radius:10px;padding:13px 16px';
       cbox.innerHTML=`<div style="font-size:12px;font-weight:600;color:var(--warn);margin-bottom:5px">ХОБПХГ тодруулга хүсэв (${esc(r.clarify.by)} · ${r.clarify.at})</div>
         <div style="font-size:13.5px;margin-bottom:10px">${esc(r.clarify.q)}</div>
-        <div style="display:flex;gap:9px"><input class="cf-reply" placeholder="Хариултаа бичнэ үү…" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 13px;font-size:13.5px">
+        <div style="display:flex;gap:9px"><input class="cf-reply" maxlength="500" placeholder="Хариултаа бичнэ үү…" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 13px;font-size:13.5px">
         <button class="ext-btn cf-reply-btn" type="button">Хариулах</button></div>`;
       const inp=cbox.querySelector('.cf-reply');
       cbox.querySelector('.cf-reply-btn').addEventListener('click',()=>{
@@ -2568,6 +2584,26 @@ function renderRegistry(filter=''){
   });
 }
 $('regSearch').addEventListener('input',e=>renderRegistry(e.target.value));
+/* Бүртгэлийн санг Excel рүү — аудитын гаргалт (одоогийн шүүлтээр) */
+function regTsv(){
+  const q=($('regSearch').value||'').trim().toLowerCase();
+  const rows=state.recs.filter(r=>(regKindV==='all'||r.kind===regKindV)
+    &&(!q||[r.id,r.dept,r.cat,r.catName,r.product||'',r.by,r.status].join(' ').toLowerCase().includes(q)));
+  const head=['Дугаар','Огноо','Илгээгч','Нэгж','Ангилал','Төрөл','Бүтээгдэхүүн','Дүн','Валют','Хүү','Зэрэглэл','Хавсралт','Хариуцагч','Статус','Шийдвэрийн хариу','DEC дугаар','Тайлбар'];
+  const cell=v=>String(v==null?'':v).replace(/[\t\r\n]+/g,' ');
+  return [head, ...[...rows].sort((a,b)=>b.ts-a.ts).map(r=>[
+    r.id, r.at, r.by, r.dept, r.cat+' · '+r.catName, r.type, r.product||'', r.amount||'', r.cur||'',
+    r.rateNow?r.rateNow+'% → '+r.rateAsk+'%':'', r.sev||r.urg||'', (r.atts||[]).length,
+    r.assignee?r.assignee.name:'', r.status, r.decision?r.decision.text:'', (r.decision&&r.decision.dec)||'', r.desc||''
+  ].map(cell))].map(r=>r.join('\t')).join('\n');
+}
+$('regCopy').addEventListener('click',()=>{
+  const t=regTsv();
+  const done=()=>toast('Бүртгэл хуулагдлаа — Excel дээрээ Ctrl+V хийж буулгана уу');
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(t).then(done).catch(()=>cfCopyFallback(t,done));
+  else cfCopyFallback(t,done);
+});
 
 /* ================= dashboard (admin) ================= */
 let dashKindV='all';
@@ -2623,7 +2659,7 @@ function renderDash(){
   const hbars=(el,pairs)=>{
     if(!pairs.length){ $(el).innerHTML='<div class="chart-empty">Өгөгдөл алга.</div>'; return; }
     const mx=Math.max(...pairs.map(p=>p[1]));
-    $(el).innerHTML=pairs.map(([l,v])=>`<div class="hbar"><span class="hl" title="${l}">${l}</span>
+    $(el).innerHTML=pairs.map(([l,v])=>`<div class="hbar"><span class="hl" title="${esc(l)}">${esc(l)}</span>
       <span class="track"><span class="bar" style="width:${Math.max(2,v/mx*100)}%"></span><span class="hv num">${v}</span></span></div>`).join('');
   };
   const cnt=(arr,key)=>{ const mmap={}; arr.forEach(r=>{ const k=key(r); mmap[k]=(mmap[k]||0)+1; });
@@ -2916,7 +2952,7 @@ function renderFreqCats(){
   if(!top.length){ el.hidden=true; return; }
   el.hidden=false;
   el.innerHTML='<span style="font-size:11px;color:var(--faint);align-self:center">Танд түгээмэл:</span>'
-    +top.map(c=>`<button class="chip" type="button" data-c="${c.c}">${c.c} · ${c.t}</button>`).join('');
+    +top.map(c=>`<button class="chip" type="button" data-c="${c.c}">${c.c} · ${esc(c.t)}</button>`).join('');
   el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
     state.cat=CATS.find(x=>x.c===b.dataset.c);
     renderCats($('catSearch').value); applyCatFields(); refresh();
@@ -3292,7 +3328,7 @@ function cfTable(){
       <div class="field cf-sun"><div class="lb">Сунгах дүн</div><div class="in"><input class="cf-amt num" inputmode="numeric"><span class="sfx">${r.cur}</span></div></div>
       <div class="field cf-exit"><div class="lb">Хэрхэн гарах</div><div class="in"><select class="cf-how">
         <option value="">Сонгох…</option><option>Бэлнээр авах</option><option>Данс руу шилжүүлэх</option><option>Өөр бүтээгдэхүүнд шилжих</option><option>Тодорхойгүй</option></select></div></div>
-      <div class="field" style="grid-column:span 2"><div class="lb cf-notelb">Тайлбар, нөхцөл</div><div class="in"><input class="cf-note" placeholder="Жишээ: харилцагч хүү нэмэхийг хүссэн…"></div></div>
+      <div class="field" style="grid-column:span 2"><div class="lb cf-notelb">Тайлбар, нөхцөл</div><div class="in"><input class="cf-note" maxlength="300" placeholder="Жишээ: харилцагч хүү нэмэхийг хүссэн…"></div></div>
     </div></td>`;
     const inTerm=det.querySelector('.cf-term'), inRate=det.querySelector('.cf-rate'), inAmt=det.querySelector('.cf-amt'),
           inNote=det.querySelector('.cf-note'), inHow=det.querySelector('.cf-how');
@@ -3347,7 +3383,7 @@ function renderCF(){
   if(isAdmin()){
     uSel.hidden=false;
     const cur=uSel.value;
-    const og=(lbl,arr)=>`<optgroup label="${lbl}">`+arr.map(u=>`<option>${u}</option>`).join('')+'</optgroup>';
+    const og=(lbl,arr)=>`<optgroup label="${esc(lbl)}">`+arr.map(u=>`<option>${esc(u)}</option>`).join('')+'</optgroup>';
     uSel.innerHTML='<option value="all">Бүх салбар</option>'+og('Улаанбаатар',UNITS_UB)+og('Орон нутаг',UNITS_RURAL);
     if(cur) uSel.value=cur;
   } else uSel.hidden=true;
@@ -3464,6 +3500,8 @@ $('cfImpFileIn').addEventListener('change',async e=>{
   if(!f) return;
   $('cfImpInfo').textContent=f.name+' — уншиж байна…';
   try{
+    /* Гадны (үл итгэх) файлыг parse хийхийн өмнө prototype pollution-оос хамгаалж хөлдөөнө */
+    try{ Object.freeze(Object.prototype); Object.freeze(Array.prototype); }catch(_e){}
     const X=await loadXlsxLib();
     const buf=await f.arrayBuffer();
     const wb=X.read(buf);
