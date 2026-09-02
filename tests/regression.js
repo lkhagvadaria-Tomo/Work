@@ -38,6 +38,13 @@ fs.writeFileSync(path.join(OUT, 'shot.png'), PNG);
   await page.click('.acct[data-email="lkhagvadari.a@netgroup.mn"]'); await page.waitForTimeout(900);
   R.welcomeShown = (await page.evaluate(() => document.getElementById('welcomeWrap').style.display)) === 'flex';
   await page.click('#wcStart'); await page.waitForTimeout(300);
+  R.newsSeed = await page.locator('#newsList .news-it').count();
+  R.newsAdminBox = await page.isVisible('#newsAdmin');
+  await page.fill('#newsInput', 'Туршилтын зарлал — регрессийн тест.');
+  await page.click('#newsAdd'); await page.waitForTimeout(200);
+  R.newsAfterAdd = await page.locator('#newsList .news-it').count();
+  await page.locator('#newsList .nx').first().click(); await page.waitForTimeout(200);
+  R.newsAfterDel = await page.locator('#newsList .news-it').count();
   R.adminTag = await page.isVisible('#sideNav');
   R.navDash = await page.isVisible('#sideDash');
   R.navReg = await page.isVisible('#sideReg');
@@ -277,6 +284,8 @@ fs.writeFileSync(path.join(OUT, 'shot.png'), PNG);
   R.userNavDash = await page.isVisible('#sideDash');
   R.userAdminTag = await page.isVisible('#sideReg');
   R.userSender = await page.evaluate(() => document.getElementById('deptName').textContent);
+  R.newsUserHidden = !(await page.isVisible('#newsAdmin'));
+  R.newsUserSees = await page.locator('#newsList .news-it').count();
 
   // UC11: persistence across reload
   await page.reload(); await page.waitForTimeout(400);
