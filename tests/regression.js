@@ -381,6 +381,11 @@ fs.writeFileSync(path.join(OUT, 'shot.png'), PNG);
   await page.fill('#homeSearch', 'сунгах процесс'); await page.waitForTimeout(250);
   R.guideSearch = (await page.textContent('#homeResults')).includes('Процессын заавар');
   await page.keyboard.press('Escape'); await page.waitForTimeout(100);
+  // v2.7: F13 түгээмэл үйлчилгээнд, зааврын Netcore бодит цэс
+  R.svcF13 = (await page.textContent('#svcGrid')).includes('зэрэглэл бууруулах');
+  await page.click('#sideNav .snav[data-view="guideview"]'); await page.waitForTimeout(250);
+  R.gNetcoreMenu = (await page.textContent('#gExt')).includes('Хугацаа сунгах захиалга');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(100);
 
   // v1.8: сунгалтын 4 төрөл + хүүгийн зөвшөөрөл шалгагч
   await page.click('#sideNav .snav[data-view="guideview"]'); await page.waitForTimeout(250);
