@@ -675,13 +675,21 @@
   #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
   /* ---------- туслах чат бот ---------- */
-  #botLauncher{position:fixed; right:24px; bottom:24px; z-index:54; width:56px; height:56px; border-radius:50%;
-    border:none; background:var(--grad); color:#fff; box-shadow:0 8px 22px color-mix(in srgb,#232577 34%,transparent);
-    display:flex; align-items:center; justify-content:center; transition:transform .15s, box-shadow .15s}
-  #botLauncher:hover{transform:translateY(-2px) scale(1.04); box-shadow:0 12px 28px color-mix(in srgb,#232577 42%,transparent)}
-  #botLauncher:active{transform:scale(.96)}
-  #botLauncher .blz{position:absolute; inset:0; border-radius:50%; box-shadow:0 0 0 0 var(--brand-soft); animation:blpulse 2.6s ease-out infinite}
-  @keyframes blpulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--brand) 40%,transparent)} 70%{box-shadow:0 0 0 14px transparent} 100%{box-shadow:0 0 0 0 transparent}}
+  #botLauncher{position:fixed; right:24px; bottom:24px; z-index:54; height:54px; border-radius:99px;
+    border:none; background:var(--grad); color:#fff; box-shadow:0 8px 22px color-mix(in srgb,#232577 38%,transparent);
+    display:flex; align-items:center; justify-content:center; gap:9px; padding:0 20px 0 16px; transition:transform .15s, box-shadow .15s}
+  #botLauncher .blbl{font-size:14.5px; font-weight:700; letter-spacing:.01em}
+  #botLauncher:hover{transform:translateY(-2px) scale(1.03); box-shadow:0 12px 28px color-mix(in srgb,#232577 46%,transparent)}
+  #botLauncher:active{transform:scale(.97)}
+  #botLauncher .blz{position:absolute; inset:0; border-radius:99px; box-shadow:0 0 0 0 var(--brand-soft); animation:blpulse 2.6s ease-out infinite}
+  @keyframes blpulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--brand) 45%,transparent)} 70%{box-shadow:0 0 0 16px transparent} 100%{box-shadow:0 0 0 0 transparent}}
+  #botHint{position:fixed; right:24px; bottom:88px; z-index:53; max-width:230px; background:var(--surface);
+    border:1px solid var(--border-strong); border-radius:14px; box-shadow:var(--shadow-lg); padding:12px 15px 12px 14px;
+    font-size:13px; line-height:1.5; color:var(--text); animation:popIn .25s ease both}
+  #botHint b{color:var(--brand)}
+  #botHint .bh-x{position:absolute; top:6px; right:8px; border:none; background:none; color:var(--faint); font-size:15px; line-height:1; padding:2px}
+  #botHint::after{content:''; position:absolute; right:26px; bottom:-7px; width:13px; height:13px; background:var(--surface);
+    border-right:1px solid var(--border-strong); border-bottom:1px solid var(--border-strong); transform:rotate(45deg)}
   #botPanel{position:fixed; right:24px; bottom:92px; z-index:55; width:min(372px, calc(100vw - 32px)); height:min(524px, calc(100vh - 130px));
     display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--border-strong);
     border-radius:18px; box-shadow:var(--shadow-lg); overflow:hidden; animation:popIn .2s ease both}
@@ -710,7 +718,9 @@
     display:flex; align-items:center; justify-content:center}
   .binput #botSend:hover{filter:brightness(1.1)}
   @media (max-width:760px){
-    #botLauncher{right:16px; bottom:80px; width:50px; height:50px}
+    #botLauncher{right:16px; bottom:80px; height:50px; padding:0; width:50px; justify-content:center}
+    #botLauncher .blbl{display:none}
+    #botHint{right:16px; bottom:138px}
     #botPanel{right:12px; left:12px; bottom:140px; width:auto; height:min(60vh,440px)}
   }
 </style>
@@ -743,7 +753,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v3.3</span>
+      <span class="proto-badge">Прототип v3.4</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -1726,9 +1736,14 @@
 </div>
 
 <!-- туслах чат бот -->
-<button id="botLauncher" type="button" hidden aria-label="Эх үүсвэрийн туслах бот" aria-expanded="false">
+<div id="botHint" hidden role="note">
+  <button class="bh-x" id="botHintX" type="button" aria-label="Хаах">×</button>
+  <b>Асуулт байна уу?</b> Хүү, зөвшөөрөл, сунгалтын талаар туслахаас шууд асуугаарай.
+</div>
+<button id="botLauncher" type="button" hidden aria-label="Эх үүсвэрийн туслах бот — асуулт асуух" aria-expanded="false">
   <span class="blz" aria-hidden="true"></span>
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4c-1.4 0-2.8-.4-4-1L3 20l1.1-5.3a8.3 8.3 0 0 1-1-4A8.4 8.4 0 0 1 11.5 2 8.5 8.5 0 0 1 21 11.5z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/></svg>
+  <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4c-1.4 0-2.8-.4-4-1L3 20l1-5.3a8.3 8.3 0 0 1-1-4A8.4 8.4 0 0 1 11.5 2 8.5 8.5 0 0 1 21 11.5z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/></svg>
+  <span class="blbl">Туслах</span>
 </button>
 <div id="botPanel" hidden role="dialog" aria-label="Эх үүсвэрийн туслах бот">
   <div class="bhead">
@@ -1995,6 +2010,10 @@ function loginAs(email){
   $('sumDeptF').textContent=e.unit;
   gotoView('newview');
   $('botLauncher').hidden=false;
+  if(!store.get('nc2.botHinted.'+email,false)){
+    $('botHint').hidden=false;
+    setTimeout(()=>{ if($('botHint')) $('botHint').hidden=true; }, 9000);
+  }
   restoreDrafts(); renderReqs(); renderFreqCats(); renderHome();
   sessReset();
   if(!store.get('nc2.welcomed.'+email,false)) setTimeout(()=>showWelcome(false),400);
@@ -2002,7 +2021,7 @@ function loginAs(email){
 }
 $('btnLogout').addEventListener('click',()=>{
   state.user=null; clearTimeout(sessTimer);
-  $('botLauncher').hidden=true; $('botPanel').hidden=true;
+  $('botLauncher').hidden=true; $('botPanel').hidden=true; $('botHint').hidden=true;
   $('app').style.display='none'; $('login').style.display='grid'; $('acctPicker').hidden=true;
 });
 /* Session эрүүл ахуй: идэвхгүй байдал үргэлжилбэл автоматаар гарна — дундын компьютерт
@@ -4002,7 +4021,10 @@ function botToggle(open){
     setTimeout(()=>$('botInput').focus(),50);
   }
 }
-$('botLauncher').addEventListener('click',()=>botToggle());
+function botHideHint(){ $('botHint').hidden=true; if(state.user) store.set('nc2.botHinted.'+state.user.email,true); }
+$('botHintX').addEventListener('click',botHideHint);
+$('botHint').addEventListener('click',e=>{ if(e.target.id!=='botHintX'){ botHideHint(); botToggle(true); } });
+$('botLauncher').addEventListener('click',()=>{ botHideHint(); botToggle(); });
 $('botClose').addEventListener('click',()=>botToggle(false));
 $('botSend').addEventListener('click',()=>{ const v=$('botInput').value.trim(); if(!v) return; botAsk(v); $('botInput').value=''; });
 $('botInput').addEventListener('keydown',e=>{ if(e.key==='Enter'){ const v=$('botInput').value.trim(); if(v){ botAsk(v); $('botInput').value=''; } } });

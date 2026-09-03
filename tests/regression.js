@@ -574,6 +574,7 @@ fs.writeFileSync(path.join(OUT, 'shot.png'), PNG);
   await page.click('.acct[data-email="lkhagvadari.a@netgroup.mn"]'); await page.waitForTimeout(500);
   if (await page.evaluate(() => document.getElementById('welcomeWrap').style.display) === 'flex') { await page.click('#wcStart'); await page.waitForTimeout(200); }
   R.botLauncherShown = await page.isVisible('#botLauncher');
+  R.botLauncherLabel = (await page.textContent('#botLauncher')).includes('Туслах');
   await page.click('#botLauncher'); await page.waitForTimeout(300);
   R.botPanelOpen = await page.isVisible('#botPanel');
   R.botGreeting = (await page.textContent('#botBody')).includes('эх үүсвэрийн туслах');
