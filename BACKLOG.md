@@ -35,6 +35,11 @@
   cashflow тайлбар, тусламжийн зам нэмж 100 болгосон. Дараагийн үнэлгээ: ~v2.1 орчимд давт.
 
 ## CHANGELOG
+- **v3.3** — Фонтыг **Manrope** болгов (хэрэглэгчийн танилцуулгын PDF-ийн фонтоор): PDF нь
+  бүхэлдээ сканнердсан зураг (шигтгэсэн фонтгүй) тул хуудсыг нүдээр хараад брэнд фонтыг
+  тодорхойлов — Нэткапиталын танилцуулгын геометрик sans нь Manrope-той нийцэж, netcapital.mn
+  сайтын өмнө баталсан фонттой ижил. Manrope (400–800) Google Fonts-оос, системийн sans fallback;
+  JetBrains Mono тоонд хэвээр. Тест ногоон.
 - **v3.2** — Фонтыг Facebook-ийн системийн sans-serif стек рүү шилжүүлэв (хэрэглэгчийн хүсэлтээр):
   `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif` — Windows-т
   Segoe UI, Apple-д SF, бусад төхөөрөмжид Roboto (Google Fonts fallback); JetBrains Mono тоонд хэвээр.
