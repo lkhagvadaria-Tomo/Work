@@ -673,6 +673,46 @@
     background:var(--surface); border:1px solid var(--good); color:var(--text); border-radius:12px;
     padding:14px 24px; font-size:14px; font-weight:600; opacity:0; pointer-events:none; transition:.25s; box-shadow:var(--shadow-lg)}
   #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  /* ---------- туслах чат бот ---------- */
+  #botLauncher{position:fixed; right:24px; bottom:24px; z-index:54; width:56px; height:56px; border-radius:50%;
+    border:none; background:var(--grad); color:#fff; box-shadow:0 8px 22px color-mix(in srgb,#232577 34%,transparent);
+    display:flex; align-items:center; justify-content:center; transition:transform .15s, box-shadow .15s}
+  #botLauncher:hover{transform:translateY(-2px) scale(1.04); box-shadow:0 12px 28px color-mix(in srgb,#232577 42%,transparent)}
+  #botLauncher:active{transform:scale(.96)}
+  #botLauncher .blz{position:absolute; inset:0; border-radius:50%; box-shadow:0 0 0 0 var(--brand-soft); animation:blpulse 2.6s ease-out infinite}
+  @keyframes blpulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--brand) 40%,transparent)} 70%{box-shadow:0 0 0 14px transparent} 100%{box-shadow:0 0 0 0 transparent}}
+  #botPanel{position:fixed; right:24px; bottom:92px; z-index:55; width:min(372px, calc(100vw - 32px)); height:min(524px, calc(100vh - 130px));
+    display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--border-strong);
+    border-radius:18px; box-shadow:var(--shadow-lg); overflow:hidden; animation:popIn .2s ease both}
+  .bhead{display:flex; align-items:center; gap:11px; padding:14px 16px; background:var(--grad); color:#fff}
+  .bhead .bh-ic{width:34px; height:34px; border-radius:10px; flex:none; background:rgba(255,255,255,.16);
+    display:flex; align-items:center; justify-content:center}
+  .bhead b{font-size:14px; display:block; line-height:1.2}
+  .bhead span{font-size:10.5px; color:rgba(255,255,255,.8); letter-spacing:.02em}
+  .bhead #botClose{margin-left:auto; background:rgba(255,255,255,.16); border:none; color:#fff; width:28px; height:28px;
+    border-radius:8px; font-size:18px; line-height:1; display:flex; align-items:center; justify-content:center}
+  .bhead #botClose:hover{background:rgba(255,255,255,.28)}
+  .bbody{flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; background:var(--surface-2)}
+  .bmsg{max-width:86%; font-size:13.5px; line-height:1.6; padding:10px 13px; border-radius:13px; word-wrap:break-word}
+  .bmsg.bot{align-self:flex-start; background:var(--surface); border:1px solid var(--border); border-bottom-left-radius:4px}
+  .bmsg.me{align-self:flex-end; background:var(--grad); color:#fff; border-bottom-right-radius:4px}
+  .bmsg.bot b{color:var(--text)}
+  .bchips{display:flex; flex-wrap:wrap; gap:7px; align-self:flex-start; max-width:100%}
+  .bchip{border:1px solid var(--border-strong); background:var(--surface); color:var(--brand); border-radius:99px;
+    padding:6px 12px; font-size:12px; font-weight:600; transition:background .12s, border-color .12s}
+  .bchip:hover{background:var(--brand-soft); border-color:var(--brand)}
+  .binput{display:flex; align-items:center; gap:8px; padding:11px 12px; border-top:1px solid var(--border); background:var(--surface)}
+  .binput input{flex:1; border:1px solid var(--border); background:var(--surface-2); border-radius:10px; padding:10px 13px;
+    font-size:13.5px; outline:none; transition:border-color .12s}
+  .binput input:focus{border-color:var(--brand)}
+  .binput #botSend{flex:none; width:38px; height:38px; border-radius:10px; border:none; background:var(--grad); color:#fff;
+    display:flex; align-items:center; justify-content:center}
+  .binput #botSend:hover{filter:brightness(1.1)}
+  @media (max-width:760px){
+    #botLauncher{right:16px; bottom:80px; width:50px; height:50px}
+    #botPanel{right:12px; left:12px; bottom:140px; width:auto; height:min(60vh,440px)}
+  }
 </style>
 
 <!-- Нэткапиталын албан ёсны лого (SVG, currentColor) -->
@@ -703,7 +743,7 @@
   </div>
   <div class="login-side">
     <div class="login-card">
-      <span class="proto-badge">Прототип v3.0</span>
+      <span class="proto-badge">Прототип v3.1</span>
       <div class="domain mono">funding.netcapital.mn</div>
       <h2>Нэвтрэх</h2>
       <p class="sub">Байгууллагын Google хаягаараа нэвтэрнэ. Нэр, газар/салбар, албан тушаалыг тань ажилтны бүртгэлээс автоматаар таньдаг.</p>
@@ -1685,6 +1725,24 @@
   <label class="never"><input type="checkbox" id="tourNever"> Дахиж харуулахгүй</label>
 </div>
 
+<!-- туслах чат бот -->
+<button id="botLauncher" type="button" hidden aria-label="Эх үүсвэрийн туслах бот" aria-expanded="false">
+  <span class="blz" aria-hidden="true"></span>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4c-1.4 0-2.8-.4-4-1L3 20l1.1-5.3a8.3 8.3 0 0 1-1-4A8.4 8.4 0 0 1 11.5 2 8.5 8.5 0 0 1 21 11.5z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/></svg>
+</button>
+<div id="botPanel" hidden role="dialog" aria-label="Эх үүсвэрийн туслах бот">
+  <div class="bhead">
+    <span class="bh-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4c-1.4 0-2.8-.4-4-1L3 20l1.1-5.3a8.3 8.3 0 0 1-1-4A8.4 8.4 0 0 1 11.5 2 8.5 8.5 0 0 1 21 11.5z"/></svg></span>
+    <div><b>Эх үүсвэрийн туслах</b><span>Дүрэмд суурилсан · прототип</span></div>
+    <button id="botClose" type="button" aria-label="Хаах">×</button>
+  </div>
+  <div id="botBody" class="bbody"></div>
+  <div class="binput">
+    <input id="botInput" type="text" maxlength="200" placeholder="Асуултаа бичнэ үү…" aria-label="Ботод асуулт бичих">
+    <button id="botSend" type="button" aria-label="Илгээх"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-11 11M22 2 15 22l-4-9-9-4z"/></svg></button>
+  </div>
+</div>
+
 <div id="toast" role="status"></div>
 <div id="tooltip"></div>
 
@@ -1936,6 +1994,7 @@ function loginAs(email){
   $('deptName').textContent=e.unit; $('deptPos').textContent=e.pos;
   $('sumDeptF').textContent=e.unit;
   gotoView('newview');
+  $('botLauncher').hidden=false;
   restoreDrafts(); renderReqs(); renderFreqCats(); renderHome();
   sessReset();
   if(!store.get('nc2.welcomed.'+email,false)) setTimeout(()=>showWelcome(false),400);
@@ -1943,6 +2002,7 @@ function loginAs(email){
 }
 $('btnLogout').addEventListener('click',()=>{
   state.user=null; clearTimeout(sessTimer);
+  $('botLauncher').hidden=true; $('botPanel').hidden=true;
   $('app').style.display='none'; $('login').style.display='grid'; $('acctPicker').hidden=true;
 });
 /* Session эрүүл ахуй: идэвхгүй байдал үргэлжилбэл автоматаар гарна — дундын компьютерт
@@ -3869,6 +3929,83 @@ function gcalc(){
 $('gcAmt').addEventListener('input',e=>{ e.target.value=fmtAmt(e.target.value); gcalc(); });
 $('gcExtra').addEventListener('input',e=>{ e.target.value=fmtAmt(e.target.value); gcalc(); });
 $('gcAsk').addEventListener('input',e=>{ e.target.value=e.target.value.replace(/[^\d.]/g,'').slice(0,5); gcalc(); });
+
+/* ================= туслах чат бот (дүрэмд суурилсан) ================= */
+/* Санхүүгийн байгууллагад бот буруу хүү/дүрэм зохиохоос сэргийлж — зөвхөн тушаал (ORDER),
+   Хавсралт №2-ын матриц, зөвшөөрлийн шатлал, зааврын бодит датагаас хариулна. Олдохгүй бол
+   ХОБПХГ-т (F03) холбоно. Прототип — production-д жинхэнэ мэдлэгийн санд холбогдоно. */
+function botRates(ql){
+  const tm=ql.match(/(\d{1,2})\s*сар/);
+  const usd=/доллар|\$|валют|usd/.test(ql);
+  const prod=usd?'Итгэлцэл $':(/өрийн|зээл|богино/.test(ql)?'Өрийн хэрэгсэл ₮':'Итгэлцэл ₮');
+  const o=ORDER.products[prod];
+  if(tm&&o.terms[tm[1]+' сар']){ const pr=o.terms[tm[1]+' сар'];
+    return `<b>${prod} · ${tm[1]} сар</b> (NC-01/54-2025): хугацааны эцэст <b>${pr[0]}%</b>${pr[1]?`, улирал/сар бүр <b>${pr[1]}%</b>`:''}. Данс хаах/цуцлахад ${o.brk}%.`;
+  }
+  return `<b>${prod}</b> (NC-01/54-2025, хугацааны эцэст): `
+    + Object.entries(o.terms).map(([t,pr])=>`${t.replace(' сар','')} сар — <b>${pr[0]}%</b>`).join(' · ')
+    + `. Тодорхой хугацаагаа хэлбэл (ж: «12 сар») яг гаргана.`;
+}
+function botReply(raw){
+  const q=(raw||'').trim(), ql=q.toLowerCase();
+  const A=(html,extra)=>Object.assign({html}, extra||{});
+  if(!ql) return A('Асуултаа бичнэ үү — хүү, зөвшөөрөл, сунгалт, cashflow, дугаарын талаар асууж болно.');
+  if(/нэмэгдүүл|лимит|матриц|хэд хүртэл|хэдээр нэм/.test(ql))
+    return A('Хүү нэмэгдүүлэх дүрэм (Хавсралт №2): <b>49 сая ₮ хүртэл нэмэгдүүлэхгүй</b> · 50–199 сая <b>+0.5%</b> · 200–499 сая <b>+1.0%</b> · 500 саяас <b>+1.5%</b> — ГЗ-ын орлогч Х.Нургүлийн зөвшөөрлөөр. 100 саяас дээш дүнд ГЗ Б.Хуншагайн зөвшөөрлөөр нэмж <b>+1.0%</b>. Түүнээс дээш — ТУЗ, Зөвлөл.', {action:{label:'Сунгалтын хүү шалгагч',fn:()=>gotoView('guideview')}});
+  if(/зөвшөөр|хэн.*батал|батал.*хэн|эрх|нургүл|хуншагай/.test(ql))
+    return A('Хүүгийн зөвшөөрлийн шатлал: <b>Х.Нургүл</b> (ГЗ-ын орлогч, CIO) → <b>Б.Хуншагай</b> (CEO) → <b>ТУЗ/Зөвлөл</b> (SU түвшин). ХОБХУГ-ын захирлын хүү зөвшөөрөх эрх болиулагдсан; <b>амаар өгсөн зөвшөөрөл хүчингүй</b> — зөвхөн F01 цахим хүсэлтээр бүртгэгдэнэ. SLA: В-8 ≤2 ажлын өдөр (SU ≤5).', {action:{label:'F01 хүсэлт эхлүүлэх',fn:()=>guideGo('F01')}});
+  if(/хүү|хэдэн хувь|торгу|цуцла|хаахад|хэдэн %/.test(ql))
+    return A(botRates(ql), {chips:[{label:'Итгэлцэл 12 сар',q:'Итгэлцэл 12 сарын хүү'},{label:'Итгэлцэл 6 сар',q:'Итгэлцэл 6 сарын хүү'},{label:'Долларын хүү',q:'доллар 12 сар хүү'}]});
+  if(/сунга|сунгал|хаах|хаалт|буцаа|дуус|процесс|заавар|алхам|материал/.test(ql))
+    return A('Сунгах (4 төрөл: бүтэн дүнгээр / хүү+үндсэн цугтаа / үндсэн дангаар / үндсэн нэмэгдүүлж), бага дүнгээр сунгах, хаах — алхам, бүрдүүлэх материал, Нэткор дээр юу хийх, хэнд хандахыг Процессын зааврын хуудсанд бүрэн бэлдсэн.', {action:{label:'Процессын заавар нээх',fn:()=>gotoView('guideview')}});
+  if(/cashflow|кэшфл|дуусах данс|бөглө|нөөшил|нөөц/.test(ql))
+    return A('Cashflow — сар бүр хугацаа нь дуусах данс бүрд «сунгах уу, гарах уу» шийдвэрээ урьдчилан бүртгэнэ. Энэ бол салбар бүрийн заавал үүрэг; бөглөлт дутуу бол сануулга очно.', {action:{label:'Cashflow нээх',fn:()=>gotoView('cfview')}});
+  if(/дугаар|явц|хаана.*хар|статус|миний|мөшг|track/.test(ql))
+    return A('Илгээсэн хүсэлт бүр <b>ЭҮ-'+YEAR+'-XXXX</b>, санал/гомдол <b>СГ-'+YEAR+'-XXXX</b> дугаартай. Явц, статус, хариуцагч, хариу өгөх хугацааг «Миний бүртгэлүүд» хэсгээс хянана.', {action:{label:'Миний бүртгэлүүд',fn:()=>gotoView('myview')}});
+  if(/300|net итгэл|дижитал/.test(ql))
+    return A('<b>300 · NET ИТГЭЛЦЭЛ</b> бол бүрэн дижитал бүтээгдэхүүн — сунгалт, хаалт нь аппаар автоматаар. Салбараас зөвхөн харилцагчийн банкны данс солих хүсэлт (F10 · Дансны тохиргоо) илгээнэ.', {action:{label:'F10 хүсэлт',fn:()=>guideGo('F10')}});
+  if(/товчл|\bэү\b|\bсг\b|хобпхг|хобхуг|\bsla\b|гэж юу|юу гэсэн/.test(ql))
+    return A('<b>ЭҮ</b> — эх үүсвэрийн хүсэлт · <b>СГ</b> — санал, гомдол · <b>ХОБПХГ</b> — хүсэлтийг хүлээн авах газар · <b>ХОБХУГ</b> — борлуулалт, харилцагчийн удирдлага · <b>ГЗ</b> — Гүйцэтгэх захирал · <b>ТУЗ</b> — Төлөөлөн удирдах зөвлөл · <b>SLA</b> — хариу өгөх амлалтат хугацаа.');
+  if(/сайн байна|сайн уу|hi|hello|баярлал|талархал/.test(ql))
+    return A('Таны асуултад туслахад бэлэн. Хүү, зөвшөөрөл, сунгалт, cashflow, дугаарын талаар асууна уу.', {chips:[{label:'12 сарын хүү',q:'Итгэлцэл 12 сарын хүү хэд вэ'},{label:'Зөвшөөрөл хэнээс?',q:'хүү зөвшөөрөл хэнээс авах'},{label:'Сунгах процесс',q:'сунгах процесс'}]});
+  return A('Энэ асуултад мөрдөж буй дүрэм, заавраас шууд хариулт олдсонгүй. ХОБПХГ-т зааварчилгааны (F03) хүсэлт болгож илгээх үү? Хариуцсан мэргэжилтэн тодорхой хугацаанд хариулна.', {action:{label:'F03 хүсэлт эхлүүлэх',fn:()=>guideGo('F03')}});
+}
+const botBody=$('botBody');
+function botAppendMsg(who, html){ const d=document.createElement('div'); d.className='bmsg '+who; d.innerHTML=html;
+  botBody.appendChild(d); botBody.scrollTop=botBody.scrollHeight; return d; }
+function botAppendChips(chips){ if(!chips||!chips.length) return;
+  const w=document.createElement('div'); w.className='bchips';
+  chips.forEach(c=>{ const b=document.createElement('button'); b.className='bchip'; b.type='button'; b.textContent=c.label;
+    b.addEventListener('click',()=>botAsk(c.q)); w.appendChild(b); });
+  botBody.appendChild(w); botBody.scrollTop=botBody.scrollHeight; }
+function botAppendAction(act){ if(!act) return;
+  const w=document.createElement('div'); w.style.alignSelf='flex-start';
+  const b=document.createElement('button'); b.className='ext-btn'; b.type='button'; b.style.cssText='padding:7px 13px;font-size:12.5px'; b.textContent=act.label;
+  b.addEventListener('click',()=>{ botToggle(false); act.fn(); }); w.appendChild(b);
+  botBody.appendChild(w); botBody.scrollTop=botBody.scrollHeight; }
+function botAsk(q){
+  botAppendMsg('me', esc(q));
+  const r=botReply(q);
+  setTimeout(()=>{ botAppendMsg('bot', r.html); botAppendChips(r.chips); botAppendAction(r.action); }, 160);
+}
+let botGreeted=false;
+function botToggle(open){
+  const panel=$('botPanel');
+  const show = (open===undefined) ? panel.hidden : open;
+  panel.hidden=!show;
+  $('botLauncher').setAttribute('aria-expanded', String(show));
+  if(show){
+    if(!botGreeted){ botGreeted=true;
+      botAppendMsg('bot', 'Сайн байна уу! Би эх үүсвэрийн туслах. Хүү, зөвшөөрөл, сунгалт, cashflow, дугаарын талаар асууж болно. <span style="color:var(--faint);font-size:12px">(Прототип — хариу тушаал NC-01/54-2025, зааврын бодит датагаас; чөлөөт зохиомол хариулт өгөхгүй.)</span>');
+      botAppendChips([{label:'12 сарын хүү хэд вэ?',q:'Итгэлцэл 12 сарын хүү хэд вэ'},{label:'Хэнээс зөвшөөрөл авах?',q:'хүүгийн зөвшөөрөл хэнээс авах'},{label:'Сунгах процесс',q:'сунгах процесс'},{label:'Дугаараа хаанаас харах?',q:'миний хүсэлтийн явц дугаар'}]);
+    }
+    setTimeout(()=>$('botInput').focus(),50);
+  }
+}
+$('botLauncher').addEventListener('click',()=>botToggle());
+$('botClose').addEventListener('click',()=>botToggle(false));
+$('botSend').addEventListener('click',()=>{ const v=$('botInput').value.trim(); if(!v) return; botAsk(v); $('botInput').value=''; });
+$('botInput').addEventListener('keydown',e=>{ if(e.key==='Enter'){ const v=$('botInput').value.trim(); if(v){ botAsk(v); $('botInput').value=''; } } });
 
 applyCatFields(); refresh(); refreshF();
 </script>

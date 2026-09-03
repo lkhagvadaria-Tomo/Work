@@ -568,6 +568,33 @@ fs.writeFileSync(path.join(OUT, 'shot.png'), PNG);
   })();
   await shot('v30-resilience.png');
 
+  // v3.1: хажуугийн туслах чат бот
+  // нэвтэрсэн үед launcher харагдана; өмнөх autoLogout-оос дахин нэвтэрнэ
+  await page.click('#btnLogin'); await page.waitForTimeout(200);
+  await page.click('.acct[data-email="lkhagvadari.a@netgroup.mn"]'); await page.waitForTimeout(500);
+  if (await page.evaluate(() => document.getElementById('welcomeWrap').style.display) === 'flex') { await page.click('#wcStart'); await page.waitForTimeout(200); }
+  R.botLauncherShown = await page.isVisible('#botLauncher');
+  await page.click('#botLauncher'); await page.waitForTimeout(300);
+  R.botPanelOpen = await page.isVisible('#botPanel');
+  R.botGreeting = (await page.textContent('#botBody')).includes('эх үүсвэрийн туслах');
+  R.botChips = await page.locator('#botBody .bchip').count();
+  // хүүгийн бодит хариу тушаалаас
+  await page.fill('#botInput', 'Итгэлцэл 12 сарын хүү хэд вэ'); await page.click('#botSend'); await page.waitForTimeout(400);
+  R.botRateAnswer = (await page.textContent('#botBody')).includes('17.5');
+  // зөвшөөрлийн шатлал
+  await page.fill('#botInput', 'хэнээс хүү зөвшөөрөл авах'); await page.click('#botSend'); await page.waitForTimeout(400);
+  R.botApprovalAnswer = (await page.textContent('#botBody')).includes('Нургүл');
+  // хэрэглэгчийн бичсэн текст XSS-ээс аюулгүй (esc)
+  await page.fill('#botInput', '<img src=x onerror="window.__botXss=1">тест'); await page.click('#botSend'); await page.waitForTimeout(300);
+  R.botXssInert = await page.evaluate(() => !window.__botXss && !document.querySelector('#botBody img'));
+  // мэдэхгүй асуултад F03 руу холбоно (дүрэмээс — зохиомол хариулт өгөхгүй)
+  R.botFallbackF03 = await page.evaluate(() => botReply('зумбагийн жор').action && botReply('зумбагийн жор').action.label.includes('F03'));
+  // үйлдлийн товч ажиллаж view сэлгэнэ
+  await page.fill('#botInput', 'сунгах процесс'); await page.click('#botSend'); await page.waitForTimeout(400);
+  await page.locator('#botBody .ext-btn').last().click(); await page.waitForTimeout(300);
+  R.botActionNav = await page.isVisible('#guideview') && !(await page.isVisible('#botPanel'));
+  await shot('v31-chatbot.png');
+
   R.errors = errors;
   console.log(JSON.stringify(R, null, 1));
   await browser.close();
