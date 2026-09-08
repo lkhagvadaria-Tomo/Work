@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# IPPDD WorkOS
 
-## Getting Started
+**OKR, Work, Evidence, Approval & Governance Execution System** — Netcapital Financial
+Group, Investment Product & Process Development Department (IPPDD). Pilot: А.Лхагвадарь,
+2026 Q3; architected for multi-employee / multi-department / multi-quarter rollout.
 
-First, run the development server:
+Core governance model:
+
+> **DELIVERED ≠ REVIEWED ≠ APPROVED ≠ IMPLEMENTED ≠ KR ACHIEVED ≠ CLOSED**
+>
+> Employees never set `CLOSED`. They **SUBMIT FOR CLOSURE**; the deterministic Gate
+> Engine (G1–G7) evaluates deliverables, self-QC, reviews, approvals, implementation,
+> metric validation, evidence and open critical findings; then an authorized human signs
+> off. `RULE GATE PASS + HUMAN SIGN-OFF = CLOSED` — enforced in the UI, in RLS, **and** in
+> database triggers + SECURITY DEFINER functions, so no API path can bypass it.
+
+## Stack
+
+- **Next.js 16** (App Router, Server Components/Actions), **TypeScript strict**, **Tailwind 4**
+- **PostgreSQL** (Supabase in production) — version-controlled SQL migrations, full **RLS**
+- **Supabase Auth** for "Sign in with Google" (Workspace domain restricted); no passwords
+- **Google Drive** stays the document source of truth — the app stores references + metadata
+- **AI abstraction layer** (`lib/ai`): mock / Anthropic providers; agent is advisory-only
+- Tests: **Vitest** (unit, integration, RLS) + **Playwright** (E2E)
+
+See `docs/` for architecture, data model, auth/RLS, gate engine, Drive integration,
+workflow, deployment, operations and the security checklist. Decision log:
+`docs/DECISIONS.md`. Build status: `docs/BUILD_STATUS.md`.
+
+## Prerequisites
+
+- Node.js ≥ 20 (developed on 22)
+- PostgreSQL ≥ 15 running locally (or a Supabase project)
+- Playwright Chromium for E2E (preinstalled in the dev container; else `npx playwright install chromium`)
+
+## Local setup (clone → running app)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+
+# 1. Database: creates the `workos` DB + roles, applies migrations, seeds the
+#    pilot dataset (extracted from the authoritative workbook IPPDD_OKR_Q3_2026-08-01_v1.0)
+npm run db:setup
+
+# 2. Environment
+cp .env.example .env.local
+# defaults work locally: DATABASE_URL to local Postgres, DEV_AUTH=1 for the
+# gated persona login (no Google credentials needed in development)
+
+# 3. Run
+npm run dev            # http://localhost:3000 — log in with a dev persona
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Dev personas (development only, hard-disabled in production builds):
+`А.Лхагвадарь (пилот ажилтан)`, `Б.Онон (хянагч)`, `О.Мөнх-Эрдэнэ (захирал)`, `WorkOS Admin`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tests & quality gates
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint             # ESLint
+npm run typecheck        # tsc --noEmit (strict)
+npm test                 # unit: gate engine, state machine, OKR calc, next actions
+npm run test:integration # lifecycle against real Postgres (workos_test)
+npm run test:rls         # RLS policy matrix against real Postgres
+npm run test:e2e         # Playwright: full closure flow + gate-FAIL negative path
+npm run build            # production build
+```
 
-## Learn More
+Integration/RLS/E2E provision a dedicated `workos_test` / reset the local DB via
+`scripts/db/local-setup.sh` — nothing runs against production data.
 
-To learn more about Next.js, take a look at the following resources:
+## OKR import (§workbook)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# dry run (preview + weight validation, no writes)
+npx tsx scripts/import-okr.ts --file scripts/pilot/la_okr_2026Q3.json \
+  --email lkhagvadari.a@netgroup.mn --quarter 2026-Q3
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# apply (service connection; duplicates are rejected, never overwritten)
+DATABASE_URL=postgres://workos_service:workos_service@localhost:5432/workos \
+  npx tsx scripts/import-okr.ts --file <workbook.xlsx|.json> --email <email> --quarter 2026-Q3 --apply
+```
 
-## Deploy on Vercel
+## Production configuration
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Google OAuth + Supabase setup, deployment steps and required secrets are documented in
+`docs/DEPLOYMENT.md` and `docs/GOOGLE_DRIVE.md`. `.env.example` lists every variable and
+whether it is public-safe or server-only. **Never commit real values.**

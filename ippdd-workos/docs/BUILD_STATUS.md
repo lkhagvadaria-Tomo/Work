@@ -1,57 +1,60 @@
 # IPPDD WorkOS — BUILD STATUS
 
 > Milestone percentages are indicators only. A phase is marked complete only when its
-> acceptance conditions pass (see §58 Definition of Done in the master prompt).
+> acceptance conditions pass (§58 Definition of Done).
 
 Last updated: 2026-09-08
 
-## Overall: Phase 0–1 in progress (~5%)
+## Overall: CODE COMPLETE — EXTERNAL CONFIGURATION REQUIRED (~95%)
+
+All 16 phases implemented and verified locally. Production activation requires external,
+administrator-controlled configuration (Google OAuth client, Supabase project, domain) —
+checklist in docs/DEPLOYMENT.md. Nothing external is misrepresented as done.
 
 | Phase | Scope | Status |
 |---|---|---|
-| 0 | Discovery: repo, workbook, tooling | ✅ DONE |
-| 1 | Foundation: Next.js 16, TS strict, Tailwind 4, lint, vitest, env schema | 🔄 IN PROGRESS |
-| 2 | Database: schema, migrations, constraints, seed, RLS | 🔄 IN PROGRESS |
-| 3 | Auth: Google login (Supabase Auth), dev impersonation, route protection | ⬜ |
-| 4 | OKR: quarter, objective, KR, import, My OKR | ⬜ |
-| 5 | Work: work items, types, DoD, lifecycle, UI | ⬜ |
-| 6 | Evidence: deliverables, Drive references, requirements, UI | ⬜ |
-| 7 | Review: assignment, queue, PASS/RETURN/REJECT | ⬜ |
-| 8 | Approval: request, decisions, version-linked records | ⬜ |
-| 9 | Gate Engine: rules, closure profiles, gate runs, findings | ⬜ |
-| 10 | Implementation & metric validation | ⬜ |
-| 11 | Closure: work / KR / quarter, final sign-off, certificate | ⬜ |
-| 12 | AI: abstraction, Closure Agent, next actions | ⬜ |
-| 13 | Dashboards: employee, reviewer, director, governance | ⬜ |
-| 14 | Notifications: in-app, future channels | ⬜ |
-| 15 | QA: unit, integration, E2E, RLS, error states | ⬜ |
-| 16 | Production readiness: security, env, build, deploy docs | ⬜ |
+| 0 | Discovery: repo, workbook, tooling | ✅ |
+| 1 | Foundation: Next.js 16, TS strict, Tailwind 4, lint, vitest, env schema | ✅ |
+| 2 | Database: 22 tables, constraints, triggers, seed, RLS on every table | ✅ |
+| 3 | Auth: Supabase Google (domain-restricted, pre-provisioned linking), gated dev personas, route protection | ✅ |
+| 4 | OKR: quarter/objective/KR, workbook import path (preview+validate+idempotent), My OKR UI | ✅ |
+| 5 | Work: 21 types, DoD, trigger-guarded lifecycle, My Work with saved filters | ✅ |
+| 6 | Evidence: requirements, deliverables (vX.Y + final), Drive references, verification | ✅ |
+| 7 | Review: queue, PASS/RETURN/REJECT (comment enforced), audit | ✅ |
+| 8 | Approval: queue, version-referenced decisions, Drive-metadata snapshot at approval | ✅ |
+| 9 | Gate Engine: deterministic G1–G7, closure profiles, immutable runs+findings, SQL re-verification | ✅ |
+| 10 | Implementation & metric validation (G5/G6) | ✅ |
+| 11 | Closure: work/KR/quarter sign-off via SECURITY DEFINER, quarter certificate | ✅ |
+| 12 | AI: provider abstraction (mock/anthropic), grounded closure agent, deterministic next actions | ✅ |
+| 13 | Dashboards: employee home, reviewer/approver queues, director & governance reports | ✅ |
+| 14 | Notifications: in-app, transactional; future channels architected | ✅ |
+| 15 | QA: unit 29 · integration 10 · RLS 10 · E2E 7 — all passing | ✅ |
+| 16 | Production readiness: docs, env schema, security checklist; external config pending | 🟨 CODE COMPLETE |
 
-## Discovery findings (Phase 0)
-
-- Repo `/home/user/Work` previously hosted a separate single-file prototype (funding
-  support portal, `index.html`). IPPDD WorkOS is built in the `ippdd-workos/` subdirectory
-  and does not touch the existing prototype.
-- Authoritative pilot workbook found on Google Drive:
-  `IPPDD_OKR_Q3_2026-08-01_v1.0` (Google Sheet, id `1Xd5UXx-smRyvSFyX2ATw7TejbtE5QVaCKK0h3cVj58Q`).
-  Extracted LA (А.Лхагвадарь) manager section: **3 objectives (40/40/20), 10 KRs**, with
-  weights, deadlines, measurement formulas → `scripts/pilot/la_okr_2026Q3.json`.
-  Quarter 2026-Q3 runs 2026-07-06 → 2026-10-02.
-- Tooling: Node 22.22, npm 10.9, PostgreSQL 16 available locally, Playwright Chromium
-  preinstalled. Next.js 16.3.4 / React 19.2 / Tailwind 4 scaffolded.
-- No Supabase project credentials, no Google OAuth Client ID/Secret, no AI API key in this
-  environment → integration layers are built + documented; local dev path runs against
-  local PostgreSQL with gated dev impersonation (see docs/DECISIONS.md D-003/D-004).
-
-## Quality gate status
+## Quality gate status (final local run — see handover for the exact log)
 
 | Gate | Status |
 |---|---|
-| npm install | 🔄 running |
-| lint | ⬜ not yet run |
-| typecheck | ⬜ not yet run |
-| unit tests | ⬜ not yet run |
-| integration tests | ⬜ not yet run |
-| RLS tests | ⬜ not yet run |
-| E2E | ⬜ not yet run |
-| production build | ⬜ not yet run |
+| lint (ESLint) | ✅ pass |
+| typecheck (tsc strict) | ✅ pass |
+| unit tests (29) | ✅ pass |
+| integration tests (10, real Postgres) | ✅ pass |
+| RLS tests (10, real Postgres) | ✅ pass |
+| E2E (Playwright, 7 incl. gate-FAIL negative path) | ✅ pass |
+| production build | ✅ pass |
+
+## Outstanding — external configuration (administrator-controlled)
+
+1. Google Cloud OAuth Client + Supabase Auth Google provider (docs/GOOGLE_DRIVE.md).
+2. Supabase project: apply migrations/seeds, remove dev personas (docs/DEPLOYMENT.md).
+3. Production hosting + `NEXT_PUBLIC_APP_URL`; env secrets per .env.example.
+4. AI provider decision (`mock` until data-flow review approves external calls).
+5. Optional: `drive.metadata.readonly` scope for version-drift detection.
+
+## Known limitations (stated, not hidden)
+
+- Drive changed-after-approval detection = metadata drift, not content hashing (D-008).
+- Agent is single-question Q&A (no persisted chat history) — grounded, advisory-only.
+- Drive folder provisioning is guided (path shown), not automated (needs `drive.file` scope approval).
+- Notifications are in-app only; Gmail/Chat channels are future work (§37 allows this for MVP).
+- Quarter/department admin CRUD is partial in the UI (quarters status-editable; new quarters via SQL/import).

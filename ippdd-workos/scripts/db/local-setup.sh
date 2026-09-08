@@ -28,6 +28,14 @@ done
 echo "== app role grants (local login user maps to authenticated)"
 run_sql "-d $DB_NAME -c 'grant authenticated to $DB_USER; grant usage on schema public, app to $DB_USER;'"
 
+echo "== service login (mirrors Supabase service connection; RLS bypass for imports/jobs)"
+run_sql "-c \"do \\\$\\\$ begin
+  if not exists (select from pg_roles where rolname='workos_service') then
+    create role workos_service login password 'workos_service' bypassrls;
+  end if;
+end \\\$\\\$;\""
+run_sql "-d $DB_NAME -c 'grant service_role to workos_service; grant usage on schema public, app to workos_service; grant all on all tables in schema public to workos_service; grant usage on all sequences in schema public to workos_service;'"
+
 echo "== seed"
 python3 scripts/pilot/gen_seed_okr.py
 run_sql "-d $DB_NAME -f '$PWD/supabase/seed.sql'"

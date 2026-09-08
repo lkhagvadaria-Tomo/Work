@@ -290,18 +290,18 @@ begin
         select 1 from public.deliverables d
         where d.work_item_id = w.id and d.requirement_id = r.id
           and (not r.require_final_version or d.final_version))
-  ) then blockers := blockers || 'DELIVERABLES_INCOMPLETE'; end if;
+  ) then blockers := array_append(blockers, 'DELIVERABLES_INCOMPLETE'); end if;
 
   if prof.requires_self_qc and not exists (
     select 1 from public.reviews rv
     where rv.work_item_id = w.id and rv.review_type = 'SELF_QC' and rv.decision = 'PASS'
-  ) then blockers := blockers || 'SELF_QC_MISSING'; end if;
+  ) then blockers := array_append(blockers, 'SELF_QC_MISSING'); end if;
 
   foreach rt in array prof.required_review_types loop
     if not exists (
       select 1 from public.reviews rv
       where rv.work_item_id = w.id and rv.review_type = rt and rv.decision = 'PASS'
-    ) then blockers := blockers || ('REVIEW_MISSING:' || rt::text); end if;
+    ) then blockers := array_append(blockers, ('REVIEW_MISSING:' || rt::text)); end if;
   end loop;
 
   if prof.requires_approval then
@@ -309,28 +309,28 @@ begin
       if not exists (
         select 1 from public.approvals a
         where a.work_item_id = w.id and a.approval_type = at and a.decision = 'APPROVE'
-      ) then blockers := blockers || ('APPROVAL_MISSING:' || at::text); end if;
+      ) then blockers := array_append(blockers, ('APPROVAL_MISSING:' || at::text)); end if;
     end loop;
   end if;
 
   if (prof.requires_implementation or w.implementation_required) and not exists (
     select 1 from public.implementation_records ir
     where ir.work_item_id = w.id and ir.implementation_status in ('LIVE','PILOT','NOT_REQUIRED')
-  ) then blockers := blockers || 'IMPLEMENTATION_MISSING'; end if;
+  ) then blockers := array_append(blockers, 'IMPLEMENTATION_MISSING'); end if;
 
   if (prof.requires_validation or w.validation_required or prof.requires_metric) and exists (
     select 1 from public.metric_validations mv
     where mv.work_item_id = w.id and mv.validation_status in ('PENDING','FAIL')
-  ) then blockers := blockers || 'VALIDATION_NOT_PASSED'; end if;
+  ) then blockers := array_append(blockers, 'VALIDATION_NOT_PASSED'); end if;
 
   if (prof.requires_validation or w.validation_required) and not exists (
     select 1 from public.metric_validations mv where mv.work_item_id = w.id
-  ) then blockers := blockers || 'VALIDATION_MISSING'; end if;
+  ) then blockers := array_append(blockers, 'VALIDATION_MISSING'); end if;
 
   if prof.requires_evidence and (
     select count(*) from public.evidence e where e.work_item_id = w.id
   ) < prof.min_evidence_count then
-    blockers := blockers || 'EVIDENCE_INSUFFICIENT';
+    blockers := array_append(blockers, 'EVIDENCE_INSUFFICIENT');
   end if;
 
   -- open critical findings on the latest closure gate run block closure
@@ -342,7 +342,7 @@ begin
       and g.id = (select id from public.gate_runs
                   where scope_type = 'WORK_ITEM' and scope_id = w.id
                   order by started_at desc limit 1)
-  ) then blockers := blockers || 'CRITICAL_FINDINGS_OPEN'; end if;
+  ) then blockers := array_append(blockers, 'CRITICAL_FINDINGS_OPEN'); end if;
 
   return blockers;
 end
