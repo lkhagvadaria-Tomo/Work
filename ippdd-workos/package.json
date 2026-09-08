@@ -6,7 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --dir tests/unit",
+    "test:integration": "vitest run --dir tests/integration --no-file-parallelism",
+    "test:rls": "vitest run --dir tests/rls --no-file-parallelism",
+    "test:e2e": "playwright test",
+    "db:setup": "bash scripts/db/local-setup.sh",
+    "import:okr": "tsx scripts/import-okr.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -16,16 +23,22 @@
     "pg": "^8.23.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "server-only": "^0.0.1",
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^22.20.1",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.13",
+    "typescript": "^5",
+    "vitest": "^5.0.0",
+    "xlsx": "^0.18.5"
   }
 }
