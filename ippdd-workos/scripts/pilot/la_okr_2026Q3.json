@@ -1,0 +1,139 @@
+{
+  "employee": "HQ_IPPDD_LA_Lkhagvadari",
+  "quarter": "2026-Q3",
+  "quarter_start": "2026-07-06",
+  "quarter_end": "2026-10-02",
+  "objectives": [
+    {
+      "code": "O1",
+      "title": "Эх үүсвэрийн данс нээлт болон уулзалтын процессын нэгдсэн стандарт, тодорхой эзэмшигч, хяналтын цэгтэйгээр ISCMD-д хэрэгжих бэлэн байдал хангагдана.",
+      "weight": "40.00%",
+      "krs": [
+        {
+          "code": "KR1",
+          "title": "Данс нээлтийн end-to-end процессын нэгдсэн стандарт багцын (process map, дүрэм, журам, RACI, control checklist) 5 бүрэлдэхүүний ХОБПХГазрын захирлаар хянуулж батлуулах бэлэн байдлыг \\[0%→100%\\] болгож 2026-08-24-ны дотор хангана.",
+          "deadline": "2026-08-24",
+          "weight": "40.00%",
+          "indicator_type": "Output",
+          "kr_type": "Transformational KR",
+          "description": "Данс нээлтийн end-to-end as-is/to-be зураглалд тулгуурлан process map, дүрэм, журам, RACI, control checklist гэсэн 5 бүрэлдэхүүнийг боловсруулж, ХОБХУГ, СТНУШГ болон ХАГ-тай review хийлгэнэ. Review-ийн тайлбарыг тусган нэгдсэн стандарт багцын драфт гаргаж, ХОБХУГ-ийн захиралд ахин хянуулна. Эцсийн хувилбарыг ХОБПХГ-ийн газрын захиралд хүлээлгэж өгнө.  Secondary indicators (харах зориулалттай, үнэлгээний гол шалгуур биш): • ХОБХУГ хүлээн авалтын тэмдэглэл: байна • 5 бүрэлдэхүүн бүрийн бэлэн байдал: 100%",
+          "measurement": "Биелсэн гэж үзэх нөхцөл: Данс нээлтийн end-to-end процессын нэгдсэн стандарт багцын 5 бүрэлдэхүүн (process map, дүрэм, журам, RACI, control checklist) бүгд боловсрогдож, ХОБПХГ-ийн газрын захирлаар хянагдаж батлагдсан байна.  Тооцох аргачлал: Томьёо: Documentation Readiness Rate = (Захирлаар хянагдаж батлагдсан бүрэлдэхүүний тоо / 5) × 100%  Шаталсан үнэлгээ: 100%: 5/5 бүрэлдэхүүн хянагдаж батлагдсан. 50%: 3/5 бүрэлдэхүүн хянагдсан. 0%: 2 буюу түүнээс цөөн бүрэлдэхүүн хянагдсан, эсвэл evidence дутуу.  Evidence: DOC-0035 Policy & Standard & Procedure Set; DOC-0070 Registers & Logs",
+          "documents": "DOC-0035 Policy & Standard & Procedure Set; DOC-0070 Registers & Logs"
+        },
+        {
+          "code": "KR2",
+          "title": "Нэвтэрсэн стандартчилсан процессуудын KPI Dashboard дахь weekly CPI review cadence-ийн гүйцэтгэлийг \\[0%→100%\\] болгож 2026-09-16-ны дотор хангана.",
+          "deadline": "2026-09-16",
+          "weight": "30.00%",
+          "indicator_type": "Output",
+          "kr_type": "Exploratory KR",
+          "description": "Нэвтэрсэн стандартчилсан процесс тус бүрийн KPI (cycle time, алдаа, STP, SLA, adoption)-ийн хэмжилтийн аргачлал болон weekly CPI review-ийн хуваарь, агендыг боловсруулж, ХОБХУГ болон СТНУШГ-тай review хийлгэнэ. Review-ийн тайлбарыг тусган CPI review-ийн драфт хуваарь болон KPI Dashboard загвар гаргаж, ХОБХУГ-ийн захиралд ахин хянуулна. Батлагдсан CPI review framework-ийг ХОБПХГ-ийн газрын захиралд хүлээлгэж өгч, Q3-ийн туршид тогтмол weekly review-г явуулна.  Secondary indicators (харах зориулалттай, үнэлгээний гол шалгуур биш): • Хэмжих KPI метрик тоо: ≥5 (cycle time, алдаа, STP, SLA, adoption) • Dashboard шинэчлэлт давтамж: долоо хоног тутам",
+          "measurement": "Биелсэн гэж үзэх нөхцөл: Q3-ийн туршид товлогдсон weekly CPI review (13 хуралдаан)-ийн 100%-ийг гүйцэтгэсэн, нэвтэрсэн процесс тус бүрийн доод тал нь 5 KPI метрик хэмжигдсэн байна.  Тооцох аргачлал: Томьёо: CPI Review Completion Rate = (Явуулсан CPI review тоо / 13) × 100%  Шаталсан үнэлгээ: 100%: 13/13 хуралдаан явагдсан. 50%: 7–12/13 хуралдаан явагдсан. 0%: 6 буюу түүнээс цөөн хуралдаан явагдсан, эсвэл evidence дутуу.  Evidence: DOC-0103 Management Pack; DOC-0070 Registers & Logs; CPI review attendance log",
+          "documents": "DOC-0103 Management Pack; DOC-0070 Registers & Logs"
+        },
+        {
+          "code": "KR3",
+          "title": "Q2 backlog-оос сонгосон 3 процессын сайжруулалтыг ХОБПХГазрын захирлаар баталгаажуулж, UAT орчинд шалгаж, production-д live болсон тоог \\[0/3→3/3\\] болгож 2026-09-23-ны дотор хангана.",
+          "deadline": "2026-09-23",
+          "weight": "30.00%",
+          "indicator_type": "Output",
+          "kr_type": "Transformational KR",
+          "description": "Q2 backlog-оос сонгосон 3 процессын сайжруулалт бүрийн UAT test plan болон acceptance criteria-г боловсруулж, МТҮААГ болон ХОБХУГ-тай review хийлгэнэ. UAT туршилтын дүнд тулгуурлан production deployment-д зориулсан Change Request болон acceptance тайлангийн драфт гаргаж, CFT lead болон ХОБХУГ-ийн захиралд ахин хянуулна. Acceptance gate-ийг давсан 3 сайжруулалтыг ХОБПХГ-ийн газрын захиралд хүлээлгэж өгч, production deployment-ийг гүйцэтгэнэ.  Secondary indicators (харах зориулалттай, үнэлгээний гол шалгуур биш): • UAT defect closure: 100% • CFT lead acceptance: 3/3 • ISCMD acceptance: 3/3",
+          "measurement": "Биелсэн гэж үзэх нөхцөл: Q2 backlog-оос сонгосон 3 процессын сайжруулалт бүр UAT болон ISCMD acceptance gate-ийг давж, production-д live болж, ХОБПХГ-ийн газрын захирлаар баталгаажсан байна.  Тооцох аргачлал: Томьёо: Live Deployment Rate = (Production-д live болсон сайжруулалтын тоо / 3) × 100%  Шаталсан үнэлгээ: 100%: 3/3 сайжруулалт production-д live болсон. 50%: 2/3 сайжруулалт live болсон. 0%: 1 буюу нэг ч сайжруулалт live болоогүй.  Evidence: DOC-0146 PRD/BRD & Requirements Traceability; DOC-0070 Registers & Logs; UAT sign-off болон production deployment log",
+          "documents": "DOC-0146 PRD/BRD & Requirements Traceability; DOC-0070 Registers & Logs"
+        }
+      ]
+    },
+    {
+      "code": "O2",
+      "title": "Хариуцсан процесс, бэлгийн хяналтыг сайжруулж автоматжуулна.",
+      "weight": "40.00%",
+      "krs": [
+        {
+          "code": "KR1",
+          "title": "Харилцагчийн (гарын) бэлгийн зарцуулалтын нотлох баримт бүрдүүлэлтийн 3 баримт (checklist + стандарт + журам)-ын ХОБПХГазрын захирлаар хянуулж батлуулах бэлэн байдлыг \\[0%→100%\\] болгож 2026-08-23-ны дотор хангана.",
+          "deadline": "2026-08-23",
+          "weight": "40.00%",
+          "indicator_type": "Output",
+          "kr_type": "Transformational KR",
+          "description": "Харилцагчийн (гарын) бэлгийн зарцуулалтад тавигдах хуулийн болон дотоод дүрмийн шаардлагад тулгуурлан checklist, стандарт болон журам гэсэн 3 баримт бичгийг боловсруулж, ХОБХУГ болон ХАГ-тай review хийлгэнэ. Review-ийн тайлбарыг тусган 3 баримт бичгийн нэгдсэн драфт гаргаж, ХАГ болон ХОБХУГ-ийн захиралд ахин хянуулна. Эцсийн 3 баримт бичгийг ХОБПХГ-ийн газрын захиралд хүлээлгэж өгнө.  Secondary indicators (харах зориулалттай, үнэлгээний гол шалгуур биш): • ХАГ-ийн compliance review тэмдэглэл: байна • ХОБХУГ-ийн хүлээн авалт: баталгаажсан",
+          "measurement": "Биелсэн гэж үзэх нөхцөл: Харилцагчийн бэлгийн зарцуулалтын нотлох баримт бүрдүүлэлтийн 3 баримт (checklist + стандарт + журам) бүгд боловсрогдож, ХОБПХГ-ийн газрын захирлаар хянагдаж батлагдсан байна.  Тооцох аргачлал: Томьёо: Document Readiness Rate = (Захирлаар батлагдсан баримт бичгийн тоо / 3) × 100%  Шаталсан үнэлгээ: 100%: 3/3 баримт хянагдаж батлагдсан. 50%: 2/3 баримт хянагдсан. 0%: 1 буюу нэг ч баримт батлагдаагүй, эсвэл evidence дутуу.  Evidence: DOC-0035 Policy & Standard & Procedure Set; DOC-0070 Registers & Logs",
+          "documents": "DOC-0035 Policy & Standard & Procedure Set; DOC-0070 Registers & Logs"
+        },
+        {
+          "code": "KR2",
+          "title": "Харилцагчийн бэлгийн хяналтын 1 domain-д Claude автоматжуулалтын process coverage-ийг \\[0%→≥80%\\] болгож 2026-09-06-ны дотор хангана.",
+          "deadline": "2026-09-06",
+          "weight": "30.00%",
+          "indicator_type": "Output",
+          "kr_type": "Exploratory KR",
+          "description": "Харилцагчийн бэлгийн хяналтын автоматжуулах 1 domain-ийг тодорхойлж, Claude-аар хэрэгжүүлэх hypothesis болон experiment design, test case-ийг боловсруулж, ХОБХУГ болон ХАГ-тай review хийлгэнэ. Review-ийн тайлбарыг тусган pilot автоматжуулалтын драфт тайлан болон coverage хэмжих аргачлал гаргаж, ХОБХУГ-ийн захиралд ахин хянуулна. Баталгаажсан автоматжуулалтын тайлан болон хэрэгжилтийн баримтыг ХОБПХГ-ийн газрын захиралд хүлээлгэж өгнө.  Secondary indicators (харах зориулалттай, үнэлгээний гол шалгуур биш): • Туршилтын hypothesis тайлан: байна • False positive rate: ≤5%",
+          "measurement": "Биелсэн гэж үзэх нөхцөл: Харилцагчийн бэлгийн хяналтын сонгосон 1 domain-д Claude автоматжуулалтын process coverage ≥80%-д хүрсэн, ХОБПХГ-ийн газрын захирлаар хянагдсан байна.  Тооцох аргачлал: Томьёо: Process Coverage = (Автоматжуулсан check хийгдсэн transaction / Нийт domain transaction) × 100%  Шаталсан үнэлгээ: 100%: Coverage ≥80% хүрсэн. 50%: Coverage 40%–79%. 0%: Coverage 40%-аас доош, эсвэл туршилт эхлэгдээгүй.  Evidence: DOC-0117 Experiment Registry; DOC-0070 Registers & Logs; Claude automation test log",
+          "documents": "DOC-0117 Experiment Registry; DOC-0070 Registers & Logs"
+        },
+        {
+          "code": "KR3",
+          "title": "Төв болон салбарын борлуулалт дэмжлэгийн стандарт + template-ийн ISCMD Pilot Acceptance Gate-ийн бэлэн байдлыг \\[0%→100% (PASS)\\] болгож 2026-09-08-ны дотор хангана.",
+          "deadline": "2026-09-08",
+          "weight": "30.00%",
+          "indicator_type": "Output",
+          "kr_type": "Guardrail KR",
+          "description": "Төв болон салбарын борлуулалт дэмжлэгийн стандарт болон template-ийн агуулга, бүтцийг боловсруулж, ХОБХУГ болон ССУГ-тай review хийлгэнэ. Review-ийн тайлбарыг тусган pilot cycle-д ашиглах стандарт болон template-ийн драфт гаргаж, ХОБХУГ-ийн захиралд (ISCMD Pilot Acceptance Gate) ахин хянуулна. Acceptance Gate-ийг давсан стандарт болон template-ийг ХОБПХГ-ийн газрын захиралд хүлээлгэж өгнө.  Secondary indicators (харах зориулалттай, үнэлгээний гол шалгуур биш): • Pilot cycle дахь template ашиглалт: ≥5 удаа • ССУГ хүлээн авалт: баталгаажсан",
+          "measurement": "Биелсэн гэж үзэх нөхцөл: Борлуулалт дэмжлэгийн стандарт болон template 1 pilot cycle-ийг гүйцэтгэж, ISCMD Pilot Acceptance Gate PASS баталгаажсан байна.  Тооцох аргачлал: Томьёо: Gate Result — PASS = 100%, FAIL = 0%  Шаталсан үнэлгээ: 100%: Pilot cycle дуусч ISCMD Pilot Acceptance Gate PASS авсан. 50%: Pilot cycle гүйцэтгэгдсэн боловч Gate review хүлээгдэж байгаа. 0%: Pilot cycle дуусгаагүй эсвэл Gate FAIL.  Evidence: DOC-0035 Policy & Standard & Procedure Set; DOC-0070 Registers & Logs; ISCMD Pilot Acceptance Gate sign-off",
+          "documents": "DOC-0035 Policy & Standard & Procedure Set; DOC-0070 Registers & Logs"
+        }
+      ]
+    },
+    {
+      "code": "O3",
+      "title": "O3: Хариуцсан тайлан, өөрчлөлт болон C-Level эвентийн засаглалыг хангана.",
+      "weight": "20.00%",
+      "krs": [
+        {
+          "code": "KR1",
+          "title": "Хариуцсан тайлангуудын Report Inventory register болон reports.netcapital.mn дахь report↔document readiness-ийг \\[0%→100%\\] болгож 2026-09-21-ны дотор хангана.",
+          "deadline": "2026-09-21",
+          "weight": "30.00%",
+          "indicator_type": "Output",
+          "kr_type": "CEO OKR",
+          "description": "Хариуцсан тайлангуудын жагсаалт, эх сурвалж, owner болон давтамжийн мэдээллийг боловсруулж, СГУГ-тай review хийлгэнэ. Review-ийн тайлбарыг тусган Report Inventory register болон reports.netcapital.mn нийтлэлд зориулсан тайлан бүрийн мета өгөгдлийн драфт гаргаж, СГУГ-д ахин хянуулна. Эцсийн бүртгэлт болон нийтлэлийг ХОБПХГ-ийн газрын захиралд хүлээлгэж өгнө.    Secondary indicators (харах зориулалттай, үнэлгээний гол шалгуур биш):  • Тайлан бүрийн эх сурвалж баталгаажилт: 100%  • reports.netcapital.mn нийтлэлт: 100%",
+          "measurement": "Биелсэн гэж үзэх нөхцөл:  Хариуцсан бүх тайлан Report Inventory register-т эх сурвалж тулгагдаж бүртгэгдсэн, reports.netcapital.mn-д нийтлэгдсэн, ХОБПХГ-ийн газрын захирлаар хянагдсан байна.    Тооцох аргачлал:  Томьёо: Report Readiness Rate = (Бүртгэгдэж нийтлэгдсэн тайлангийн тоо / Нийт хариуцах тайлангийн тоо) × 100%    Шаталсан үнэлгээ:  100%: Бүх хариуцсан тайлан бүртгэгдэж нийтлэгдсэн.  50%: 50%–99% тайлан бэлэн байдал хангагдсан.  0%: 50%-аас доош тайлан бэлэн байдал хангагдсан, эсвэл evidence дутуу.    Evidence: DOC-0070 Registers & Logs; RPT-0060 Investment Product Strategy Report; reports.netcapital.mn upload log",
+          "documents": "DOC-0070 Registers & Logs; RPT-0060 Investment Product Strategy Report"
+        },
+        {
+          "code": "KR2",
+          "title": "Хариуцсан тайлантай холбоотой батлагдсан өөрчлөлтийн санал (change proposal)-ын хэрэгжилтийг \\[0%→100%\\] болгож 2026-09-28-ны дотор хангана.",
+          "deadline": "2026-09-28",
+          "weight": "30.00%",
+          "indicator_type": "Output",
+          "kr_type": "Transformational KR",
+          "description": "Хариуцсан тайлан бүрийн document/process gap analysis хийж, шаардлагатай өөрчлөлтийн санал (change proposal)-ыг боловсруулж, СГУГ болон холбогдох нэгжтэй review хийлгэнэ. Review-ийн тайлбарыг тусган батлагдсан change proposal-уудын хэрэгжилтийн хуваарийн драфт гаргаж, СГУГ болон холбогдох нэгжийн захиралд ахин хянуулна. Батлагдсан proposal болон хэрэгжилтийн хяналтын баримтыг ХОБПХГ-ийн газрын захиралд хүлээлгэж өгнө.    Secondary indicators (харах зориулалттай, үнэлгээний гол шалгуур биш):  • Change proposal тоо: тайлан бүрт ≥1  • Холбогдох нэгжийн хүлээн авалт: 100%",
+          "measurement": "Биелсэн гэж үзэх нөхцөл:  Хариуцсан тайлантай холбоотой бүх батлагдсан change proposal хэрэгжиж, ХОБПХГ-ийн газрын захирлаар хянагдсан байна.    Тооцох аргачлал:  Томьёо: Change Implementation Rate = (Хэрэгжсэн change proposal / Нийт батлагдсан proposal) × 100%    Шаталсан үнэлгээ:  100%: Бүх батлагдсан proposal хэрэгжсэн.  50%: 50%–99% proposal хэрэгжсэн.  0%: 50%-аас доош proposal хэрэгжсэн, эсвэл evidence дутуу.    Evidence: DOC-0035 Policy & Standard & Procedure Set; DOC-0070 Registers & Logs; Change proposal log",
+          "documents": "DOC-0035 Policy & Standard & Procedure Set; DOC-0070 Registers & Logs"
+        },
+        {
+          "code": "KR3",
+          "title": "C-Level-ийн хариуцсан event/committee/OKR schedule-ийн нэгдсэн календарийн хамрагдалтыг \\[0%→100%\\] болгож 2026-09-30-ны дотор хангана.",
+          "deadline": "2026-09-30",
+          "weight": "20.00%",
+          "indicator_type": "Output",
+          "kr_type": "Guardrail KR",
+          "description": "C-Level-ийн Q3-д хариуцсан event, committee болон OKR schedule-ийг цуглуулж, нэгдсэн календарийн template болон action tracker-ийг боловсруулж, C-Level хариуцагчид болон СГУГ-тай review хийлгэнэ. Review-ийн тайлбарыг тусган Q3-ийн нэгдсэн календарийн драфт болон action list гаргаж, C-Level-ийн захиралд ахин хянуулна. Баталгаажсан нэгдсэн календарийг ХОБПХГ-ийн газрын захиралд хүлээлгэж өгч, Q3-ийн туршид action closure-ыг долоо хоног тутам хянана.    Secondary indicators (харах зориулалттай, үнэлгээний гол шалгуур биш):  • Action closure rate: 100%  • Календарийн шинэчлэлт давтамж: долоо хоног тутам",
+          "measurement": "Биелсэн гэж үзэх нөхцөл:  C-Level-ийн Q3-д товлогдсон event/committee/OKR schedule-ийн 100% нэгдсэн календарьт бүртгэгдэж, ХОБПХГ-ийн газрын захирлаар хянагдсан байна.    Тооцох аргачлал:  Томьёо: Calendar Coverage = (Нэгдсэн календарьт бүртгэгдсэн event тоо / Нийт товлогдсон event тоо) × 100%    Шаталсан үнэлгээ:  100%: Бүх event/schedule нэгдсэн календарьт бүртгэгдсэн.  50%: 50%–99% event бүртгэгдсэн.  0%: 50%-аас доош event бүртгэгдсэн, эсвэл evidence дутуу.    Evidence: DOC-0103 Management Pack; DOC-0070 Registers & Logs; C-Level calendar log",
+          "documents": "DOC-0103 Management Pack; DOC-0070 Registers & Logs"
+        },
+        {
+          "code": "KR4",
+          "title": "Хариуцсан нэгжийн ажилтнуудын Claude сургалтын хамрагдалтыг \\[0%→≥95%\\] болгож 2026-09-30-ны дотор хангана.",
+          "deadline": "2026-09-30",
+          "weight": "20.00%",
+          "indicator_type": "Lagging",
+          "kr_type": "Transformational KR",
+          "description": "Хариуцсан нэгжийн ажилтнуудад зориулан Claude суурь болон role-based сургалтын агуулга, хуваарь болон хамрагдуулах ажилтнуудын жагсаалтыг боловсруулж, СГУГ болон ХОБПХГ-ийн захиралтай review хийлгэнэ. Review-ийн тайлбарыг тусган сургалтын хөтөлбөр болон хамрагдалт хянах механизмын драфт гаргаж, СГУГ-д ахин хянуулна. Сургалтын дүн болон хамрагдалтын тайланг ХОБПХГ-ийн газрын захиралд хүлээлгэж өгнө.    Secondary indicators (харах зориулалттай, үнэлгээний гол шалгуур биш):  • Сургалт дуусгасан ажилтны тоо: нийт ≥95%  • Post-assessment дүн: ≥70%",
+          "measurement": "Биелсэн гэж үзэх нөхцөл:  Хариуцсан нэгжийн нийт ажилтны 95% буюу дээш нь Claude сургалтад хамрагдаж дуусгасан, ХОБПХГ-ийн газрын захирлаар хянагдсан байна.    Тооцох аргачлал:  Томьёо: Training Completion Rate = (Сургалт дуусгасан ажилтны тоо / Нийт ажилтны тоо) × 100%    Шаталсан үнэлгээ:  100%: ≥95% ажилтан сургалтад хамрагдаж дуусгасан.  50%: 70%–94.9% ажилтан хамрагдсан.  0%: 70%-аас доош ажилтан хамрагдсан, эсвэл evidence дутуу.    Evidence: DOC-0117 Experiment Registry; DOC-0070 Registers & Logs; Сургалтын бүртгэл болон attendance log",
+          "documents": "DOC-0117 Experiment Registry; DOC-0070 Registers & Logs"
+        }
+      ]
+    }
+  ]
+}
