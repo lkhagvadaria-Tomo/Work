@@ -12,6 +12,26 @@ var PROFILES = {
 };
 function profileOf(w) { return PROFILES[w.type] || PROFILES.DEFAULT; }
 
+/* EOM v5.0 баримтын нийцлийн шалгуур (Enterprise Operating Model Handbook v5.0,
+   DGS — Document Governance & Register Steward загвар; AI зөвлөх — §2.5a) */
+var EOM_CRITERIA = [
+  { id: "NAME",    t: "Нэршлийн стандарт: [Газар]_[Нэр]_[ОООО-СС-ӨӨ]_vX.Y; Document ID (POL/STD/PRO/GDL-…) ба хувилбар ил", ref: "EOM §2.4 Document Register" },
+  { id: "CTRL",    t: "Document Control блок: Version, Status, Owner (Accountable), Approver, Review Cycle, Effective/Supersedes", ref: "EOM §2.4 legibility · DGS" },
+  { id: "OWNER",   t: "Нэртэй хариуцагч (DRI / Accountable owner) ба RACI тодорхой", ref: "EOM §2.7a" },
+  { id: "APPR",    t: "Батлалын нотолгоо: Approver ба Status (Draft/Pending/Approved) ил; шийдвэр DEC-YYYY-XXX холбоостой байвал сайн", ref: "EOM §2.4 Committee Governance" },
+  { id: "AIGATE",  t: "AI-Output Review Gate: AI ашигласан бол хүний хянагчийн тэмдэглэл (reviewed-by); regulated баримтад хүний authorship/sign-off", ref: "EOM §2.5a · §3.3" },
+  { id: "TRACE",   t: "Стратегийн уялдаа: Strategic Theme / Wave / Value Stream / KR-т traceable; Related documents хэсэгтэй", ref: "EOM §1.6 Identity Consistency" },
+  { id: "STRUCT",  t: "Төрөлдөө тохирсон бүтэц: Purpose/Scope; процессын баримтад шат/gate/RACI; стандартад Minimum Requirements + Evidence/Threshold", ref: "EOM §3 Process Architecture" },
+  { id: "CADENCE", t: "Хяналтын мөчлөг: Review Cycle / дараагийн хяналтын огноо заасан", ref: "EOM §2.4 DGS cadence" },
+  { id: "RISK",    t: "Эрсдэл/нийцэл: Classification (Internal/Confidential), эскалацийн зам, PII/PDP хамрах бол хязгаар", ref: "EOM §2.9 · Three Lines of Defense" },
+  { id: "LOG",     t: "Change Log: хувилбар бүрийн огноо, өөрчлөлт, үндэслэл, зохиогч", ref: "EOM §2.4 audit-readiness" }
+];
+/* Эцсийн deliverable-уудын гарын үсэг — G8 шалгалт хуучирсныг илрүүлнэ */
+function eomSig(w) {
+  return (w.deliverables || []).filter(function (d) { return d.final; })
+    .map(function (d) { return d.name + "@" + (d.version || ""); }).sort().join("|");
+}
+
 var TRANSITIONS = {
   NOT_STARTED: ["IN_PROGRESS"],
   IN_PROGRESS: ["SUBMITTED", "BLOCKED"],
@@ -138,6 +158,33 @@ function evaluateGate(w, today) {
     { sev: "HIGH", res: "FAIL", title: "Нотолгоо дутуу (" + evs.length + "/" + p.minEv + ")",
       act: "Drive нотолгоог холбож бүртгэ." });
 
+  // G8 EOM v5.0 нийцэл — AI зөвлөх шалгалт (DGS загвар; эцсийн шийдвэр хүнийх)
+  if (p.deliv) {
+    var ec = w.eomCheck, sig8 = eomSig(w);
+    if (!ec) add("G8", "G8 · EOM нийцэл", true, "FAIL",
+      { sev: "HIGH", res: "FAIL", title: "EOM v5.0 нийцлийн AI шалгалт хийгдээгүй",
+        act: "Ажлын хуудасны «EOM v5.0 нийцэл» хэсгээс AI шалгалт ажиллуулж PASS ав." });
+    else if (ec.sig !== sig8) add("G8", "G8 · EOM нийцэл", true, "FAIL",
+      { sev: "HIGH", res: "FAIL", title: "Эцсийн deliverable өөрчлөгдсөн — EOM шалгалт хуучирсан",
+        act: "EOM v5.0 нийцлийн AI шалгалтыг дахин ажиллуул." });
+    else if (ec.result === "PASS") add("G8", "G8 · EOM нийцэл", true, "PASS");
+    else if (ec.result === "WARNING") add("G8", "G8 · EOM нийцэл", true, "WARNING",
+      { sev: "MEDIUM", res: "WARNING", title: "EOM нийцэл анхааруулгатай: " + (ec.summary || "") });
+    else add("G8", "G8 · EOM нийцэл", true, "FAIL",
+      { sev: "CRITICAL", res: "FAIL", title: "EOM v5.0 нийцэл: FAIL" + (ec.summary ? " — " + ec.summary : ""),
+        act: "Дутагдлыг баримтдаа засаад AI шалгалтыг дахин ажиллуул." });
+  } else add("G8", "G8 · EOM нийцэл", false, "NOT_APPLICABLE");
+
+  // G9 CIO хүлээн зөвшөөрөлт — ажил + баримтыг хүлээн авч зөвшөөрсөн sign-off
+  var cs9 = w.cioSign;
+  if (cs9 && cs9.decision === "APPROVE") add("G9", "G9 · CIO хүлээн зөвшөөрөлт", true, "PASS");
+  else if (cs9) add("G9", "G9 · CIO хүлээн зөвшөөрөлт", true, "FAIL",
+    { sev: "CRITICAL", res: "FAIL", title: "CIO буцаасан: " + (cs9.comment || "тайлбаргүй"),
+      act: "Дутагдлыг засаад CIO-д дахин хүлээлгэн өг." });
+  else add("G9", "G9 · CIO хүлээн зөвшөөрөлт", true, "FAIL",
+    { sev: "HIGH", res: "FAIL", title: "CIO хүлээн зөвшөөрөлт бүртгэгдээгүй",
+      act: "Х.Нургүл (CIO) ажил, баримтыг хүлээн авч APPROVE + sign-off хийнэ. Амаар зөвшөөрөл хүчингүй." });
+
   // deadline warning
   if (w.deadline && w.deadline < today && w.status !== "CLOSED")
     add("W1", "Хугацаа", false, "WARNING",
@@ -152,5 +199,6 @@ function evaluateGate(w, today) {
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { PROFILES: PROFILES, profileOf: profileOf, TRANSITIONS: TRANSITIONS,
-    canGo: canGo, closableFrom: closableFrom, evaluateGate: evaluateGate, metricOk: metricOk };
+    canGo: canGo, closableFrom: closableFrom, evaluateGate: evaluateGate, metricOk: metricOk,
+    eomSig: eomSig, EOM_CRITERIA: EOM_CRITERIA };
 }

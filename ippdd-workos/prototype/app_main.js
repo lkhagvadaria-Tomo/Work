@@ -3,7 +3,8 @@
 
 /* Хэрэглэгч/газрын бүртгэл — db-ээс динамикаар (SEED = анхны утга) */
 function U(id) { return S.users[id] || { id: id, name: id, role: "", dept: "" }; }
-function isDirector() { return S.p && U(S.p).role === "Захирал"; }
+function isDirector() { return S.p && (U(S.p).role === "Захирал" || isCio()); }
+function isCio() { return S.p && U(S.p).role.indexOf("CIO") >= 0; }
 var TODAY = new Date().toISOString().slice(0, 10);
 
 var SESSION_MS = 20 * 60 * 1000; // идэвхгүй 20 мин → автомат гарна (порталтай ижил)
@@ -12,7 +13,8 @@ var S = {
   p: null, db: null, live: false, seeded: true,
   works: {}, krs: {}, meta: null, users: {}, config: { depts: [] },
   deptFilter: "ALL",
-  tab: "home", workId: null, ai: [], aiBusy: false, chatOpen: false, checkinAi: null
+  tab: "home", workId: null, ai: [], aiBusy: false, chatOpen: false, checkinAi: null,
+  eomBusy: false, eomWid: null, eomProg: null
 };
 
 function loadSession() {
@@ -440,6 +442,24 @@ var A = {
     var v = Number(achievement); must(isFinite(v) && v >= 0 && v <= 100, "Гүйцэтгэл 0–100");
     k.status = "CLOSED"; k.achievement = v; k.closedBy = me().name; k.closedTs = now();
     saveKr(k); toast(kid + " хаагдлаа (" + v + "%)");
+  },
+  recordEomCheck: function (id, check) {
+    var w = W(id);
+    must(w.status !== "CLOSED", "Хаагдсан ажил дээр шалгалт бүртгэхгүй");
+    w.eomCheck = check;
+    saveWork(w, "EOM v5.0 нийцлийн AI шалгалт: " + check.result + " (" + (check.docs || []).length + " баримт)");
+  },
+  cioSign: function (id, decision, comment) {
+    var w = W(id);
+    must(isCio(), "Зөвхөн CIO (Х.Нургүл) хүлээн зөвшөөрөлт хийнэ");
+    must(S.p !== w.owner, "Өөрийн ажлыг өөрөө хүлээн зөвшөөрөхгүй");
+    must(!(w.cioSign && w.cioSign.decision === "APPROVE"), "Аль хэдийн хүлээн зөвшөөрсөн");
+    must(decision === "APPROVE" || (comment && comment.trim()), "Буцаахад тайлбар заавал");
+    w.cioSign = { decision: decision === "APPROVE" ? "APPROVE" : "RETURN",
+      by: S.p, byName: me().name + " (CIO)", comment: (comment || "").trim(), ts: now() };
+    saveWork(w, decision === "APPROVE"
+      ? "CIO хүлээн зөвшөөрөлт: ажил, баримтыг хүлээн авч APPROVE + sign-off хийв"
+      : "CIO буцаав: " + (comment || "").trim());
   },
   closeQuarter: function () {
     must(isDirector(), "Улирлын хаалтыг захирал хийнэ");

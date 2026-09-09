@@ -57,6 +57,7 @@ seed = {
         {"id": "LA", "name": "А.Лхагвадарь", "email": "lkhagvadari.a@netgroup.mn", "role": "Ажилтан", "dept": "IPPDD"},
         {"id": "OO", "name": "Б.Онон", "email": "onon.or@netgroup.mn", "role": "Хянагч", "dept": "IPPDD"},
         {"id": "ME", "name": "О.Мөнх-Эрдэнэ", "email": "munkh-erdene.o@netgroup.mn", "role": "Захирал", "dept": "IPPDD"},
+        {"id": "NG", "name": "Х.Нургүл", "email": "", "role": "CIO", "dept": "IPPDD"},
     ],
     "krs": krs, "work": work,
 }
@@ -74,7 +75,7 @@ body = f"""
       «Баримт үүссэн» ≠ «ажил дууссан» — хаалт бүр гейт + хүний sign-off-оор баталгаажна.</p>
     </div>
     <div class="vals">
-      <div class="v"><span class="tick">✓</span><span><b>Deterministic Gate Engine</b> — G1–G7 шалгалт, дутагдлын зөвлөмжтэй</span></div>
+      <div class="v"><span class="tick">✓</span><span><b>Deterministic Gate Engine</b> — G1–G9 шалгалт (EOM нийцэл, CIO sign-off орсон), дутагдлын зөвлөмжтэй</span></div>
       <div class="v"><span class="tick">✓</span><span><b>Багийн хамтын сан</b> — өөрчлөлт бүх гишүүнд шууд харагдана</span></div>
       <div class="v"><span class="tick">✓</span><span><b>AI туслах</b> — зөвхөн системийн өгөгдлөөс, зөвлөх эрхтэй</span></div>
     </div>

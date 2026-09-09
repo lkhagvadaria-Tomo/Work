@@ -181,7 +181,7 @@ function vWorkDetail(w) {
   });
 
   // gate
-  html += '<section class="card"><header class="card-h"><h3>Хаалтын гейт (G1–G7)</h3>' + (g ? gbadge(g.result) : "") + '</header><div class="card-b">';
+  html += '<section class="card"><header class="card-h"><h3>Хаалтын гейт (G1–G9)</h3>' + (g ? gbadge(g.result) : "") + '</header><div class="card-b">';
   if (!g) html += '<p class="sub" style="margin:0">Гейт хараахан ажиллаагүй — SUBMIT FOR CLOSURE дарж ажиллуулна. Ажилтан CLOSED-ийг өөрөө тавьдаггүй.</p>';
   else {
     html += '<ul class="list">' + g.checks.map(function (c) {
@@ -194,6 +194,50 @@ function vWorkDetail(w) {
       }).join("") + "</ul>";
     html += '<p class="sub" style="margin:10px 0 0">Сүүлд: ' + fmt(g.ts) + " · " + esc(g.by) + "</p>";
   }
+  html += "</div></section>";
+
+  // ── EOM v5.0 нийцэл (G8) — AI зөвлөх шалгалт ─────────────────────────────
+  var ec = w.eomCheck, ecStale = ec && ec.sig !== eomSig(w);
+  html += '<section class="card"><header class="card-h"><h3>EOM v5.0 нийцэл (G8) — AI шалгалт</h3>' +
+    (ec ? gbadge(ecStale ? "WARNING" : ec.result) : "") + '</header><div class="card-b">' +
+    '<p class="sub" style="margin:0 0 8px">Эцсийн deliverable бүрийн агуулгыг Google Drive-аас уншиж, EOM v5.0 гарын авлагын ' +
+    'баримтын стандартад тулгана (DGS — Document Governance Steward загвар). AI зөвхөн зөвлөх эрхтэй (§2.5a) — ' +
+    'эцсийн хүлээн зөвшөөрөлт G9-ийн хүний sign-off-оор.</p>';
+  if (S.eomBusy && S.eomWid === w.id) html += '<p class="note">' + esc(S.eomProg || "Ажиллаж байна…") + "</p>";
+  if (ec) {
+    if (ecStale) html += '<p class="note" style="border-color:var(--warn-line)">Шалгалтын дараа эцсийн deliverable өөрчлөгдсөн — дахин ажиллуулна уу.</p>';
+    html += '<p class="sub" style="margin:0 0 6px"><b>' + esc(ec.result) + "</b>" + (ec.summary ? " — " + esc(ec.summary) : "") + "</p><ul class='list'>" +
+      (ec.docs || []).map(function (dd) {
+        return '<li class="block"><div style="display:flex;justify-content:space-between;gap:8px"><span>' + esc(dd.name) + "</span>" +
+          gbadge(dd.verdict === "PASS" ? "PASS" : dd.verdict === "WARNING" ? "WARNING" : "FAIL") + "</div>" +
+          (dd.issues || []).map(function (is2) { return "<p>• [" + esc(is2.crit) + "] " + esc(is2.note) + "</p>"; }).join("") + "</li>";
+      }).join("") + "</ul>" +
+      (ec.unread && ec.unread.length ? '<p class="sub" style="margin:6px 0 0">Уншиж чадаагүй: ' + esc(ec.unread.join(", ")) + "</p>" : "") +
+      '<p class="sub" style="margin:8px 0 0">' + fmt(ec.ts) + " · " + esc(ec.byName || ec.by || "") + " · зөвхөн бүртгэлтэй линкийн агуулгаар</p>";
+  } else html += '<p class="sub" style="margin:0 0 4px">Шалгалт хийгдээгүй — гейт G8 үүнийг шаардана.</p>';
+  html += '<details class="adder"><summary>EOM v5.0 шалгуур (' + EOM_CRITERIA.length + ')</summary><div><ul class="list">' +
+    EOM_CRITERIA.map(function (c2) {
+      return '<li class="block"><div><b>' + esc(c2.id) + "</b> — " + esc(c2.t) + "</div><p>" + esc(c2.ref) + "</p></li>";
+    }).join("") + "</ul></div></details>";
+  if (w.status !== "CLOSED")
+    html += '<p style="margin:10px 0 0"><button class="btn sm2" data-act="eomCheck"' + (S.eomBusy ? " disabled" : "") +
+      ">✦ AI шалгалт ажиллуулах</button></p>";
+  html += "</div></section>";
+
+  // ── CIO хүлээн зөвшөөрөлт (G9) ───────────────────────────────────────────
+  var cs = w.cioSign;
+  html += '<section class="card"><header class="card-h"><h3>CIO хүлээн зөвшөөрөлт (G9)</h3>' +
+    (cs ? gbadge(cs.decision === "APPROVE" ? "PASS" : "FAIL") : "") + '</header><div class="card-b">' +
+    '<p class="sub" style="margin:0 0 8px">Хийсэн ажил болон гаргасан баримт бичгийг ХОБПХГ, ХОБХУГ-ын захирал, CIO ' +
+    "<b>Х.Нургүл</b> хүлээн авч зөвшөөрснөө APPROVE + sign-off-оор энд тэмдэглэнэ. Амаар зөвшөөрөл хүчингүй — " +
+    "зөвхөн системд бүртгэгдсэн нь тоологдоно.</p>";
+  if (cs) html += '<p class="note" style="' +
+    (cs.decision === "APPROVE" ? "border-color:var(--pass-line);background:var(--pass-bg);color:var(--pass-ink)" : "") + '">' +
+    (cs.decision === "APPROVE" ? "ХҮЛЭЭН ЗӨВШӨӨРСӨН — " : "БУЦААСАН — ") + esc(cs.byName || cs.by) + " · " + fmt(cs.ts) +
+    (cs.comment ? "<br>" + esc(cs.comment) : "") + "</p>";
+  else html += '<p class="sub" style="margin:0">Хүлээгдэж байна — гейт G9 үүнийг шаардана.</p>';
+  if (isCio() && S.p !== w.owner && (!cs || cs.decision !== "APPROVE") && w.status !== "CLOSED")
+    html += decideForm("ciosign");
   html += "</div></section>";
 
   // ── Баталгаажуулалтын гинж (дараалал) + хүлээлгэн өгөлт ──────────────────
@@ -339,8 +383,14 @@ function chainOf(w) {
       ap ? "<b>" + esc(ap.by) + "</b> APPROVE" + (ap.version ? " · хувилбар " + esc(ap.version) : "") + " · " + fmt(ap.decidedTs || ap.ts)
          : "батлагчийн шийдвэр хүлээгдэж байна");
   });
+  var cs0 = w.cioSign, csOk = cs0 && cs0.decision === "APPROVE";
+  step("CIO хүлээн зөвшөөрөлт — Х.Нургүл", csOk,
+    csOk ? "<b>" + esc(cs0.byName || cs0.by) + "</b> APPROVE + sign-off · " + fmt(cs0.ts)
+      : cs0 ? "буцаасан: " + esc(cs0.comment || "") + " · " + esc(cs0.byName || "")
+      : "ажил, баримтыг хүлээн авч зөвшөөрөх sign-off хүлээгдэж байна",
+    false, cs0 && cs0.decision !== "APPROVE");
   var g = w.gate;
-  step("Хаалтын гейт (G1–G7)", g && g.result !== "FAIL",
+  step("Хаалтын гейт (G1–G9)", g && g.result !== "FAIL",
     g ? "үр дүн <b>" + g.result + "</b> · " + fmt(g.ts) : "SUBMIT FOR CLOSURE-оор ажиллана",
     false, g && g.result === "FAIL");
   var closed = w.closure && w.closure.status === "CLOSED";
@@ -410,7 +460,7 @@ function vNew() {
   var types = ["POLICY","PROCEDURE","STANDARD","GUIDELINE","PROCESS","PROCESS_IMPROVEMENT","REPORT","ANALYSIS","CHANGE_PROPOSAL","AI_AGENT","AUTOMATION","PILOT","TRAINING","COMMITTEE","PROJECT","SPRINT","KPI","BAU","OTHER"];
   return '<button class="backlink" data-act="back">← Буцах</button>' +
     "<h1>Шинэ ажил үүсгэх</h1>" +
-    '<p class="sub">Ажлын төрөл нь хаалтын шаардлагыг (G1–G7 гейт) тодорхойлно. Батлагчаар өөрийгөө сонгох боломжгүй — эрх мэдлийн тусгаарлалт.</p>' +
+    '<p class="sub">Ажлын төрөл нь хаалтын шаардлагыг (G1–G9 гейт) тодорхойлно. Батлагчаар өөрийгөө сонгох боломжгүй — эрх мэдлийн тусгаарлалт.</p>' +
     '<section class="card"><div class="card-b">' +
     '<label class="field"><span>Нэр *</span><input type="text" data-f="nw_title" maxlength="300"></label>' +
     '<div class="frow">' +
@@ -496,7 +546,7 @@ function vCheckin() {
   var html = '<div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">' +
     "<div style='flex:1;min-width:260px'><h1>Employee OKR Performance Check-in</h1>" +
     '<p class="sub">' + esc(U("LA").name) + " · " + esc(S.meta ? S.meta.code : "") + " · тайлан үүсгэсэн: " + esc(TODAY) +
-    " · Ажил бүр дээр гейт G1–G7-г ШИНЭЭР тооцсон детерминист үнэлгээ. Баримтын агуулгыг уншаагүй — системд бүртгэгдсэн нэр, хувилбар, төлөв, нотолгоонд тулгуурлав.</p></div>" +
+    " · Ажил бүр дээр гейт G1–G9-г (EOM нийцэл, CIO хүлээн зөвшөөрөлт орсон) ШИНЭЭР тооцсон детерминист үнэлгээ. Баримтын агуулгыг уншаагүй — системд бүртгэгдсэн нэр, хувилбар, төлөв, нотолгоонд тулгуурлав.</p></div>" +
     '<div style="display:flex;gap:8px">' +
     '<button class="btn sec sm2" data-act="print">🖨 Хэвлэх / PDF</button>' +
     '<button class="btn sm2" data-act="checkinAi"' + (S.aiBusy ? " disabled" : "") + ">" +
