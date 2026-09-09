@@ -241,6 +241,47 @@ function vWorkDetail(w) {
   }
   html += "</div></section>";
 
+  // ── Ажил ↔ баримтын агуулгын тулгалт (DoD + хүрээ) ───────────────────────
+  var da = w.docAudit, daStale = da && da.sig !== eomSig(w);
+  var fwN2 = S.fw ? (S.fw.files || []).length : 0;
+  html += '<section class="card"><header class="card-h"><h3>Ажил ↔ баримтын тулгалт (агуулгын түвшин)</h3>' +
+    (da ? gbadge(daStale ? "WARNING" : da.result) : "") + '</header><div class="card-b">' +
+    '<p class="sub" style="margin:0 0 8px">Хавсаргасан эцсийн баримтуудын <b>бодит агуулгыг</b> уншиж, шаардлага ' +
+    "тус бүр (deliverable) хангагдсан эсэх, DoD биелсэн эсэх, газрын баримтын хүрээтэй зөрчилгүй эсэхийг тулгана. " +
+    "Хүрээний бүртгэл: " + (fwN2 ? fwN2 + " баримт («Баримт шалгах» хэсгээс ачаалсан)" : "ачаалагдаагүй — «Баримт шалгах» хэсгээс ачаална") + ".</p>";
+  if (S.auditBusy && S.auditWid === w.id) html += '<p class="note">' + esc(S.auditProg || "Ажиллаж байна…") + "</p>";
+  if (da) {
+    if (daStale) html += '<p class="note" style="border-color:var(--warn-line)">Тулгалтын дараа эцсийн deliverable өөрчлөгдсөн — дахин ажиллуулна уу.</p>';
+    html += '<p class="sub" style="margin:0 0 8px"><b>' + esc(da.result) + " · DoD: " +
+      (da.dodVerdict === "MET" ? "биелсэн" : da.dodVerdict === "PARTIAL" ? "хагас" : "биелээгүй") + "</b>" +
+      (da.summary ? " — " + esc(da.summary) : "") + "</p>";
+    if ((da.reqs || []).length) html += '<p class="sub" style="margin:10px 0 4px">Шаардлага тус бүр:</p><ul class="list">' +
+      da.reqs.map(function (r) {
+        return '<li class="block"><div style="display:flex;justify-content:space-between;gap:8px"><span><b>' + esc(r.req) + "</b></span>" +
+          gbadge(r.status === "MET" ? "PASS" : r.status === "PARTIAL" ? "WARNING" : "FAIL") + "</div>" +
+          (r.where ? "<p>Хаана: " + esc(r.where) + "</p>" : "") + (r.note ? "<p>" + esc(r.note) + "</p>" : "") + "</li>";
+      }).join("") + "</ul>";
+    if ((da.docs || []).length) html += '<p class="sub" style="margin:10px 0 4px">Баримт тус бүр:</p><ul class="list">' +
+      da.docs.map(function (d) {
+        return '<li class="block"><div style="display:flex;justify-content:space-between;gap:8px"><span>' + esc(d.name) + "</span>" +
+          gbadge(d.verdict === "PASS" ? "PASS" : d.verdict === "WARNING" ? "WARNING" : "FAIL") + "</div>" +
+          (d.issues || []).map(function (i2) { return "<p>• [" + esc(i2.crit) + "] " + esc(i2.note) + "</p>"; }).join("") + "</li>";
+      }).join("") + "</ul>";
+    if ((da.framework || []).length) html += '<p class="sub" style="margin:10px 0 4px">Хүрээтэй зөрчил:</p><ul class="list">' +
+      da.framework.map(function (f) {
+        return '<li class="block"><div><b>' + esc(f.doc) + "</b></div><p>" + esc(f.issue) + "</p></li>";
+      }).join("") + "</ul>";
+    if ((da.actions || []).length) html += '<p class="sub" style="margin:10px 0 4px">Хийх ажил:</p><ul class="list">' +
+      da.actions.map(function (a2) { return "<li><span>" + esc(a2) + "</span></li>"; }).join("") + "</ul>";
+    if ((da.unread || []).length) html += '<p class="sub" style="margin:8px 0 0">Уншиж чадаагүй: ' + esc(da.unread.join(", ")) + "</p>";
+    html += '<p class="sub" style="margin:8px 0 0;font-size:11.5px">' + fmt(da.ts) + " · " + esc(da.byName || "") +
+      " · AI зөвлөх дүгнэлт (баримтын эхний 15000 тэмдэгт; хүрээний баримтуудыг зөвхөн нэр/хувилбараар мэднэ).</p>";
+  } else html += '<p class="sub" style="margin:0">Тулгалт хийгдээгүй.</p>';
+  if (w.status !== "CLOSED")
+    html += '<p style="margin:10px 0 0"><button class="btn sm2" data-act="docAudit"' + (S.auditBusy ? " disabled" : "") +
+      ">✦ Ажил ↔ баримт тулгах</button></p>";
+  html += "</div></section>";
+
   // ── CIO хүлээн зөвшөөрөлт (G9) ───────────────────────────────────────────
   var cs = w.cioSign;
   html += '<section class="card"><header class="card-h"><h3>CIO хүлээн зөвшөөрөлт (G9)</h3>' +
@@ -455,10 +496,33 @@ function vFlowBar(w) {
 
 function vDocCheck() {
   var r = S.dcResult;
-  var html = "<h1>Баримт шалгах — Drive линкээр EOM v5.0 нийцэл</h1>" +
+  var fw = S.fw, fwN = fw ? (fw.files || []).length : 0;
+  var html = "<h1>Баримт шалгах — газрын баримтын хүрээтэй тулгалт</h1>" +
     '<p class="sub">Газрын баримт бичгийн <b>Drive линкийг</b> (файл эсвэл бүтэн хавтас) хуулж тавихад ' +
     "AI нь агуулгыг уншиж EOM Handbook v5.0-ийн " + EOM_CRITERIA.length + " шалгуурт тулгаж дүгнэнэ. " +
     "AI зөвхөн зөвлөх (EOM §2.5a) — эцсийн шийдвэр хүнийх; ажлыг хаах G8 шалгуурыг ажлын хуудаснаас нь ажиллуулна.</p>" +
+    /* Хүрээний бүртгэл */
+    '<section class="card"><header class="card-h"><h3>Газрын баримт бичгийн хүрээ (framework бүртгэл)</h3>' +
+    '<span class="chip">' + (fwN ? fwN + " баримт" : "ачаалагдаагүй") + "</span></header><div class='card-b'>" +
+    '<p class="sub" style="margin:0 0 8px">Газрын бодлого, стандарт, журам, бүртгэлийн хавтсыг ачаалбал ' +
+    "шалгалт бүр EOM-ийн хэлбэрийн шалгуур ДЭЭР НЭМЖ энэ хүрээтэй тулгагдана: холбоос баримт бүртгэлд байгаа эсэх, " +
+    "хувилбарын зөрүү, давхардал, зөрчил.</p>" +
+    '<div class="frow" style="align-items:flex-end">' +
+    '<label class="field" style="flex:2"><span>Хүрээний хавтасны линк</span><input type="url" data-f="fwfolder" value="' +
+    esc((fw && fw.folder) || (S.config && S.config.frameworkFolder) || "") + '"></label>' +
+    '<button class="btn sm2 sec" data-act="loadFw"' + (S.fwBusy ? " disabled" : "") +
+    ' style="margin-bottom:9px">Хүрээ ачаалах / шинэчлэх</button></div>' +
+    (S.fwBusy ? '<p class="note">' + esc(S.fwProg || "Ачаалж байна…") + "</p>" : "") +
+    (fwN
+      ? '<div style="overflow-x:auto"><table><thead><tr><th>Төрөл</th><th>Баримт</th><th>Хувилбар</th><th>Огноо</th></tr></thead><tbody>' +
+        fw.files.map(function (f) {
+          return "<tr><td><b class='mono'>" + esc(f.kind) + "</b></td><td>" + esc(f.title) + "</td><td class='mono'>" +
+            (f.version ? "v" + esc(f.version) : "—") + "</td><td class='mono'>" + esc(f.date || f.modified || "—") + "</td></tr>";
+        }).join("") + "</tbody></table></div>" +
+        '<p class="sub" style="margin:8px 0 0;font-size:11.5px">Ачаалсан: ' + esc(fw.byName || "") + " · " + fmt(fw.ts) +
+        " — бүх хэрэглэгчид хамтын сангаар харагдана.</p>"
+      : '<p class="sub" style="margin:0">Хүрээ ачаалаагүй — шалгалт зөвхөн EOM-ийн хэлбэрийн шалгуураар явна.</p>') +
+    "</div></section>" +
     '<section class="card"><header class="card-h"><h3>Шалгах баримтууд</h3>' +
     '<span class="chip">хавтас эсвэл файл · мөр тутамд нэг линк</span></header><div class="card-b">' +
     '<label class="field"><span>Google Drive / Docs линк(үүд)</span>' +
@@ -568,8 +632,6 @@ function vProcess() {
     "<b>Бүрэн</b> (гейт + sign-off + хүлээн авалт) · <b>Хаахад бэлэн</b> (гейт FAIL биш) · <b>Дутагдалтай</b> (улаан дутагдалтай) гэж гаргана. " +
     "Улаан дутагдал бүрд «яг юу хийх» заавар хамт харагдана.</p></div></section>";
 }
-
-function isBoss() { return S.p && (U(S.p).role === "Захирал" || U(S.p).role.indexOf("CIO") >= 0); }
 
 function chainOf(w) {
   var p = profileOf(w), steps = [];
@@ -825,6 +887,12 @@ function vCheckin() {
       (gaps.length ? '<ul class="ci-gaps">' + gaps.map(function (f) {
         return "<li>" + esc(f.title) + (f.act ? " — <span style='color:var(--muted)'>" + esc(f.act) + "</span>" : "") + "</li>";
       }).join("") + "</ul>" : "") +
+      (w.docAudit
+        ? '<div class="ci-ai" style="margin-top:8px"><b>Баримтын тулгалт:</b> ' + esc(w.docAudit.result) +
+          " · DoD " + (w.docAudit.dodVerdict === "MET" ? "биелсэн" : w.docAudit.dodVerdict === "PARTIAL" ? "хагас" : "биелээгүй") +
+          (w.docAudit.summary ? " — " + esc(w.docAudit.summary) : "") +
+          ((w.docAudit.actions || []).length ? "<br>Хийх: " + esc(w.docAudit.actions.slice(0, 3).join(" · ")) : "") + "</div>"
+        : "") +
       "</div>";
   });
   html += '<p class="note">Энэ тайлан хэвлэхэд бэлэн (🖨 товч → PDF болгон хадгалж хуралд авч орно). Дүгнэлтийн тайлбар: «Бүрэн» = гейт + sign-off + хүлээн авалт; «Хаахад бэлэн» = гейт FAIL биш; «Дутагдалтай» = гейтийн улаан дутагдалтай.</p>';

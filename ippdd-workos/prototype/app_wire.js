@@ -28,6 +28,98 @@ function eomPrompt(readable) {
     readable.map(function (x) { return "--- " + x.name + " ---\n" + x.text; }).join("\n\n");
 }
 
+/* Ажил ↔ баримтын агуулгын тулгалт: DoD, шаардлага, хүрээний баримтуудтай */
+function auditPrompt(w, readable) {
+  var reqs = (w.requirements || []);
+  return "Чи Netcapital-ийн баримт бичгийн засаглалын ЗӨВЛӨХ аудитор. Ажлын шаардлага, DoD-ийг " +
+    "хавсаргасан баримтуудын БОДИТ АГУУЛГАТАЙ тулгаж, мөн газрын баримт бичгийн хүрээтэй (доорх бүртгэл) " +
+    "зөрчилгүй эсэхийг шалга.\n\n" +
+    "=== АЖИЛ ===\nКод: " + w.code + "\nНэр: " + w.title + "\nТөрөл: " + w.type +
+    "\nХугацаа: " + (w.deadline || "—") + "\nDoD: " + (w.dod || "(тодорхойлоогүй)") + "\n" +
+    "Шаардлага (deliverable) бүр:\n" + (reqs.length ? reqs.map(function (r, i) { return (i + 1) + ". " + r; }).join("\n") : "(жагсаагаагүй)") + "\n" +
+    "Хавсаргасан эцсийн баримтууд: " + (w.deliverables || []).filter(function (d) { return d.final; })
+      .map(function (d) { return d.name + " " + (d.version || ""); }).join("; ") + "\n\n" +
+    "=== ГАЗРЫН БАРИМТ БИЧГИЙН ХҮРЭЭ (Drive бүртгэл) ===\n" + fwIndexText() + "\n\n" +
+    "=== EOM v5.0 БАРИМТЫН ШААРДЛАГА (хэлбэрийн шалгуур) ===\n" +
+    EOM_CRITERIA.map(function (c2) { return c2.id + " — " + c2.t; }).join("\n") + "\n\n" +
+    "ХАТУУ ДҮРЭМ: зөвхөн доорх текстээс дүгнэ — байхгүй зүйл бүү зохио; текст 15000 тэмдэгтээр тасарсан " +
+    "байж болно (эргэлзвэл PARTIAL/WARNING); хүрээний баримтуудын зөвхөн НЭР, код, хувилбарыг мэдэж байгаа " +
+    "(агуулгыг уншаагүй) тул тэдгээртэй тулгахдаа зөвхөн нэр/хувилбар/дурдагдсан эсэхээр дүгн; чи зөвлөх " +
+    "(EOM §2.5a) — эцсийн шийдвэр хүнийх.\n\n" +
+    "Хариу ЗӨВХӨН JSON: {\"overall\":\"PASS|WARNING|FAIL\",\"summary\":\"2-3 өгүүлбэр монголоор\"," +
+    "\"reqs\":[{\"req\":\"шаардлагын нэр\",\"status\":\"MET|PARTIAL|MISSING\",\"where\":\"аль баримтын аль хэсэгт\",\"note\":\"тайлбар\"}]," +
+    "\"docs\":[{\"name\":\"...\",\"verdict\":\"PASS|WARNING|FAIL\",\"issues\":[{\"crit\":\"DoD|FRAMEWORK|NAME|CTRL|OWNER|APPR|TRACE|STRUCT|LOG|RISK\",\"note\":\"...\"}]}]," +
+    "\"framework\":[{\"doc\":\"хүрээний баримтын нэр\",\"issue\":\"зөрчил, давхардал, хувилбарын зөрүү, дурдагдаагүй холбоос\"}]," +
+    "\"dodVerdict\":\"MET|PARTIAL|NOT_MET\",\"actions\":[\"хийх ажил 1\",\"хийх ажил 2\"]}\n\n" +
+    "=== ХАВСАРГАСАН БАРИМТУУДЫН АГУУЛГА ===\n" +
+    readable.map(function (x) { return "--- " + x.name + " ---\n" + x.text; }).join("\n\n");
+}
+
+function normAudit(out) {
+  out = out || {};
+  function v3(x, a2, b2, c2) { return x === a2 ? a2 : x === b2 ? b2 : c2; }
+  return {
+    result: out.overall === "PASS" ? "PASS" : out.overall === "WARNING" ? "WARNING" : "FAIL",
+    summary: String(out.summary || "").slice(0, 900),
+    dodVerdict: v3(out.dodVerdict, "MET", "PARTIAL", "NOT_MET"),
+    reqs: (Array.isArray(out.reqs) ? out.reqs : []).slice(0, 20).map(function (r) {
+      return { req: String(r.req || "").slice(0, 200), status: v3(r.status, "MET", "PARTIAL", "MISSING"),
+        where: String(r.where || "").slice(0, 200), note: String(r.note || "").slice(0, 300) };
+    }),
+    docs: (Array.isArray(out.docs) ? out.docs : []).slice(0, 12).map(function (d) {
+      return { name: String(d.name || "").slice(0, 200),
+        verdict: d.verdict === "PASS" ? "PASS" : d.verdict === "WARNING" ? "WARNING" : "FAIL",
+        issues: (Array.isArray(d.issues) ? d.issues : []).slice(0, 12).map(function (i2) {
+          return { crit: String(i2.crit || "?").slice(0, 12), note: String(i2.note || "").slice(0, 300) };
+        }) };
+    }),
+    framework: (Array.isArray(out.framework) ? out.framework : []).slice(0, 15).map(function (f) {
+      return { doc: String(f.doc || "").slice(0, 200), issue: String(f.issue || "").slice(0, 300) };
+    }),
+    actions: (Array.isArray(out.actions) ? out.actions : []).slice(0, 8).map(function (a2) {
+      return String(a2 || "").slice(0, 300);
+    })
+  };
+}
+
+/* Ажил дээрх гүнзгий тулгалтыг ажиллуулна */
+function runDocAudit(wid) {
+  if (S.auditBusy) return;
+  var w = S.works[wid]; if (!w) return;
+  var finals = (w.deliverables || []).filter(function (d) { return d.final; });
+  if (!finals.length) { toast("Эцсийн (FINAL) deliverable алга — эхлээд баримтаа холбож эцсийн болго", true); return; }
+  Promise.all([useCap("mcp"), useCap("sample")]).then(function (caps) {
+    var mcp = caps[0], sample = caps[1];
+    if (!sample) { toast("AI энэ орчинд боломжгүй байна", true); return; }
+    if (!mcp) { toast("Google Drive холболт алга — claude.ai дотроос нээж ажиллуулна уу", true); return; }
+    S.auditBusy = true; S.auditWid = wid; S.auditProg = "Баримт уншиж байна…"; render();
+    var files = finals.map(function (d) {
+      var ref = driveRef(d.url);
+      return { id: ref ? ref.id : null, name: d.name + " " + (d.version || "") };
+    }).filter(function (f) { return f.id; });
+    if (!files.length) {
+      S.auditBusy = false; S.auditWid = null; S.auditProg = null; render();
+      toast("Deliverable-ийн линкээс Drive ID олдсонгүй", true); return;
+    }
+    readDriveDocs(mcp, files.slice(0, 6), function (m) { S.auditProg = m; render(); }).then(function (docs) {
+      var readable = docs.filter(function (x) { return x.text; });
+      if (!readable.length)
+        throw new Error("Нэг ч баримт уншигдсангүй: " + docs.map(function (x) { return x.name + " (" + x.err + ")"; }).join("; "));
+      S.auditProg = "DoD, шаардлага, хүрээтэй тулгаж байна…"; render();
+      return sample.json(auditPrompt(w, readable), { modelTier: "default", cache: false }).then(function (out) {
+        var audit = normAudit(out);
+        audit.unread = docs.filter(function (x) { return !x.text; }).map(function (x) { return x.name + " (" + x.err + ")"; });
+        audit.ts = new Date().toISOString(); audit.by = S.p; audit.byName = U(S.p).name;
+        audit.sig = eomSig(w); audit.fwCount = (S.fw && (S.fw.files || []).length) || 0;
+        A.recordDocAudit(wid, audit);
+        toast("Тулгалт: " + audit.result + " · DoD " + audit.dodVerdict, audit.result !== "PASS");
+      });
+    }).catch(function (e) {
+      toast("Тулгалт амжилтгүй: " + ((e && (e.message || e.code)) || "алдаа"), true);
+    }).finally(function () { S.auditBusy = false; S.auditWid = null; S.auditProg = null; render(); });
+  });
+}
+
 function normEom(out) {
   out = out || {};
   return {
@@ -41,6 +133,67 @@ function normEom(out) {
         }) };
     })
   };
+}
+
+/* Drive-аас баримтуудын агуулгыг дараалан уншина (эрхийн алдааг үнэнчээр буцаана) */
+function readDriveDocs(mcp, files, onProg) {
+  var docs = [], chain = Promise.resolve();
+  files.forEach(function (f, i) {
+    chain = chain.then(function () {
+      if (onProg) onProg("Уншиж байна (" + (i + 1) + "/" + files.length + "): " + f.name);
+      return mcp.callTool("Google Drive", "read_file_content", { fileId: f.id }).then(function (res) {
+        var pl = res && res.payload;
+        var txt = pl && typeof pl === "object" && typeof pl.fileContent === "string" ? pl.fileContent
+          : typeof pl === "string" ? pl : JSON.stringify(pl || "");
+        docs.push({ name: f.name, text: String(txt).slice(0, 15000), err: null });
+      }).catch(function (e2) {
+        docs.push({ name: f.name, text: null, err: (e2 && (e2.code || e2.message)) || "уншиж чадсангүй" });
+      });
+    });
+  });
+  return chain.then(function () { return docs; });
+}
+
+/* Хавтасны баримтуудыг тодруулна */
+function listDriveFolder(mcp, folderId, limit) {
+  return mcp.callTool("Google Drive", "search_files",
+    { query: "parentId = '" + folderId + "'", pageSize: 50, excludeContentSnippets: true }
+  ).then(function (res) {
+    var pl = res && res.payload;
+    if (typeof pl === "string") { try { pl = JSON.parse(pl); } catch (e) { pl = null; } }
+    var out = [];
+    ((pl && pl.files) || []).forEach(function (f) {
+      if (DC_READABLE.test(f.mimeType || ""))
+        out.push({ id: f.id, name: f.title || f.name || f.id, mime: f.mimeType,
+          modified: (f.modifiedTime || "").slice(0, 10) });
+    });
+    return limit ? out.slice(0, limit) : out;
+  });
+}
+
+/* Хүрээний (framework) бүртгэлийг Drive хавтаснаас ачаална */
+function loadFramework() {
+  if (S.fwBusy) return;
+  var el = document.querySelector('[data-f="fwfolder"]');
+  var link = el ? el.value : ((S.fw && S.fw.folder) || (S.config && S.config.frameworkFolder) || "");
+  var ref = driveRef(link);
+  if (!ref || ref.kind !== "folder") { toast("Хавтасны линк тавина уу (drive.google.com/drive/folders/…)", true); return; }
+  Promise.all([useCap("mcp")]).then(function (caps) {
+    var mcp = caps[0];
+    if (!mcp) { toast("Google Drive холболт алга — claude.ai дотроос нээж ажиллуулна уу", true); return; }
+    S.fwBusy = true; S.fwProg = "Хавтасны баримтуудыг уншиж байна…"; render();
+    listDriveFolder(mcp, ref.id, 0).then(function (files) {
+      if (!files.length) throw new Error("Хавтсанд уншиж болох баримт олдсонгүй");
+      var enriched = files.map(function (f) {
+        var m = fwMeta(f.name);
+        return { id: f.id, title: f.name, mime: f.mime, modified: f.modified,
+          kind: m.kind, kindTitle: m.kindTitle, version: m.version, date: m.date };
+      }).sort(function (a2, b2) { return (a2.kind + a2.title) < (b2.kind + b2.title) ? -1 : 1; });
+      A.setFramework({ folder: link, files: enriched, ts: new Date().toISOString(), byName: U(S.p).name });
+    }).catch(function (e) {
+      toast("Хүрээ ачаалахад алдаа: " + ((e && (e.message || e.code)) || "алдаа"), true);
+    }).finally(function () { S.fwBusy = false; S.fwProg = null; render(); });
+  });
 }
 
 var DC_READABLE = /document|spreadsheet|presentation|pdf|wordprocessingml|msword|text\//;
@@ -100,7 +253,13 @@ function runDocCheck() {
       if (!readable.length)
         throw new Error("Нэг ч баримт уншигдсангүй: " + docs.map(function (x) { return x.name + " (" + x.err + ")"; }).join("; "));
       S.dcProg = "EOM v5.0 шалгуурт тулгаж байна…"; render();
-      return sample.json(eomPrompt(readable), { modelTier: "default", cache: false }).then(function (out) {
+      return sample.json(eomPrompt(readable) +
+        "\n\n=== ГАЗРЫН БАРИМТ БИЧГИЙН ХҮРЭЭ (Drive бүртгэл — зөвхөн нэр, код, хувилбар) ===\n" +
+        fwIndexText() +
+        "\n\nНЭМЭЛТ ДААЛГАВАР: EOM-ийн хэлбэрийн шалгуураас гадна дээрх хүрээтэй тулга — " +
+        "дурдсан холбоос баримтууд бүртгэлд байгаа эсэх, хувилбарын зөрүү, давхардал, зөрчил. " +
+        "Эдгээрийг issues дотор crit=\"FRAMEWORK\" гэж тэмдэглэ.",
+        { modelTier: "default", cache: false }).then(function (out) {
         var norm = normEom(out);
         norm.ts = new Date().toISOString();
         norm.unread = docs.filter(function (x) { return !x.text; }).map(function (x) { return x.name + " (" + x.err + ")"; });
@@ -307,6 +466,8 @@ document.addEventListener("click", function (ev) {
       case "checkinAi": askCheckinAi(); break;
       case "eomCheck": runEomCheck(S.workId); break;
       case "docCheck": runDocCheck(); break;
+      case "loadFw": loadFramework(); break;
+      case "docAudit": runDocAudit(S.workId); break;
       case "eomManual": A.recordEomManual(S.workId, fval(t, "emnote")); break;
       case "newWork": S.tab = "new"; render(); window.scrollTo(0, 0); break;
       case "createWork":

@@ -50,7 +50,8 @@ for w in work:
 seed = {
     "meta": {"code": D["quarter"]["code"], "start": D["quarter"]["start_date"],
              "end": D["quarter"]["end_date"], "status": "ACTIVE", "closure": None},
-    "config": {"depts": [
+    "config": {"frameworkFolder": "https://drive.google.com/drive/folders/1ImPU6zw_NerVxy2CC7Vk_iNx8WF6EK1u",
+               "depts": [
         {"code": "IPPDD", "name": "Investment Product & Process Development (ХОБПХГ)"},
         {"code": "ISCMD", "name": "Investment Sales & Client Management (ХОБХУГ)"},
     ]},

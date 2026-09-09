@@ -5,6 +5,7 @@
 function U(id) { return S.users[id] || { id: id, name: id, role: "", dept: "" }; }
 function isDirector() { return S.p && (U(S.p).role === "Захирал" || isCio()); }
 function isCio() { return S.p && U(S.p).role.indexOf("CIO") >= 0; }
+function isBoss() { return S.p && isBossRole(U(S.p).role); }
 /* Хүлээн авагч зөвхөн газрын захирал (эсвэл CIO) байх дүрэм */
 function isBossRole(r) { return r === "Захирал" || (r || "").indexOf("CIO") >= 0; }
 var TODAY = new Date().toISOString().slice(0, 10);
@@ -17,7 +18,8 @@ var S = {
   deptFilter: "ALL",
   tab: "home", workId: null, ai: [], aiBusy: false, chatOpen: false, checkinAi: null,
   eomBusy: false, eomWid: null, eomProg: null,
-  dcLinks: "", dcBusy: false, dcProg: null, dcResult: null
+  dcLinks: "", dcBusy: false, dcProg: null, dcResult: null,
+  fw: null, fwBusy: false, fwProg: null, auditBusy: false, auditWid: null, auditProg: null
 };
 
 function loadSession() {
@@ -134,6 +136,17 @@ function saveUser(u) {
   S.users[u.id] = u; renderShell(); render();
   if (S.live) S.db.doc("users/" + u.id).set(u).catch(function (e) { toast("Хадгалахад алдаа: " + e.message, true); });
 }
+function saveFramework() {
+  render();
+  if (S.live) S.db.doc("meta/framework").set(S.fw).catch(function (e) { toast("Хадгалахад алдаа: " + e.message, true); });
+}
+function fwIndexText() {
+  if (!S.fw || !(S.fw.files || []).length) return "(хүрээний бүртгэл ачаалагдаагүй)";
+  return S.fw.files.map(function (f) {
+    return "- " + f.title + " [" + f.kind + (f.version ? " v" + f.version : "") + (f.date ? " · " + f.date : "") + "]";
+  }).join("\n");
+}
+
 function saveConfig() {
   render();
   if (S.live) S.db.doc("meta/config").set(S.config).catch(function (e) { toast("Хадгалахад алдаа: " + e.message, true); });
@@ -173,6 +186,9 @@ function connectDb() {
     });
     db.doc("meta/config").onSnapshot(function (d) {
       if (d.exists) { S.config = d.data(); render(); }
+    });
+    db.doc("meta/framework").onSnapshot(function (d) {
+      if (d.exists) { S.fw = d.data(); render(); }
     });
   }).catch(function () { setConn(false); });
 }
@@ -477,6 +493,17 @@ var A = {
     w.eomManual = { by: S.p, byName: me().name, role: U(S.p).role,
       note: (note || "").trim() || null, ts: now(), sig: eomSig(w) };
     saveWork(w, "EOM v5.0 нийцлийг хүнээр хянаж баталсан — " + me().name + " (" + U(S.p).role + ")");
+  },
+  setFramework: function (fw) {
+    must(isBoss() || S.p, "Нэвтэрсэн байх шаардлагатай");
+    S.fw = fw; saveFramework();
+    toast("Хүрээний бүртгэл шинэчлэгдлээ — " + (fw.files || []).length + " баримт");
+  },
+  recordDocAudit: function (id, audit) {
+    var w = W(id);
+    w.docAudit = audit;
+    saveWork(w, "Ажил ↔ баримтын агуулгын тулгалт: " + audit.result +
+      " (" + (audit.reqs || []).length + " шаардлага, " + (audit.docs || []).length + " баримт)");
   },
   recordEomCheck: function (id, check) {
     var w = W(id);

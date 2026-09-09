@@ -26,6 +26,28 @@ var EOM_CRITERIA = [
   { id: "RISK",    t: "Эрсдэл/нийцэл: Classification (Internal/Confidential), эскалацийн зам, PII/PDP хамрах бол хязгаар", ref: "EOM §2.9 · Three Lines of Defense" },
   { id: "LOG",     t: "Change Log: хувилбар бүрийн огноо, өөрчлөлт, үндэслэл, зохиогч", ref: "EOM §2.4 audit-readiness" }
 ];
+/* Хүрээний (framework) баримтын нэрээс төрөл, хувилбар, огноог тодорхойлно.
+   Жишээ: IPPDD_Investement_Product_Governance_policy_2026-08-05_v5.0 */
+var FW_KINDS = [
+  { k: "POL", re: /policy|бодлого|governance/i, t: "Бодлого / Policy" },
+  { k: "STD", re: /standard|стандарт/i, t: "Стандарт / Standard" },
+  { k: "REG", re: /register|inventory|masterdata|бүртгэл/i, t: "Бүртгэл / Register" },
+  { k: "RPT", re: /report|тайлан/i, t: "Тайлан / Report" },
+  { k: "PCK", re: /package|_pack|_set|багц/i, t: "Багц / Package" },
+  { k: "PLB", re: /playbook|guide|handbook|гарын авлага/i, t: "Гарын авлага / Playbook" },
+  { k: "PRO", re: /procedure|process|журам|процесс/i, t: "Журам / Procedure" }
+];
+function fwMeta(title) {
+  var t = String(title || "");
+  var ver = (/[_ \-]v(\d+\.\d+)/i.exec(t) || [])[1] || null;
+  var date = (/(\d{4}-\d{2}-\d{2})/.exec(t) || [])[1] || null;
+  var kind = "DOC", kindT = "Бусад";
+  for (var i = 0; i < FW_KINDS.length; i++) {
+    if (FW_KINDS[i].re.test(t)) { kind = FW_KINDS[i].k; kindT = FW_KINDS[i].t; break; }
+  }
+  return { kind: kind, kindTitle: kindT, version: ver, date: date };
+}
+
 /* Drive линкийг файл/хавтас болгож задлана. Зөвхөн drive/docs.google.com. */
 function driveRef(url) {
   var u = String(url || "").trim();
@@ -212,5 +234,6 @@ function evaluateGate(w, today) {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { PROFILES: PROFILES, profileOf: profileOf, TRANSITIONS: TRANSITIONS,
     canGo: canGo, closableFrom: closableFrom, evaluateGate: evaluateGate, metricOk: metricOk,
-    eomSig: eomSig, EOM_CRITERIA: EOM_CRITERIA, driveRef: driveRef };
+    eomSig: eomSig, EOM_CRITERIA: EOM_CRITERIA, driveRef: driveRef,
+    fwMeta: fwMeta, FW_KINDS: FW_KINDS };
 }
