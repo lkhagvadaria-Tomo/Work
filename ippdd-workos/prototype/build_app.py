@@ -5,6 +5,7 @@ from pathlib import Path
 
 BASE = Path(__file__).parent
 D = json.load(open(BASE / "demo_data.json"))
+SPRITE = (BASE / "logo_sprite.html").read_text().strip()
 
 # ── SEED: artifact-db shape, generated from the real exported dataset ────────
 krs = []
@@ -64,9 +65,10 @@ seed = {
 }
 
 body = f"""
+{SPRITE}
 <div id="login" hidden>
   <div class="login-brand">
-    <div class="lb-top"><div class="mark">N</div>
+    <div class="lb-top"><div class="mark"><svg class="lg"><use href="#nfgMark"/></svg></div>
       <div><div class="w1">Нэткапитал Санхүүгийн Групп</div>
       <div class="w2">IPPDD · Investment Product &amp; Process Development</div></div></div>
     <div class="lb-mid">
@@ -99,7 +101,7 @@ body = f"""
 
 <div id="app" hidden>
   <aside id="sideNav">
-    <div class="sn-brand"><div class="logo2">N</div>
+    <div class="sn-brand"><div class="logo2"><svg class="lg"><use href="#nfgMark"/></svg></div>
       <div><b>IPPDD WorkOS</b><span>Netcapital FG</span></div></div>
     <nav class="views" role="tablist" aria-label="Цэс">
       <button role="tab" data-tab="home" aria-selected="true">Нүүр</button>
@@ -107,6 +109,7 @@ body = f"""
       <button role="tab" data-tab="rev" aria-selected="false">Хяналт <span class="cnt" hidden></span></button>
       <button role="tab" data-tab="app" aria-selected="false">Батлал <span class="cnt" hidden></span></button>
       <button role="tab" data-tab="checkin" aria-selected="false">Check-in</button>
+      <button role="tab" data-tab="process" aria-selected="false">Процесс</button>
       <button role="tab" data-tab="report" aria-selected="false">Тайлан</button>
       <button role="tab" data-tab="admin" aria-selected="false" id="navAdmin" hidden>Админ</button>
     </nav>

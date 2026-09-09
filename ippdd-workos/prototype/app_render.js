@@ -150,6 +150,8 @@ function vWorkDetail(w) {
     '</b> · Төрөл: <b>' + esc(w.type) + '</b> · Хугацаа: <b class="' +
     (w.status !== "CLOSED" && w.deadline && w.deadline < TODAY ? "late" : "") + '">' + esc(w.deadline || "—") + "</b></p>" +
     (w.dod ? '<p class="sub" style="margin-top:-8px"><b>DoD:</b> ' + esc(w.dod) + "</p>" : "") +
+    vFlowBar(w) +
+    '<p class="sub" style="margin:-6px 0 10px;font-size:11.5px">Хянагч агуулгыг шалгана · захирал эрх мэдлээр батална · CIO хүлээн зөвшөөрнө · гейт бүрэн бүтэн байдлыг шалгана. Дэлгэрэнгүй: «Процесс» цэс.</p>' +
     '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">' + actionButtons(w) + "</div>";
 
   // sign-off panel
@@ -412,6 +414,117 @@ function vWorkDetail(w) {
   return html;
 }
 
+/* Макро процессын 5 үе шат — «хэн юу хийх» нь хаана байгааг харуулна */
+function flowOf(w) {
+  var st = chainOf(w), p = profileOf(w);
+  var nRev = p.reviews.length, iRev = p.selfqc ? 1 : 0;
+  var g = st.slice(iRev + nRev); // батлал…, CIO, гейт, sign-off, хүлээлгэх, хүлээн авалт
+  var nApp = p.approvals.length;
+  function grp(a2, b2) { return st.slice(a2, b2); }
+  var phases = [
+    { n: "1", t: "Боловсруулах", w: "Эзэмшигч — баримт, нотолгоо, Self QC",
+      steps: p.selfqc ? grp(0, 1) : [] },
+    { n: "2", t: "Хяналт", w: "Хянагч — агуулга, DoD-д нийцлийг шалгана",
+      steps: grp(iRev, iRev + nRev) },
+    { n: "3", t: "Батлал", w: "Газрын захирал → CIO — эрх мэдлээр батална",
+      steps: st.slice(iRev + nRev, iRev + nRev + nApp + 1) },
+    { n: "4", t: "Хаалт", w: "Гейт G1–G9 + захирлын sign-off",
+      steps: st.slice(iRev + nRev + nApp + 1, st.length - 2) },
+    { n: "5", t: "Хүлээлцэх", w: "Хүлээн авагч газрын захирал баталгаажуулна",
+      steps: st.slice(st.length - 2) }
+  ];
+  var firstOpen = -1;
+  phases.forEach(function (ph, i) {
+    ph.done = ph.steps.length > 0 && ph.steps.every(function (x) { return x.done; });
+    ph.bad = ph.steps.some(function (x) { return x.fail; });
+    if (!ph.done && firstOpen < 0) firstOpen = i;
+  });
+  if (firstOpen >= 0) phases[firstOpen].now = !phases[firstOpen].bad;
+  return phases;
+}
+
+function vFlowBar(w) {
+  return '<div class="flow">' + flowOf(w).map(function (ph) {
+    var doneN = ph.steps.filter(function (x) { return x.done; }).length;
+    return '<div class="ph ' + (ph.done ? "done" : ph.bad ? "bad" : ph.now ? "now" : "") + '">' +
+      '<div class="pn">ҮЕ ШАТ ' + ph.n + (ph.steps.length ? " · " + doneN + "/" + ph.steps.length : "") + "</div>" +
+      '<div class="pt">' + esc(ph.t) + (ph.done ? " ✓" : ph.bad ? " ✕" : "") + "</div>" +
+      '<div class="pw">' + esc(ph.w) + "</div></div>";
+  }).join("") + "</div>";
+}
+
+function vProcess() {
+  var roles = [
+    { r: "Эзэмшигч (ажилтан)", who: "Ажлыг хийж, баримтжуулдаг хүн",
+      d: [["Юу хийнэ", "Deliverable бүрийг Drive линкээр холбож «эцсийн» болгоно, нотолгоо бүртгэнэ, Self QC хийж хяналтад илгээнэ."],
+          ["Ямар шийдвэр", "Ажлаа хаалтад ДЭВШҮҮЛНЭ (SUBMIT FOR CLOSURE) — өөрөө хаахгүй."],
+          ["Хийж болохгүй", "Өөрийн ажлыг хянах, батлах, гарын үсэг зурах, өөрийн нотолгоог баталгаажуулах."]] },
+    { r: "Хянагч (reviewer)", who: "Агуулгын шалгагч — жишээ нь Б.Онон",
+      d: [["Юу шалгана", "АГУУЛГА: DoD-ийн бүрэлдэхүүн бүрдсэн эсэх, баримтын чанар, дотоод зөрчил, нотолгооны бодит байдал."],
+          ["Ямар шийдвэр", "PASS (агуулга бэлэн) · RETURN (засаад ир) · REJECT (үндсэндээ буруу). Тайлбар заавал."],
+          ["Хийж болохгүй", "Эрх мэдлээр батлах, ажил хаах. Хяналт нь «чанарын» шат, «эрхийн» шат биш."]] },
+    { r: "Батлагч (газрын захирал)", who: "О.Мөнх-Эрдэнэ (ХОБПХГ) · Өлзийбаяр Сандагдорж (ХОБХУГ)",
+      d: [["Юу шалгана", "ЭРХ МЭДЭЛ: хянагдсан эцсийн хувилбарыг байгууллагын нэрийн өмнөөс батлах эсэх, эрсдэл, зардал, бодлогын нийцэл."],
+          ["Ямар шийдвэр", "APPROVE (хувилбарын дугаартай) · RETURN · REJECT. Батлал нь тодорхой хувилбарт (v1.0) хамаарна."],
+          ["Онцлог", "Хянагчийн PASS байхгүйгээр батлал гейтэд тоологдохгүй — дараалал: хяналт → батлал."]] },
+    { r: "CIO (Х.Нургүл)", who: "Хөрөнгө оруулалт хариуцсан ГЗ-ын орлогч",
+      d: [["Юу шалгана", "Газраас гарсан ажил, баримт бичгийг хүлээн авч зөвшөөрөх эсэх (G9)."],
+          ["Ямар шийдвэр", "APPROVE + sign-off · RETURN. Амаар зөвшөөрөл хүчингүй."],
+          ["Онцлог", "Захирлын батлалын ДАРАА явна — эцсийн засаглалын хүлээн зөвшөөрөлт."]] },
+    { r: "Хаалтын sign-off", who: "Захирал / CIO (эзэмшигчээс өөр хүн)",
+      d: [["Нөхцөл", "Гейт G1–G9 шинээр тооцогдож FAIL биш байх ёстой — систем үүнийг дахин шалгаж түгжинэ."],
+          ["Ямар шийдвэр", "SIGN OFF → ажил ХААГДСАН. RETURN → хаалт эргэж, ажил нээлттэй хэвээр."],
+          ["Онцлог", "«Батлагдсан» ≠ «хаагдсан». Батлал бол баримтад, хаалт бол бүх шалгуурт."]] },
+    { r: "Хүлээн авагч захирал", who: "Хүлээлгэн өгсөн газрын захирал",
+      d: [["Юу шалгана", "Хүлээлгэн өгсөн багц бүрэн эсэх, өөрийн газарт хэрэгжүүлэхэд хүрэлцэх эсэх."],
+          ["Ямар шийдвэр", "«Хүлээн авснаа баталгаажуулах» · «Буцаах» (тайлбартай)."],
+          ["Онцлог", "Зөвхөн нэрлэгдсэн хүлээн авагч захирал өөрөө — өөр захирал, CIO ч орлохгүй."]] }
+  ];
+  var gates = [
+    ["G1", "Deliverable", "Шаардлага тус бүрд эцсийн (FINAL) хувилбарын линк холбогдсон", "Эзэмшигч"],
+    ["G2", "Self QC", "Эзэмшигч өөрөө шалгаж PASS бүртгэсэн", "Эзэмшигч"],
+    ["G3", "Review", "Шаардлагатай төрөл бүрд хянагчийн PASS", "Хянагч"],
+    ["G4", "Батлал", "Захирлын APPROVE — хувилбарын дугаартай", "Захирал"],
+    ["G5", "Хэрэгжилт", "Шаардлагатай бол production/pilot LIVE бүртгэл", "Эзэмшигч"],
+    ["G6", "Метрик", "Зорилтот үзүүлэлт хэмжигдэж PASS шийдвэр гарсан", "Эзэмшигч + хянагч"],
+    ["G7", "Нотолгоо", "Хамгийн багадаа шаардагдах нотолгоо холбогдсон", "Эзэмшигч"],
+    ["G8", "EOM нийцэл", "Баримт EOM v5.0-ийн стандартад нийцсэн (AI шалгалт эсвэл захирлын хяналт)", "AI зөвлөх + захирал"],
+    ["G9", "CIO зөвшөөрөлт", "CIO ажил, баримтыг хүлээн авч APPROVE + sign-off", "CIO"]
+  ];
+  var sample = deptWorks()[0];
+  return "<h1>Процесс — хэн юу хийдэг, хэрхэн үнэлдэг</h1>" +
+    '<p class="sub">Ажил бүр доорх 5 үе шатыг дараалан дамждаг. Үе шат бүрд өөр хүн, өөр төрлийн шийдвэр гаргана: ' +
+    "<b>хянагч агуулгыг</b>, <b>захирал эрх мэдлийг</b>, <b>CIO хүлээн зөвшөөрөлтийг</b>, <b>гейт бүрэн бүтэн байдлыг</b> хардаг.</p>" +
+    (sample ? vFlowBar(sample) : "") +
+    '<section class="card"><header class="card-h"><h3>Хянагч ба Батлагч — юугаараа ялгаатай вэ?</h3></header><div class="card-b">' +
+    '<div class="roles">' +
+    '<div class="role-c"><div class="rw">Хяналт — чанарын шат</div><h4>Хянагч «зөв хийгдсэн үү?»</h4>' +
+    '<dl><dt>Асуулт</dt><dd>Агуулга DoD-д нийцэж байна уу? Баримт бүрэн, зөрчилгүй, нотолгоотой уу?</dd>' +
+    "<dt>Шийдвэр</dt><dd>PASS / RETURN / REJECT — засварын заавартай.</dd>" +
+    "<dt>Хамрах хүрээ</dt><dd>Ажлын агуулга, чанар, бүрэн бүтэн байдал.</dd></dl></div>" +
+    '<div class="role-c"><div class="rw">Батлал — эрхийн шат</div><h4>Батлагч «байгууллагын нэрийн өмнөөс батлах уу?»</h4>' +
+    '<dl><dt>Асуулт</dt><dd>Хянагдсан эцсийн хувилбарыг батлах эрсдэл, бодлогын нийцэл хангалттай уу?</dd>' +
+    "<dt>Шийдвэр</dt><dd>APPROVE (хувилбарт хамаарна) / RETURN / REJECT.</dd>" +
+    "<dt>Хамрах хүрээ</dt><dd>Эрх мэдэл, хариуцлага — гарын үсэг зурах шийдвэр.</dd></dl></div></div>" +
+    '<p class="note" style="margin-top:12px"><b>Дараалал заавал:</b> Self QC → хянагчийн PASS → захирлын APPROVE → CIO зөвшөөрөлт → гейт → sign-off. ' +
+    "Хянагчийн PASS-гүй батлал гейтэд тоологдохгүй; батлалгүй sign-off боломжгүй. Ижил хүн эзэмшигч бөгөөд хянагч/батлагч байж болохгүй (үүргийн тусгаарлалт).</p>" +
+    "</div></section>" +
+    '<section class="card"><header class="card-h"><h3>Үүрэг бүрийн заавар</h3></header><div class="card-b"><div class="roles">' +
+    roles.map(function (r) {
+      return '<div class="role-c"><div class="rw">' + esc(r.who) + '</div><h4>' + esc(r.r) + "</h4><dl>" +
+        r.d.map(function (x) { return "<dt>" + esc(x[0]) + "</dt><dd>" + esc(x[1]) + "</dd>"; }).join("") + "</dl></div>";
+    }).join("") + "</div></div></section>" +
+    '<section class="card"><header class="card-h"><h3>Хаалтын гейт G1–G9 — юу шалгагддаг</h3></header><div class="card-b">' +
+    '<div style="overflow-x:auto"><table><thead><tr><th>Гейт</th><th>Нэр</th><th>Хангах нөхцөл</th><th>Хэн хангана</th></tr></thead><tbody>' +
+    gates.map(function (g2) {
+      return "<tr><td><b class='mono'>" + esc(g2[0]) + "</b></td><td>" + esc(g2[1]) + "</td><td>" +
+        esc(g2[2]) + "</td><td>" + esc(g2[3]) + "</td></tr>";
+    }).join("") + "</tbody></table></div>" +
+    '<p class="note" style="margin-top:12px"><b>Хэрхэн үнэлж дүгнэх:</b> «Check-in» хэсэг ажил бүрийг гейтээр шинээр тооцож ' +
+    "<b>Бүрэн</b> (гейт + sign-off + хүлээн авалт) · <b>Хаахад бэлэн</b> (гейт FAIL биш) · <b>Дутагдалтай</b> (улаан дутагдалтай) гэж гаргана. " +
+    "Улаан дутагдал бүрд «яг юу хийх» заавар хамт харагдана.</p></div></section>";
+}
+
 function isBoss() { return S.p && (U(S.p).role === "Захирал" || U(S.p).role.indexOf("CIO") >= 0); }
 
 function chainOf(w) {
@@ -425,13 +538,15 @@ function chainOf(w) {
   }
   p.reviews.forEach(function (t) {
     var rv = (w.reviews || []).find(function (x) { return x.type === t && x.decision === "PASS"; });
-    step(t + " review", rv, rv ? "<b>" + esc(rv.by) + "</b> PASS · " + fmt(rv.decidedTs || rv.ts) : "хянагчийн PASS хүлээгдэж байна");
+    step(t + " review — агуулгын хяналт (хянагч)", rv,
+      rv ? "<b>" + esc(rv.by) + "</b> PASS · " + fmt(rv.decidedTs || rv.ts)
+         : "хянагч " + esc(U(w.reviewer).name) + " агуулга, DoD-ийн нийцлийг шалгаж PASS өгнө");
   });
   p.approvals.forEach(function (t) {
     var ap = (w.approvals || []).find(function (x) { return x.type === t && x.decision === "APPROVE"; });
-    step("Батлал (" + t + ")", ap,
+    step("Батлал (" + t + ") — эрх мэдлийн шийдвэр (захирал)", ap,
       ap ? "<b>" + esc(ap.by) + "</b> APPROVE" + (ap.version ? " · хувилбар " + esc(ap.version) : "") + " · " + fmt(ap.decidedTs || ap.ts)
-         : "батлагчийн шийдвэр хүлээгдэж байна");
+         : "газрын захирал эцсийн хувилбарыг байгууллагын нэрийн өмнөөс батална");
   });
   var cs0 = w.cioSign, csOk = cs0 && cs0.decision === "APPROVE";
   step("CIO хүлээн зөвшөөрөлт — Х.Нургүл", csOk,
@@ -789,7 +904,8 @@ function render() {
     : S.tab === "rev" ? vQueue("rev")
     : S.tab === "app" ? vQueue("app")
     : S.tab === "report" ? vReport()
-    : S.tab === "checkin" ? vCheckin()
+    : S.tab === "process" ? vProcess() :
+    S.tab === "checkin" ? vCheckin()
     : S.tab === "new" ? vNew()
     : S.tab === "admin" ? vAdmin() : vHome();
   el.innerHTML = html;
