@@ -74,6 +74,10 @@ function toast(msg, err) {
   document.body.appendChild(t);
   setTimeout(function () { t.remove(); }, err ? 5200 : 3200);
 }
+/* Зөвхөн Drive/Docs https линкийг href-д зөвшөөрнө; бусдыг null (текстээр харуулна).
+   Хамтын сан нь итгэмжлэгдээгүй тул render үед ДАХИН шүүнэ (javascript:, data: г.м.). */
+function safeUrl(u) { return isDriveUrl(u) ? u : null; }
+
 function isDriveUrl(u) {
   try { var x = new URL(u); return x.protocol === "https:" &&
     (x.hostname === "drive.google.com" || x.hostname === "docs.google.com"); }
@@ -111,14 +115,47 @@ function audit(w, action) {
   w.audit.unshift({ ts: now(), by: me().name, action: action });
   if (w.audit.length > 40) w.audit.length = 40;
 }
+var WORK_ARRAYS = ["deliverables", "evidence", "reviews", "approvals", "impl", "endorsements"];
+/* Өөр хэрэглэгчийн зэрэг нэмсэн бичлэгийг үл дарах — id-гаар нэгтгэнэ.
+   Транзакц биш (хамтын сан last-writer-wins) тул зөрчлийг БАГАСГАХ арга. */
+function mergeWork(remote, mine) {
+  if (!remote) return mine;
+  WORK_ARRAYS.forEach(function (k) {
+    var a = remote[k] || [], b = mine[k] || [];
+    var ids = {}, out = [];
+    b.forEach(function (x) { var key = x.id || x.by || JSON.stringify(x); ids[key] = 1; out.push(x); });
+    a.forEach(function (x) { var key = x.id || x.by || JSON.stringify(x); if (!ids[key]) out.push(x); });
+    mine[k] = out;
+  });
+  var ra = remote.audit || [], ma = mine.audit || [], seen = {};
+  mine.audit = ma.concat(ra).filter(function (x) {
+    var key = x.ts + "|" + x.by + "|" + x.action;
+    if (seen[key]) return false; seen[key] = 1; return true;
+  }).sort(function (x, y) { return x.ts < y.ts ? 1 : -1; }).slice(0, 60);
+  return mine;
+}
+
+function writeFail(e) {
+  var code = (e && (e.code || e.message)) || "";
+  if (/permission|denied|not_writer|not_granted|forbidden/i.test(String(code)))
+    toast("Танд бичих эрх байхгүй — линк зөвхөн харах эрхээр хуваалцагдсан байна", true);
+  else toast("Хадгалахад алдаа: " + (e && e.message ? e.message : code), true);
+}
+
 function saveWork(w, action) {
   if (action) audit(w, action);
   w.updatedAt = now();
   S.works[w.id] = w;
   render();
-  if (S.live) S.db.doc("work/" + w.id).set(w).catch(function (e) {
-    toast("Хадгалахад алдаа: " + e.message, true);
-  });
+  if (!S.live) return;
+  var ref = S.db.doc("work/" + w.id);
+  ref.get().then(function (d) {
+    var merged = mergeWork(d && d.exists ? d.data() : null, w);
+    S.works[merged.id] = merged;
+    return ref.set(merged);
+  }).catch(function () {
+    return ref.set(w); // унших боломжгүй бол хуучин байдлаараа бичнэ
+  }).catch(writeFail);
 }
 function saveKr(k) {
   S.krs[k.id] = k; render();
@@ -138,7 +175,7 @@ function saveUser(u) {
 }
 function saveFramework() {
   render();
-  if (S.live) S.db.doc("meta/framework").set(S.fw).catch(function (e) { toast("Хадгалахад алдаа: " + e.message, true); });
+  if (S.live) S.db.doc("meta/framework").set(S.fw).catch(writeFail);
 }
 function fwIndexText() {
   if (!S.fw || !(S.fw.files || []).length) return "(хүрээний бүртгэл ачаалагдаагүй)";
@@ -149,7 +186,7 @@ function fwIndexText() {
 
 function saveConfig() {
   render();
-  if (S.live) S.db.doc("meta/config").set(S.config).catch(function (e) { toast("Хадгалахад алдаа: " + e.message, true); });
+  if (S.live) S.db.doc("meta/config").set(S.config).catch(writeFail);
 }
 function useCap(name) {
   try { return (typeof claude !== "undefined" && claude && claude.use) ? claude.use(name) : Promise.resolve(null); }

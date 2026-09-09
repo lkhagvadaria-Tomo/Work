@@ -311,6 +311,9 @@ function vWorkDetail(w) {
     '<p class="sub" style="margin:0 0 8px">Газрын захирал, CIO өөрийн бүртгэлээрээ нэвтэрч ажил, баримтыг ' +
     "зөвшөөрснөө энд тэмдэглэнэ. Албан ёсны хаалт нь G4 батлал, G9 CIO зөвшөөрөлт, sign-off-оор гарна — " +
     "энэ бүртгэл нь хэн, хэзээ зөвшөөрснийг нэг дор харуулах ил тод лог.</p>" +
+    '<p class="note" style="margin:0 0 10px"><b>Прототипийн хязгаар:</b> нэвтрэлт нь бүртгэлээ өөрөө ' +
+    "сонгох замаар явдаг тул эдгээр тэмдэглэл хувь хүний нэвтрэлтээр баталгаажаагүй. Хууль зүйн хүчинтэй " +
+    "батламж шаардвал Google Workspace нэвтрэлттэй албан ёсны системийг ашиглана.</p>" +
     '<ul class="list">' + bossAll.map(function (u) {
       var e = ends.find(function (x) { return x.by === u.id; });
       var d2 = (S.config.depts || []).find(function (x) { return x.code === u.dept; });
@@ -346,7 +349,10 @@ function vWorkDetail(w) {
         (i + 1) + ". " + esc(r) + ' <em class="req" style="color:var(--fail-ink);font-style:normal">*</em></span>' +
         gbadge(fin ? "PASS" : dels.length ? "WARNING" : "FAIL") + "</div>";
       dels.forEach(function (d) {
-        inner += '<p><span class="mono">' + esc(d.version) + "</span> <a href=\"" + esc(d.url) + '" target="_blank" rel="noreferrer">' + esc(d.name) + "</a>" +
+        var du = safeUrl(d.url);
+        inner += '<p><span class="mono">' + esc(d.version) + "</span> " +
+          (du ? '<a href="' + esc(du) + '" target="_blank" rel="noreferrer">' + esc(d.name) + "</a>"
+              : "<b>" + esc(d.name) + '</b> <span class="badge badge-warn">линк буруу</span>') +
           (d.final ? ' <span class="badge badge-pass">FINAL</span>'
             : (S.p === w.owner && w.status !== "CLOSED" ? ' <button class="btn sm2 sec" data-final="' + esc(d.id) + '">эцсийн болгох</button>' : "")) + "</p>";
       });
@@ -372,7 +378,8 @@ function vWorkDetail(w) {
   else html += '<ul class="list">' + w.evidence.map(function (ev) {
     return '<li class="block"><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
       '<span class="chip">' + esc(ev.type) + "</span> " +
-      (ev.url ? '<a href="' + esc(ev.url) + '" target="_blank" rel="noreferrer"><b>' + esc(ev.title) + "</b></a>" : "<b>" + esc(ev.title) + "</b>") +
+      (safeUrl(ev.url) ? '<a href="' + esc(safeUrl(ev.url)) + '" target="_blank" rel="noreferrer"><b>' + esc(ev.title) + "</b></a>"
+        : "<b>" + esc(ev.title) + "</b>" + (ev.url ? ' <span class="badge badge-warn">линк буруу</span>' : "")) +
       (ev.verified ? ' <span class="badge badge-pass">✓ баталгаажсан</span>' : ' <span class="badge badge-warn">баталгаажаагүй</span>') + "</div>" +
       '<p>' + esc(ev.byName) + " · " + fmt(ev.ts) +
       (!ev.verified && ev.by !== S.p && (S.p === w.reviewer || S.p === w.approver)
@@ -671,7 +678,7 @@ function chainOf(w) {
   var ho = w.handover;
   step("Хүлээлгэн өгөлт — газрын захиралд", ho,
     ho ? "<b>" + esc(ho.by) + "</b> → " + esc(ho.toName) + " · " + fmt(ho.ts) +
-      (ho.note ? "<br>" + esc(ho.note) : "") + (ho.url ? '<br><a href="' + esc(ho.url) + '" target="_blank" rel="noreferrer">багц линк</a>' : "")
+      (ho.note ? "<br>" + esc(ho.note) : "") + (safeUrl(ho.url) ? '<br><a href="' + esc(safeUrl(ho.url)) + '" target="_blank" rel="noreferrer">багц линк</a>' : "")
        : "хаагдсаны дараа эзэмшигч бүртгэнэ");
   var conf = ho && ho.status === "CONFIRMED";
   step("Хүлээн авалтын баталгаажуулалт — газрын захирал", conf,
@@ -1006,9 +1013,49 @@ function renderChat() {
   var drawer = document.getElementById("chatDrawer");
   if (drawer) drawer.hidden = !S.chatOpen;
 }
+/* Хамтын сангийн өөрчлөлт ирэхэд бичиж байсан оруулга, нээсэн хэсэг, focus
+   устахгүй байхыг хангана (олон хүн зэрэг ажиллахад өгөгдөл алдагдахгүй). */
+function grabFormState(el) {
+  var st = { vals: {}, open: {}, focus: null, sel: null };
+  el.querySelectorAll("[data-f]").forEach(function (f) {
+    st.vals[f.dataset.f] = f.type === "checkbox" ? f.checked : f.value;
+  });
+  el.querySelectorAll("details").forEach(function (d, i) {
+    var sum = d.querySelector("summary");
+    st.open[(sum ? sum.textContent.trim().slice(0, 40) : "") + "#" + i] = d.open;
+  });
+  var a = document.activeElement;
+  if (a && a.dataset && a.dataset.f && el.contains(a)) {
+    st.focus = a.dataset.f;
+    try { st.sel = [a.selectionStart, a.selectionEnd]; } catch (e) { st.sel = null; }
+  }
+  return st;
+}
+function restoreFormState(el, st) {
+  el.querySelectorAll("[data-f]").forEach(function (f) {
+    var v = st.vals[f.dataset.f];
+    if (v === undefined) return;
+    if (f.type === "checkbox") f.checked = !!v;
+    else if (f.value === "" || f.tagName === "SELECT") { if (v !== "") f.value = v; }
+  });
+  el.querySelectorAll("details").forEach(function (d, i) {
+    var sum = d.querySelector("summary");
+    var k = (sum ? sum.textContent.trim().slice(0, 40) : "") + "#" + i;
+    if (st.open[k]) d.open = true;
+  });
+  if (st.focus) {
+    var t = el.querySelector('[data-f="' + st.focus + '"]');
+    if (t) {
+      t.focus();
+      if (st.sel) { try { t.setSelectionRange(st.sel[0], st.sel[1]); } catch (e) {} }
+    }
+  }
+}
+
 function render() {
   var el = document.getElementById("app-main");
   if (!el || !S.p) { renderChat(); return; }
+  var keep = grabFormState(el);
   var w = S.workId && S.works[S.workId];
   var html = S.tab === "home" ? vHome()
     : S.tab === "okr" ? vOkr()
@@ -1022,6 +1069,7 @@ function render() {
     : S.tab === "new" ? vNew()
     : S.tab === "admin" ? vAdmin() : vHome();
   el.innerHTML = html;
+  restoreFormState(el, keep);
   document.querySelectorAll("nav [role=tab]").forEach(function (t) {
     t.setAttribute("aria-selected", String(t.dataset.tab === (S.tab === "work" ? "home" : S.tab)));
   });

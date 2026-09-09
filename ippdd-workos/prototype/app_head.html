@@ -162,9 +162,12 @@
   .sn-note{font-size:10px; color:var(--faint); line-height:1.5; padding:0 6px}
 
   @media (max-width:999px){
-    nav.views{position:fixed; left:0; right:0; bottom:0; z-index:46; flex-direction:row; justify-content:space-around;
+    nav.views{position:fixed; left:0; right:0; bottom:0; z-index:46; flex-direction:row; justify-content:flex-start;
+      overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
       border-top:1px solid var(--border); background:var(--surface); padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-    nav.views button{flex-direction:column; gap:3px; width:auto; padding:5px 9px; font-size:9.5px; border-radius:8px}
+    nav.views::-webkit-scrollbar{display:none}
+    nav.views button{flex:0 0 auto; flex-direction:column; gap:3px; width:auto; min-width:62px; padding:5px 9px;
+      font-size:9.5px; border-radius:8px; white-space:nowrap}
     nav.views button[aria-selected="true"]{background:none; box-shadow:none; color:var(--brand)}
     nav.views button .cnt{position:absolute; top:-2px; right:0; margin:0}
     #sideNav .sn-brand,#sideNav .sn-foot{display:none}
