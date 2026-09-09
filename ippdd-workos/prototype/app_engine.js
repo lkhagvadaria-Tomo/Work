@@ -26,6 +26,17 @@ var EOM_CRITERIA = [
   { id: "RISK",    t: "Эрсдэл/нийцэл: Classification (Internal/Confidential), эскалацийн зам, PII/PDP хамрах бол хязгаар", ref: "EOM §2.9 · Three Lines of Defense" },
   { id: "LOG",     t: "Change Log: хувилбар бүрийн огноо, өөрчлөлт, үндэслэл, зохиогч", ref: "EOM §2.4 audit-readiness" }
 ];
+/* Drive линкийг файл/хавтас болгож задлана. Зөвхөн drive/docs.google.com. */
+function driveRef(url) {
+  var u = String(url || "").trim();
+  if (!/^https:\/\/(drive|docs)\.google\.com\//.test(u)) return null;
+  var m = /\/folders\/([A-Za-z0-9_-]{10,})/.exec(u);
+  if (m) return { kind: "folder", id: m[1] };
+  m = /\/d\/([A-Za-z0-9_-]{10,})/.exec(u) || /[?&]id=([A-Za-z0-9_-]{10,})/.exec(u);
+  if (m) return { kind: "file", id: m[1] };
+  return null;
+}
+
 /* Эцсийн deliverable-уудын гарын үсэг — G8 шалгалт хуучирсныг илрүүлнэ */
 function eomSig(w) {
   return (w.deliverables || []).filter(function (d) { return d.final; })
@@ -201,5 +212,5 @@ function evaluateGate(w, today) {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { PROFILES: PROFILES, profileOf: profileOf, TRANSITIONS: TRANSITIONS,
     canGo: canGo, closableFrom: closableFrom, evaluateGate: evaluateGate, metricOk: metricOk,
-    eomSig: eomSig, EOM_CRITERIA: EOM_CRITERIA };
+    eomSig: eomSig, EOM_CRITERIA: EOM_CRITERIA, driveRef: driveRef };
 }

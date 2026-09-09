@@ -12,6 +12,107 @@ function fileIdOf(url) {
   return m ? m[1] : null;
 }
 
+/* EOM шалгуурын AI prompt — ажлын G8 болон бие даасан «Баримт шалгах» хоёулаа хэрэглэнэ */
+function eomPrompt(readable) {
+  return "Чи Netcapital EOM v5.0-ийн Document Governance & Register Steward (DGS) дүрийн ЗӨВЛӨХ шалгагч. " +
+    "Доорх баримт тус бүрийн агуулгыг EOM v5.0-ийн баримтын шаардлагад тулгаж үнэл.\n\nШАЛГУУР:\n" +
+    EOM_CRITERIA.map(function (c2) { return c2.id + " — " + c2.t + " (" + c2.ref + ")"; }).join("\n") +
+    "\n\nХАТУУ ДҮРЭМ: зөвхөн өгсөн текстээс дүгнэ — байхгүй зүйл бүү зохио; текст эхний 15000 тэмдэгтээр " +
+    "тасарсан байж болно, тасархайн цаадахыг таамаглахгүй (эргэлзвэл WARNING); чи зөвлөх (§2.5a A/S) — " +
+    "эцсийн шийдвэр хүнийх. Verdict дүрэм: заавал шаардлага (NAME, CTRL, OWNER, APPR; AI ашигласан бол AIGATE) " +
+    "дутуу → FAIL; зөвхөн сайжруулах зүйл → WARNING; бүрэн → PASS. overall = хамгийн муу verdict. " +
+    "issues-д шалгуурын ID-г crit талбарт тавьж, note-г монголоор товч, ажил хэрэгч бич (юуг хэрхэн засахыг).\n\n" +
+    "Хариу ЗӨВХӨН JSON: {\"overall\":\"PASS|WARNING|FAIL\",\"summary\":\"1-2 өгүүлбэр монголоор\"," +
+    "\"docs\":[{\"name\":\"...\",\"verdict\":\"PASS|WARNING|FAIL\",\"issues\":[{\"crit\":\"ID\",\"note\":\"...\"}]}]}\n\n" +
+    "=== БАРИМТУУД ===\n" +
+    readable.map(function (x) { return "--- " + x.name + " ---\n" + x.text; }).join("\n\n");
+}
+
+function normEom(out) {
+  out = out || {};
+  return {
+    result: out.overall === "PASS" ? "PASS" : out.overall === "WARNING" ? "WARNING" : "FAIL",
+    summary: String(out.summary || "").slice(0, 600),
+    docs: (Array.isArray(out.docs) ? out.docs : []).map(function (dd) {
+      return { name: String(dd.name || "").slice(0, 200),
+        verdict: dd.verdict === "PASS" ? "PASS" : dd.verdict === "WARNING" ? "WARNING" : "FAIL",
+        issues: (Array.isArray(dd.issues) ? dd.issues : []).slice(0, 12).map(function (i2) {
+          return { crit: String(i2.crit || "?").slice(0, 12), note: String(i2.note || "").slice(0, 300) };
+        }) };
+    })
+  };
+}
+
+var DC_READABLE = /document|spreadsheet|presentation|pdf|wordprocessingml|msword|text\//;
+
+/* Бие даасан шалгагч: Drive линк (файл эсвэл хавтас) → агуулга унших → EOM дүгнэлт */
+function runDocCheck() {
+  if (S.dcBusy) return;
+  var ta = document.querySelector('[data-f="dclinks"]');
+  S.dcLinks = ta ? ta.value : (S.dcLinks || "");
+  var refs = [], bad = [];
+  S.dcLinks.split(/[\s,]+/).filter(function (x) { return x.trim(); }).forEach(function (u) {
+    var ref = driveRef(u);
+    if (ref) refs.push(ref); else bad.push(u.slice(0, 60));
+  });
+  if (bad.length) { toast("Зөвшөөрөгдөөгүй линк: " + bad[0], true); return; }
+  if (!refs.length) { toast("Drive эсвэл Docs линк тавина уу", true); return; }
+  Promise.all([useCap("mcp"), useCap("sample")]).then(function (caps) {
+    var mcp = caps[0], sample = caps[1];
+    if (!sample) { toast("AI энэ орчинд боломжгүй байна", true); return; }
+    if (!mcp) { toast("Google Drive холболт алга — claude.ai дотроос нээж ажиллуулна уу", true); return; }
+    S.dcBusy = true; S.dcProg = "Хавтас, файлуудыг тодруулж байна…"; S.dcResult = null; render();
+    var files = [], chain = Promise.resolve();
+    refs.forEach(function (ref) {
+      chain = chain.then(function () {
+        if (ref.kind === "file") { files.push({ id: ref.id, name: "Баримт " + (files.length + 1) }); return; }
+        return mcp.callTool("Google Drive", "search_files",
+          { query: "parentId = '" + ref.id + "'", pageSize: 25, excludeContentSnippets: true }
+        ).then(function (res) {
+          var pl = res && res.payload;
+          if (typeof pl === "string") { try { pl = JSON.parse(pl); } catch (e) { pl = null; } }
+          ((pl && pl.files) || []).forEach(function (f) {
+            if (DC_READABLE.test(f.mimeType || "")) files.push({ id: f.id, name: f.title || f.name || f.id });
+          });
+        });
+      });
+    });
+    chain.then(function () {
+      if (!files.length) throw new Error("Уншиж болох баримт олдсонгүй (хавтас хоосон эсвэл эрх дутуу)");
+      files = files.slice(0, 8);
+      var docs = [], c2 = Promise.resolve();
+      files.forEach(function (f, i) {
+        c2 = c2.then(function () {
+          S.dcProg = "Уншиж байна (" + (i + 1) + "/" + files.length + "): " + f.name; render();
+          return mcp.callTool("Google Drive", "read_file_content", { fileId: f.id }).then(function (res) {
+            var pl = res && res.payload;
+            var txt = pl && typeof pl === "object" && typeof pl.fileContent === "string" ? pl.fileContent
+              : typeof pl === "string" ? pl : JSON.stringify(pl || "");
+            docs.push({ name: f.name, text: String(txt).slice(0, 15000), err: null });
+          }).catch(function (e2) {
+            docs.push({ name: f.name, text: null, err: (e2 && (e2.code || e2.message)) || "уншиж чадсангүй" });
+          });
+        });
+      });
+      return c2.then(function () { return docs; });
+    }).then(function (docs) {
+      var readable = docs.filter(function (x) { return x.text; });
+      if (!readable.length)
+        throw new Error("Нэг ч баримт уншигдсангүй: " + docs.map(function (x) { return x.name + " (" + x.err + ")"; }).join("; "));
+      S.dcProg = "EOM v5.0 шалгуурт тулгаж байна…"; render();
+      return sample.json(eomPrompt(readable), { modelTier: "default", cache: false }).then(function (out) {
+        var norm = normEom(out);
+        norm.ts = new Date().toISOString();
+        norm.unread = docs.filter(function (x) { return !x.text; }).map(function (x) { return x.name + " (" + x.err + ")"; });
+        S.dcResult = norm;
+        toast("EOM шалгалт: " + norm.result + " · " + readable.length + " баримт", norm.result !== "PASS");
+      });
+    }).catch(function (e) {
+      toast("Шалгалт амжилтгүй: " + ((e && (e.message || e.code)) || "алдаа"), true);
+    }).finally(function () { S.dcBusy = false; S.dcProg = null; render(); });
+  });
+}
+
 /* G8 — эцсийн deliverable бүрийг Drive-аас уншиж EOM v5.0 шалгуурт AI-аар тулгана.
    AI зөвлөх (§2.5a) — үр дүн нь гейтийн орц болохоос биш хүний sign-off-ыг орлохгүй. */
 function runEomCheck(wid) {
@@ -45,36 +146,14 @@ function runEomCheck(wid) {
       if (!readable.length)
         throw new Error("Нэг ч баримт уншигдсангүй: " + docs.map(function (x) { return x.name + " (" + x.err + ")"; }).join("; "));
       S.eomProg = "EOM v5.0 шалгуурт тулгаж байна…"; render();
-      var sys = "Чи Netcapital EOM v5.0-ийн Document Governance & Register Steward (DGS) дүрийн ЗӨВЛӨХ шалгагч. " +
-        "Доорх баримт тус бүрийн агуулгыг EOM v5.0-ийн баримтын шаардлагад тулгаж үнэл.\n\nШАЛГУУР:\n" +
-        EOM_CRITERIA.map(function (c2) { return c2.id + " — " + c2.t + " (" + c2.ref + ")"; }).join("\n") +
-        "\n\nХАТУУ ДҮРЭМ: зөвхөн өгсөн текстээс дүгнэ — байхгүй зүйл бүү зохио; текст эхний 15000 тэмдэгтээр " +
-        "тасарсан байж болно, тасархайн цаадахыг таамаглахгүй (эргэлзвэл WARNING); чи зөвлөх (§2.5a A/S) — " +
-        "эцсийн шийдвэр хүнийх. Verdict дүрэм: заавал шаардлага (NAME, CTRL, OWNER, APPR; AI ашигласан бол AIGATE) " +
-        "дутуу → FAIL; зөвхөн сайжруулах зүйл → WARNING; бүрэн → PASS. overall = хамгийн муу verdict. " +
-        "issues-д шалгуурын ID-г crit талбарт тавьж, note-г монголоор товч бич.\n\n" +
-        "Хариу ЗӨВХӨН JSON: {\"overall\":\"PASS|WARNING|FAIL\",\"summary\":\"1-2 өгүүлбэр монголоор\"," +
-        "\"docs\":[{\"name\":\"...\",\"verdict\":\"PASS|WARNING|FAIL\",\"issues\":[{\"crit\":\"ID\",\"note\":\"...\"}]}]}\n\n" +
-        "=== БАРИМТУУД ===\n" +
-        readable.map(function (x) { return "--- " + x.name + " ---\n" + x.text; }).join("\n\n");
-      return sample.json(sys, { modelTier: "default", cache: false });
+      return sample.json(eomPrompt(readable), { modelTier: "default", cache: false });
     }).then(function (out) {
-      out = out || {};
-      var v = out.overall === "PASS" ? "PASS" : out.overall === "WARNING" ? "WARNING" : "FAIL";
-      var check = {
-        result: v, summary: String(out.summary || "").slice(0, 600),
-        docs: (Array.isArray(out.docs) ? out.docs : []).map(function (dd) {
-          return { name: String(dd.name || "").slice(0, 200),
-            verdict: dd.verdict === "PASS" ? "PASS" : dd.verdict === "WARNING" ? "WARNING" : "FAIL",
-            issues: (Array.isArray(dd.issues) ? dd.issues : []).slice(0, 12).map(function (is2) {
-              return { crit: String(is2.crit || "?").slice(0, 12), note: String(is2.note || "").slice(0, 300) };
-            }) };
-        }),
-        unread: docs.filter(function (x) { return !x.text; }).map(function (x) { return x.name + " (" + x.err + ")"; }),
-        ts: new Date().toISOString(), by: S.p, byName: U(S.p).name, sig: eomSig(w)
-      };
+      var check = normEom(out);
+      check.unread = docs.filter(function (x) { return !x.text; }).map(function (x) { return x.name + " (" + x.err + ")"; });
+      check.ts = new Date().toISOString(); check.by = S.p; check.byName = U(S.p).name; check.sig = eomSig(w);
       A.recordEomCheck(wid, check);
-      toast("EOM v5.0 нийцлийн шалгалт: " + v + (v === "PASS" ? " — G8 ногоон" : ""), v !== "PASS");
+      toast("EOM v5.0 нийцлийн шалгалт: " + check.result + (check.result === "PASS" ? " — G8 ногоон" : ""),
+        check.result !== "PASS");
     }).catch(function (e) {
       toast("EOM шалгалт амжилтгүй: " + ((e && (e.message || e.code)) || "алдаа"), true);
     }).finally(function () { S.eomBusy = false; S.eomWid = null; S.eomProg = null; render(); });
@@ -227,6 +306,7 @@ document.addEventListener("click", function (ev) {
       case "print": window.print(); break;
       case "checkinAi": askCheckinAi(); break;
       case "eomCheck": runEomCheck(S.workId); break;
+      case "docCheck": runDocCheck(); break;
       case "eomManual": A.recordEomManual(S.workId, fval(t, "emnote")); break;
       case "newWork": S.tab = "new"; render(); window.scrollTo(0, 0); break;
       case "createWork":

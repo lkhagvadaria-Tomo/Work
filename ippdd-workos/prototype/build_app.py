@@ -109,6 +109,7 @@ body = f"""
       <button role="tab" data-tab="rev" aria-selected="false">Хяналт <span class="cnt" hidden></span></button>
       <button role="tab" data-tab="app" aria-selected="false">Батлал <span class="cnt" hidden></span></button>
       <button role="tab" data-tab="checkin" aria-selected="false">Check-in</button>
+      <button role="tab" data-tab="doccheck" aria-selected="false">Баримт шалгах</button>
       <button role="tab" data-tab="process" aria-selected="false">Процесс</button>
       <button role="tab" data-tab="report" aria-selected="false">Тайлан</button>
       <button role="tab" data-tab="admin" aria-selected="false" id="navAdmin" hidden>Админ</button>

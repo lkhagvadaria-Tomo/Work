@@ -5,7 +5,7 @@ Next.js + Supabase апп) идэвхжтэл түр хэрэглэгдэнэ; �
 
 - **Нийтлэгдсэн хаяг:** https://claude.ai/code/artifact/b338c8df-30be-49b5-8fb6-b9a04e78e2ff
 - **Угсрах:** `python3 build_app.py` → `workos-demo.html` (эх хэсгүүд + пилот өгөгдөл `demo_data.json`)
-- **Capabilities:** `db` (багийн хамтын сан) + `sample` (AI туслах) + `mcp` (Google Drive read_file_content — G8 EOM шалгалт) — дахин нийтлэхдээ
+- **Capabilities:** `db` (багийн хамтын сан) + `sample` (AI туслах) + `mcp` (Google Drive `read_file_content` + `search_files` — G8 EOM шалгалт, «Баримт шалгах») — дахин нийтлэхдээ
   `capabilities`-ийг орхивол хэвээр үлдэнэ.
 - **Пилот өгөгдөл:** `demo_data.json` — IPPDD_OKR_Q3_2026-08-01_v1.0 workbook-оос экспортолсон
   (3 зорилт, 10 KR, 5 ажил). Юу ч зохиогоогүй.
@@ -22,6 +22,12 @@ Next.js + Supabase апп) идэвхжтэл түр хэрэглэгдэнэ; �
 | `app_wire.js` | Event delegation, AI туслах (`sample`), Check-in AI дүгнэлт |
 
 ## Хувилбарууд
+
+- v7.0 — **«Баримт шалгах» бие даасан AI шалгагч**: Drive-ын файл эсвэл БҮТЭН ХАВТАСНЫ линк
+  хуулж тавихад дотор нь байгаа баримтуудыг (≤8) уншиж EOM v5.0-ийн 10 шалгуурт тулгаж
+  дүгнэнэ (`search_files` + `read_file_content`; линкийг `driveRef()` шүүнэ — зөвхөн
+  drive/docs.google.com, node тесттэй). Ажлын G8 болон энэ хуудас нэг prompt/normalize
+  (`eomPrompt`, `normEom`) хуваалцана; тайлан хэвлэхэд бэлэн.
 
 - v6.0 — **байгууллагын лого + процессын урсгал ойлгомжтой болов**. Netcapital-ийн албан
   ёсны лого (`logo_mark.svg`, Drive-аас, viewBox хайчилсан, `logo_sprite.html` дотор inline

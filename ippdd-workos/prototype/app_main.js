@@ -16,7 +16,8 @@ var S = {
   works: {}, krs: {}, meta: null, users: {}, config: { depts: [] },
   deptFilter: "ALL",
   tab: "home", workId: null, ai: [], aiBusy: false, chatOpen: false, checkinAi: null,
-  eomBusy: false, eomWid: null, eomProg: null
+  eomBusy: false, eomWid: null, eomProg: null,
+  dcLinks: "", dcBusy: false, dcProg: null, dcResult: null
 };
 
 function loadSession() {

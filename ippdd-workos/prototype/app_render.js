@@ -453,6 +453,50 @@ function vFlowBar(w) {
   }).join("") + "</div>";
 }
 
+function vDocCheck() {
+  var r = S.dcResult;
+  var html = "<h1>Баримт шалгах — Drive линкээр EOM v5.0 нийцэл</h1>" +
+    '<p class="sub">Газрын баримт бичгийн <b>Drive линкийг</b> (файл эсвэл бүтэн хавтас) хуулж тавихад ' +
+    "AI нь агуулгыг уншиж EOM Handbook v5.0-ийн " + EOM_CRITERIA.length + " шалгуурт тулгаж дүгнэнэ. " +
+    "AI зөвхөн зөвлөх (EOM §2.5a) — эцсийн шийдвэр хүнийх; ажлыг хаах G8 шалгуурыг ажлын хуудаснаас нь ажиллуулна.</p>" +
+    '<section class="card"><header class="card-h"><h3>Шалгах баримтууд</h3>' +
+    '<span class="chip">хавтас эсвэл файл · мөр тутамд нэг линк</span></header><div class="card-b">' +
+    '<label class="field"><span>Google Drive / Docs линк(үүд)</span>' +
+    '<textarea data-f="dclinks" rows="4" style="width:100%;font-family:var(--mono);font-size:12px" ' +
+    'placeholder="https://drive.google.com/drive/folders/…&#10;https://docs.google.com/document/d/…">' +
+    esc(S.dcLinks || "") + "</textarea></label>" +
+    '<p style="margin:10px 0 0;display:flex;gap:8px;flex-wrap:wrap">' +
+    '<button class="btn sm2" data-act="docCheck"' + (S.dcBusy ? " disabled" : "") + ">✦ EOM шалгалт ажиллуулах</button>" +
+    (r ? '<button class="btn sm2 sec" data-act="print">🖨 Тайлан хэвлэх</button>' : "") + "</p>" +
+    (S.dcBusy ? '<p class="note">' + esc(S.dcProg || "Ажиллаж байна…") + "</p>" : "") +
+    '<p class="sub" style="margin:10px 0 0;font-size:11.5px">Зөвхөн drive.google.com / docs.google.com линк. ' +
+    "Хавтас өгвөл дотор нь байгаа баримтуудыг (хамгийн олондоо 8) уншина. Уншигдах төрөл: Google Docs/Sheets/Slides, PDF, Word. " +
+    "Танай Google эрхээр уншина — таны хараагүй баримтыг харуулахгүй.</p>" +
+    "</div></section>";
+  if (r) {
+    html += '<section class="card"><header class="card-h"><h3>Дүгнэлт — ' + esc(r.ts ? fmt(r.ts) : "") + "</h3>" +
+      gbadge(r.result) + '</header><div class="card-b">' +
+      (r.summary ? '<p class="sub" style="margin:0 0 10px"><b>' + esc(r.result) + "</b> — " + esc(r.summary) + "</p>" : "") +
+      '<ul class="list">' + (r.docs || []).map(function (d) {
+        return '<li class="block"><div style="display:flex;justify-content:space-between;gap:8px">' +
+          "<span><b>" + esc(d.name) + "</b></span>" +
+          gbadge(d.verdict === "PASS" ? "PASS" : d.verdict === "WARNING" ? "WARNING" : "FAIL") + "</div>" +
+          ((d.issues || []).length
+            ? (d.issues || []).map(function (i2) { return "<p>• [" + esc(i2.crit) + "] " + esc(i2.note) + "</p>"; }).join("")
+            : "<p>Шалгуур бүрд нийцсэн — дутагдал бүртгэгдээгүй.</p>") + "</li>";
+      }).join("") + "</ul>" +
+      (r.unread && r.unread.length ? '<p class="sub" style="margin:8px 0 0">Уншиж чадаагүй: ' + esc(r.unread.join(", ")) + "</p>" : "") +
+      '<p class="note" style="margin-top:12px">AI зөвлөх дүгнэлт — баримтын эхний 15000 тэмдэгтээр уншсан. ' +
+      "Албан ёсны нийцлийн шийдвэрийг захирал (эсвэл ажлын G8 шалгуур) гаргана.</p>" +
+      "</div></section>";
+  }
+  html += '<details class="adder"><summary>EOM v5.0 шалгуур (' + EOM_CRITERIA.length + ')</summary><div><ul class="list">' +
+    EOM_CRITERIA.map(function (c2) {
+      return '<li class="block"><div><b>' + esc(c2.id) + "</b> — " + esc(c2.t) + "</div><p>" + esc(c2.ref) + "</p></li>";
+    }).join("") + "</ul></div></details>";
+  return html;
+}
+
 function vProcess() {
   var roles = [
     { r: "Эзэмшигч (ажилтан)", who: "Ажлыг хийж, баримтжуулдаг хүн",
@@ -904,7 +948,8 @@ function render() {
     : S.tab === "rev" ? vQueue("rev")
     : S.tab === "app" ? vQueue("app")
     : S.tab === "report" ? vReport()
-    : S.tab === "process" ? vProcess() :
+    : S.tab === "doccheck" ? vDocCheck() :
+    S.tab === "process" ? vProcess() :
     S.tab === "checkin" ? vCheckin()
     : S.tab === "new" ? vNew()
     : S.tab === "admin" ? vAdmin() : vHome();
