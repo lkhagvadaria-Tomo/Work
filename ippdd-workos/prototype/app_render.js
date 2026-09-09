@@ -228,9 +228,11 @@ function vWorkDetail(w) {
   var cs = w.cioSign;
   html += '<section class="card"><header class="card-h"><h3>CIO хүлээн зөвшөөрөлт (G9)</h3>' +
     (cs ? gbadge(cs.decision === "APPROVE" ? "PASS" : "FAIL") : "") + '</header><div class="card-b">' +
-    '<p class="sub" style="margin:0 0 8px">Хийсэн ажил болон гаргасан баримт бичгийг ХОБПХГ, ХОБХУГ-ын захирал, CIO ' +
-    "<b>Х.Нургүл</b> хүлээн авч зөвшөөрснөө APPROVE + sign-off-оор энд тэмдэглэнэ. Амаар зөвшөөрөл хүчингүй — " +
-    "зөвхөн системд бүртгэгдсэн нь тоологдоно.</p>";
+    '<p class="sub" style="margin:0 0 8px">Газрын захирлын батлалын (G4) дараа хийсэн ажил болон гаргасан баримт бичгийг ' +
+    "хөрөнгө оруулалт хариуцсан <b>CIO Х.Нургүл</b> хүлээн авч зөвшөөрснөө APPROVE + sign-off-оор энд тэмдэглэнэ. " +
+    "Амаар зөвшөөрөл хүчингүй — зөвхөн системд бүртгэгдсэн нь тоологдоно.</p>" +
+    '<p class="sub" style="margin:0 0 8px;font-size:11.5px">Засаглалын шатлал: эзэмшигч → хянагч → газрын захирал ' +
+    "(ХОБПХГ: О.Мөнх-Эрдэнэ · ХОБХУГ: Өлзийбаяр) → CIO Х.Нургүл → хүлээлгэн өгөлт, хүлээн авалт.</p>";
   if (cs) html += '<p class="note" style="' +
     (cs.decision === "APPROVE" ? "border-color:var(--pass-line);background:var(--pass-bg);color:var(--pass-ink)" : "") + '">' +
     (cs.decision === "APPROVE" ? "ХҮЛЭЭН ЗӨВШӨӨРСӨН — " : "БУЦААСАН — ") + esc(cs.byName || cs.by) + " · " + fmt(cs.ts) +
