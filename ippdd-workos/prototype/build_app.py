@@ -57,7 +57,7 @@ seed = {
         {"id": "LA", "name": "А.Лхагвадарь", "email": "lkhagvadari.a@netgroup.mn", "role": "Ажилтан", "dept": "IPPDD"},
         {"id": "OO", "name": "Б.Онон", "email": "onon.or@netgroup.mn", "role": "Хянагч", "dept": "IPPDD"},
         {"id": "ME", "name": "О.Мөнх-Эрдэнэ", "email": "munkh-erdene.o@netgroup.mn", "role": "Захирал", "dept": "IPPDD"},
-        {"id": "OB", "name": "Өлзийбаяр", "email": "", "role": "Захирал", "dept": "ISCMD"},
+        {"id": "OB", "name": "Өлзийбаяр Сандагдорж", "email": "", "role": "Захирал", "dept": "ISCMD"},
         {"id": "NG", "name": "Х.Нургүл", "email": "", "role": "CIO", "dept": "IPPDD"},
     ],
     "krs": krs, "work": work,

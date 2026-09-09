@@ -160,10 +160,11 @@ function evaluateGate(w, today) {
 
   // G8 EOM v5.0 нийцэл — AI зөвлөх шалгалт (DGS загвар; эцсийн шийдвэр хүнийх)
   if (p.deliv) {
-    var ec = w.eomCheck, sig8 = eomSig(w);
-    if (!ec) add("G8", "G8 · EOM нийцэл", true, "FAIL",
-      { sev: "HIGH", res: "FAIL", title: "EOM v5.0 нийцлийн AI шалгалт хийгдээгүй",
-        act: "Ажлын хуудасны «EOM v5.0 нийцэл» хэсгээс AI шалгалт ажиллуулж PASS ав." });
+    var ec = w.eomCheck, sig8 = eomSig(w), em = w.eomManual;
+    if (em && em.sig === sig8) add("G8", "G8 · EOM нийцэл", true, "PASS");
+    else if (!ec) add("G8", "G8 · EOM нийцэл", true, "FAIL",
+      { sev: "HIGH", res: "FAIL", title: "EOM v5.0 нийцэл шалгагдаагүй",
+        act: "«EOM v5.0 нийцэл» хэсгээс AI шалгалт ажиллуул, эсвэл захирал «хүнээр хянаж баталсан» гэж бүртгэ." });
     else if (ec.sig !== sig8) add("G8", "G8 · EOM нийцэл", true, "FAIL",
       { sev: "HIGH", res: "FAIL", title: "Эцсийн deliverable өөрчлөгдсөн — EOM шалгалт хуучирсан",
         act: "EOM v5.0 нийцлийн AI шалгалтыг дахин ажиллуул." });

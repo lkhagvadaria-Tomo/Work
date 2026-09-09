@@ -265,7 +265,10 @@ var A = {
     go(w, "SUBMITTED", "Review-д илгээв");
   },
   decideReview: function (id, rid, decision, comment) {
-    var w = W(id); must(S.p === w.reviewer, "Зөвхөн томилогдсон хянагч");
+    var w = W(id);
+    must(S.p === w.reviewer || (isBossRole(U(S.p).role) && S.p !== w.owner),
+      "Хяналтыг томилогдсон хянагч, эсвэл захирал хийнэ");
+    must(S.p !== w.owner, "Эзэмшигч өөрийн ажлыг хянахгүй");
     var r = w.reviews.find(function (x) { return x.id === rid && x.decision === "PENDING"; });
     must(r, "Хүлээгдэж буй review олдсонгүй");
     must(decision === "PASS" || (comment && comment.trim()), "RETURN/REJECT-д тайлбар заавал");
@@ -292,12 +295,14 @@ var A = {
     go(w, "WAITING_APPROVAL", "Батлалд илгээв");
   },
   decideApproval: function (id, aid, decision, comment) {
-    var w = W(id); must(S.p === w.approver, "Зөвхөн томилогдсон батлагч");
+    var w = W(id);
+    must(S.p === w.approver || isBossRole(U(S.p).role), "Батлалыг захирал (эсвэл CIO) хийнэ");
     must(S.p !== w.owner, "Эзэмшигч өөрийн ажлыг батлахгүй");
     var a = w.approvals.find(function (x) { return x.id === aid && x.decision === "PENDING"; });
     must(a, "Хүлээгдэж буй батлал олдсонгүй");
     must(decision === "APPROVE" || (comment && comment.trim()), "RETURN/REJECT-д тайлбар заавал");
     a.decision = decision; a.comment = (comment || "").trim() || null; a.decidedTs = now();
+    a.by = me().name + " (" + U(S.p).role + ")";
     if (decision === "APPROVE") {
       w.status = "APPROVED"; audit(w, "Батлагдав (" + (a.version || "хувилбаргүй") + ")");
       if (w.implReq) { w.status = "IMPLEMENTATION"; audit(w, "→ Хэрэгжилт"); }
@@ -340,7 +345,7 @@ var A = {
   },
   signClosure: function (id, decision, comment) {
     var w = W(id);
-    must(S.p === w.approver, "Хаалтын sign-off-ыг зөвхөн захирал хийнэ");
+    must(S.p === w.approver || isBossRole(U(S.p).role), "Хаалтын sign-off-ыг захирал (эсвэл CIO) хийнэ");
     must(S.p !== w.owner, "Эзэмшигч өөрийн хаалтад гарын үсэг зурахгүй");
     must(w.closure && w.closure.status === "READY", "Sign-off хүлээж буй хүсэлт алга");
     must(decision === "APPROVE" || (comment && comment.trim()), "RETURN/REJECT-д тайлбар заавал");
@@ -350,7 +355,8 @@ var A = {
       must(g.result !== "FAIL", "Гейт FAIL — хаалт хориглогдлоо");
       w.status = "CLOSED"; w.closedAt = now();
       w.closure = { status: "CLOSED", requestedBy: w.closure.requestedBy,
-        signedBy: me().name, ts: now(), comment: (comment || "").trim() || null };
+        signedBy: me().name + " (" + U(S.p).role + ")", ts: now(),
+        comment: (comment || "").trim() || null };
       saveWork(w, "ХААГДАВ — гейт " + g.result + " + захирлын sign-off");
     } else {
       w.closure = { status: decision === "RETURN" ? "PENDING" : "REJECTED",
@@ -448,6 +454,28 @@ var A = {
     var v = Number(achievement); must(isFinite(v) && v >= 0 && v <= 100, "Гүйцэтгэл 0–100");
     k.status = "CLOSED"; k.achievement = v; k.closedBy = me().name; k.closedTs = now();
     saveKr(k); toast(kid + " хаагдлаа (" + v + "%)");
+  },
+  endorse: function (id, decision, comment) {
+    var w = W(id);
+    must(isBossRole(U(S.p).role), "Зөвхөн газрын захирал, CIO зөвшөөрлөө тэмдэглэнэ");
+    must(S.p !== w.owner, "Эзэмшигч өөрийн ажлыг өөрөө зөвшөөрөхгүй");
+    must(decision === "APPROVE" || (comment && comment.trim()), "Татгалзахад тайлбар заавал");
+    w.endorsements = (w.endorsements || []).filter(function (e) { return e.by !== S.p; });
+    w.endorsements.push({ by: S.p, byName: me().name, role: U(S.p).role, dept: U(S.p).dept,
+      decision: decision === "APPROVE" ? "APPROVE" : "RETURN",
+      comment: (comment || "").trim() || null, ts: now() });
+    saveWork(w, (decision === "APPROVE" ? "Зөвшөөрсөн: " : "Татгалзсан: ") +
+      me().name + " (" + U(S.p).role + (U(S.p).dept ? " · " + U(S.p).dept : "") + ")" +
+      (comment && comment.trim() ? " — " + comment.trim() : ""));
+  },
+  recordEomManual: function (id, note) {
+    var w = W(id);
+    must(isBossRole(U(S.p).role), "EOM нийцлийн хүний хяналтыг захирал, CIO бүртгэнэ");
+    must(S.p !== w.owner, "Эзэмшигч өөрөө хянахгүй");
+    must((w.deliverables || []).some(function (d) { return d.final; }), "Эцсийн (FINAL) deliverable алга");
+    w.eomManual = { by: S.p, byName: me().name, role: U(S.p).role,
+      note: (note || "").trim() || null, ts: now(), sig: eomSig(w) };
+    saveWork(w, "EOM v5.0 нийцлийг хүнээр хянаж баталсан — " + me().name + " (" + U(S.p).role + ")");
   },
   recordEomCheck: function (id, check) {
     var w = W(id);

@@ -204,6 +204,7 @@ document.addEventListener("click", function (ev) {
     if (d.app) { A.decideApproval(wid, d.aid, d.app, fval(t, "comment")); return; }
     if (d.sign) { A.signClosure(wid, d.sign, fval(t, "comment")); return; }
     if (d.ciosign) { A.cioSign(wid, d.ciosign, fval(t, "comment")); return; }
+    if (d.endorse) { A.endorse(wid, d.endorse, fval(t, "encmt")); return; }
     if (d.final) { A.markFinal(S.workId, d.final); return; }
     if (d.verify) { A.verifyEvidence(S.workId, d.verify); return; }
     if (d.delev) { A.removeEvidence(S.workId, d.delev); return; }
@@ -226,6 +227,7 @@ document.addEventListener("click", function (ev) {
       case "print": window.print(); break;
       case "checkinAi": askCheckinAi(); break;
       case "eomCheck": runEomCheck(S.workId); break;
+      case "eomManual": A.recordEomManual(S.workId, fval(t, "emnote")); break;
       case "newWork": S.tab = "new"; render(); window.scrollTo(0, 0); break;
       case "createWork":
         A.createWork({ title: fval(t, "nw_title"), dept: fval(t, "nw_dept"), type: fval(t, "nw_type"),

@@ -156,9 +156,10 @@ function vWorkDetail(w) {
   if (w.closure && w.closure.status === "READY") {
     html += '<section class="card" style="border-color:var(--pass-line)"><header class="card-h"><h3>Хаалтын sign-off — гейт ' +
       (g ? g.result : "?") + ", хүний шийдвэр хүлээж байна</h3></header><div class='card-b'>" +
-      (S.p === w.approver
+      (S.p !== w.owner && (S.p === w.approver || isBoss())
         ? decideForm("sign")
-        : '<p class="sub" style="margin:0">Зөвхөн ' + esc(U(w.approver).name) + " (захирал) гарын үсэг зурна.</p>") +
+        : '<p class="sub" style="margin:0">Гарын үсгийг ' + esc(U(w.approver).name) +
+          ", эсвэл өөр газрын захирал/CIO зурна.</p>") +
       "</div></section>";
   }
   if (w.closure && w.closure.status === "CLOSED") {
@@ -168,13 +169,13 @@ function vWorkDetail(w) {
 
   // pending review / approval decision panels
   (w.reviews || []).forEach(function (r) {
-    if (r.decision === "PENDING" && S.p === w.reviewer) {
+    if (r.decision === "PENDING" && S.p !== w.owner && (S.p === w.reviewer || isBoss())) {
       html += '<section class="card" style="border-color:var(--info-line)"><header class="card-h"><h3>Таны шийдвэр — ' +
         esc(r.type) + ' review</h3></header><div class="card-b">' + decideForm("rev", ' data-rid="' + esc(r.id) + '"') + "</div></section>";
     }
   });
   (w.approvals || []).forEach(function (a) {
-    if (a.decision === "PENDING" && S.p === w.approver) {
+    if (a.decision === "PENDING" && S.p !== w.owner && (S.p === w.approver || isBoss())) {
       html += '<section class="card" style="border-color:var(--warn-line)"><header class="card-h"><h3>Таны батлал — ' +
         esc(a.type) + " (хувилбар: " + esc(a.version || "—") + ')</h3></header><div class="card-b">' + decideForm("app", ' data-aid="' + esc(a.id) + '"') + "</div></section>";
     }
@@ -219,9 +220,23 @@ function vWorkDetail(w) {
     EOM_CRITERIA.map(function (c2) {
       return '<li class="block"><div><b>' + esc(c2.id) + "</b> — " + esc(c2.t) + "</div><p>" + esc(c2.ref) + "</p></li>";
     }).join("") + "</ul></div></details>";
-  if (w.status !== "CLOSED")
-    html += '<p style="margin:10px 0 0"><button class="btn sm2" data-act="eomCheck"' + (S.eomBusy ? " disabled" : "") +
-      ">✦ AI шалгалт ажиллуулах</button></p>";
+  var emr = w.eomManual;
+  if (emr) html += '<p class="note" style="border-color:var(--pass-line);background:var(--pass-bg);color:var(--pass-ink)">' +
+    "Хүнээр хянаж баталсан — " + esc(emr.byName) + " (" + esc(emr.role) + ") · " + fmt(emr.ts) +
+    (emr.sig !== eomSig(w) ? " · ⚠ дараа нь deliverable өөрчлөгдсөн, дахин хянана уу" : "") +
+    (emr.note ? "<br>" + esc(emr.note) : "") + "</p>";
+  if (w.status !== "CLOSED") {
+    html += '<div class="frow" style="margin:10px 0 0;align-items:flex-end">' +
+      '<button class="btn sm2" data-act="eomCheck"' + (S.eomBusy ? " disabled" : "") +
+      ' style="margin-bottom:9px">✦ AI шалгалт ажиллуулах</button>';
+    if (isBoss() && S.p !== w.owner)
+      html += '<label class="field" style="flex:2"><span>Захирлын хяналтын тэмдэглэл</span>' +
+        '<input type="text" data-f="emnote" placeholder="ж: нэршил, Document Control, Change Log шалгасан"></label>' +
+        '<button class="btn sm2 pass" data-act="eomManual" style="margin-bottom:9px">Хүнээр хянаж баталсан</button>';
+    html += "</div>";
+    if (!isBoss()) html += '<p class="sub" style="margin:6px 0 0;font-size:11.5px">Drive хаалттай орчинд AI шалгалт ' +
+      "ажиллахгүй — тэр тохиолдолд захирал «хүнээр хянаж баталсан» гэж бүртгэж G8-ыг хангана.</p>";
+  }
   html += "</div></section>";
 
   // ── CIO хүлээн зөвшөөрөлт (G9) ───────────────────────────────────────────
@@ -240,6 +255,37 @@ function vWorkDetail(w) {
   else html += '<p class="sub" style="margin:0">Хүлээгдэж байна — гейт G9 үүнийг шаардана.</p>';
   if (isCio() && S.p !== w.owner && (!cs || cs.decision !== "APPROVE") && w.status !== "CLOSED")
     html += decideForm("ciosign");
+  html += "</div></section>";
+
+  // ── Захирлуудын зөвшөөрлийн бүртгэл ─────────────────────────────────────
+  var bossAll = Object.values(S.users).filter(function (u) {
+    return (u.role === "Захирал" || u.role.indexOf("CIO") >= 0) && u.id !== w.owner;
+  }).sort(function (a2, b2) { return (a2.dept + a2.name) < (b2.dept + b2.name) ? -1 : 1; });
+  var ends = w.endorsements || [];
+  var okN = ends.filter(function (e) { return e.decision === "APPROVE"; }).length;
+  html += '<section class="card"><header class="card-h"><h3>Захирлуудын зөвшөөрлийн бүртгэл</h3>' +
+    '<span class="chip">' + okN + "/" + bossAll.length + " зөвшөөрсөн</span></header><div class='card-b'>" +
+    '<p class="sub" style="margin:0 0 8px">Газрын захирал, CIO өөрийн бүртгэлээрээ нэвтэрч ажил, баримтыг ' +
+    "зөвшөөрснөө энд тэмдэглэнэ. Албан ёсны хаалт нь G4 батлал, G9 CIO зөвшөөрөлт, sign-off-оор гарна — " +
+    "энэ бүртгэл нь хэн, хэзээ зөвшөөрснийг нэг дор харуулах ил тод лог.</p>" +
+    '<ul class="list">' + bossAll.map(function (u) {
+      var e = ends.find(function (x) { return x.by === u.id; });
+      var d2 = (S.config.depts || []).find(function (x) { return x.code === u.dept; });
+      return '<li class="block"><div style="display:flex;justify-content:space-between;gap:8px">' +
+        "<span><b>" + esc(u.name) + "</b> <span class='sm' style='color:var(--muted)'>" +
+        (u.role.indexOf("CIO") >= 0 ? "CIO" : esc(d2 ? d2.code : u.dept) + " · захирал") + "</span></span>" +
+        gbadge(e ? (e.decision === "APPROVE" ? "PASS" : "FAIL") : "NOT_APPLICABLE") + "</div>" +
+        (e ? "<p>" + (e.decision === "APPROVE" ? "зөвшөөрсөн" : "татгалзсан") + " · " + fmt(e.ts) +
+          (e.comment ? " — " + esc(e.comment) : "") + "</p>" : "<p>хүлээгдэж байна</p>") + "</li>";
+    }).join("") + "</ul>";
+  if (isBoss() && S.p !== w.owner && w.status !== "CLOSED") {
+    var mine = ends.find(function (x) { return x.by === S.p; });
+    html += '<div class="frow" style="margin-top:10px;align-items:flex-end">' +
+      '<label class="field" style="flex:2"><span>Тайлбар (татгалзахад заавал)</span><input type="text" data-f="encmt"></label>' +
+      '<div style="display:flex;gap:6px;padding-bottom:9px">' +
+      '<button class="btn sm2 pass" data-endorse="APPROVE">' + (mine ? "Зөвшөөрөлт шинэчлэх" : "Зөвшөөрсөн гэж тэмдэглэх") + "</button>" +
+      '<button class="btn sm2 warn" data-endorse="RETURN">Татгалзах</button></div></div>';
+  }
   html += "</div></section>";
 
   // ── Баталгаажуулалтын гинж (дараалал) + хүлээлгэн өгөлт ──────────────────
@@ -365,6 +411,8 @@ function vWorkDetail(w) {
     }).join("") + "</ul></div></section>";
   return html;
 }
+
+function isBoss() { return S.p && (U(S.p).role === "Захирал" || U(S.p).role.indexOf("CIO") >= 0); }
 
 function chainOf(w) {
   var p = profileOf(w), steps = [];
@@ -697,7 +745,8 @@ function renderLogin() {
       var init = u.name.replace(/^[А-ЯA-Z]\./, "").charAt(0) || "?";
       html += '<button class="acct' + (u.role === "Захирал" ? " adm" : "") + '" data-login="' + esc(u.id) + '">' +
         '<span class="av">' + esc(init) + "</span>" +
-        "<span><span class='an'>" + esc(u.name) + "</span><br><span class='ae'>" + esc(u.email) + "</span></span>" +
+        "<span><span class='an'>" + esc(u.name) + "</span><br><span class='ae'>" +
+        (u.email ? esc(u.email) : "и-мэйл нөхөгдөөгүй") + "</span></span>" +
         '<span class="role ' + (u.role === "Захирал" ? "a" : "u") + '">' + esc(u.role) + "</span></button>";
     });
   });
