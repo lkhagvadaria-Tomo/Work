@@ -400,15 +400,16 @@ function chainOf(w) {
     closed ? "<b>" + esc(w.closure.signedBy) + "</b> · " + fmt(w.closure.ts) : "захирлын гарын үсэг хүлээгдэж байна",
     w.closure && w.closure.status === "READY");
   var ho = w.handover;
-  step("Хүлээлгэн өгөлт", ho,
+  step("Хүлээлгэн өгөлт — газрын захиралд", ho,
     ho ? "<b>" + esc(ho.by) + "</b> → " + esc(ho.toName) + " · " + fmt(ho.ts) +
       (ho.note ? "<br>" + esc(ho.note) : "") + (ho.url ? '<br><a href="' + esc(ho.url) + '" target="_blank" rel="noreferrer">багц линк</a>' : "")
        : "хаагдсаны дараа эзэмшигч бүртгэнэ");
   var conf = ho && ho.status === "CONFIRMED";
-  step("Хүлээн авалтын баталгаажуулалт", conf,
+  step("Хүлээн авалтын баталгаажуулалт — газрын захирал", conf,
     conf ? "<b>" + esc(ho.confirmedBy) + "</b> хүлээн авснаа баталгаажуулав · " + fmt(ho.confirmedTs)
       : ho && ho.status === "RETURNED" ? "буцаагдсан: " + esc(ho.comment || "") + " · " + esc(ho.confirmedBy || "")
-      : "хүлээн авагчийн баталгаажуулалт",
+      : ho ? "хүлээн авагч захирал (" + esc(ho.toName) + ") баталгаажуулна"
+      : "хүлээн авагч газрын захирлын баталгаажуулалт",
     ho && ho.status === "PENDING", ho && ho.status === "RETURNED");
   return steps;
 }
@@ -427,9 +428,23 @@ function vChain(w) {
   var ho = w.handover;
   // owner registers handover after CLOSED
   if (S.p === w.owner && w.status === "CLOSED" && (!ho || ho.status === "RETURNED")) {
-    var opts = Object.values(S.users).filter(function (u) { return u.id !== S.p; })
-      .map(function (u) { return '<option value="' + esc(u.id) + '">' + esc(u.name) + " (" + esc(u.dept) + " · " + esc(u.role) + ")</option>"; }).join("");
-    html += '<div class="note" style="margin-top:16px"><b>Хүлээлгэн өгөлт бүртгэх</b> — хэнд, юу хүлээлгэж өгснөө бүртгэвэл хүлээн авагч баталгаажуулна.</div>' +
+    var myDept = U(S.p).dept;
+    var bosses = Object.values(S.users).filter(function (u) {
+      return u.id !== S.p && (u.role === "Захирал" || u.role.indexOf("CIO") >= 0);
+    }).sort(function (a, b) {
+      function rank(u) { return u.role.indexOf("CIO") >= 0 ? 2 : u.dept === myDept ? 0 : 1; }
+      return rank(a) - rank(b) || (a.name < b.name ? -1 : 1);
+    });
+    var opts = bosses.map(function (u) {
+      var d = (S.config.depts || []).find(function (x) { return x.code === u.dept; });
+      var lbl = u.role.indexOf("CIO") >= 0 ? "CIO — хөрөнгө оруулалт хариуцсан"
+        : u.dept === myDept ? "миний газрын захирал"
+        : esc(d ? d.name : u.dept) + "-ын захирал";
+      return '<option value="' + esc(u.id) + '">' + esc(u.name) + " — " + lbl + "</option>";
+    }).join("");
+    html += '<div class="note" style="margin-top:16px"><b>Хүлээлгэн өгөлт бүртгэх</b> — хүлээн авагч зөвхөн <b>газрын захирал</b>: ' +
+      "өөрийн газрын ажлыг өөрийн газрын захиралд, өөр газарт хүргэх ажлыг тэр газрын захиралд хүлээлгэн өгнө. " +
+      "«Хүлээж авсан, дууссан» гэдгийг зөвхөн тэр захирал өөрөө баталгаажуулна.</div>" +
       '<div class="frow" style="margin-top:10px;align-items:flex-end">' +
       '<label class="field"><span>Хүлээн авагч *</span><select data-f="hoto">' + opts + "</select></label>" +
       '<label class="field" style="flex:2"><span>Тэмдэглэл</span><input type="text" data-f="honote" placeholder="ж: эцсийн багц v1.0, 5 баримт"></label></div>' +
@@ -438,7 +453,7 @@ function vChain(w) {
       '<button class="btn sm2" data-act="handover" style="margin-bottom:10px">Хүлээлгэн өгөх</button></div>';
   }
   // recipient (or director, never owner) confirms
-  if (ho && ho.status === "PENDING" && S.p !== w.owner && (S.p === ho.to || isDirector())) {
+  if (ho && ho.status === "PENDING" && S.p !== w.owner && S.p === ho.to) {
     html += '<div class="note" style="margin-top:16px"><b>' + esc(ho.by) + "</b> танд хүлээлгэн өгсөн — хүлээн авснаа баталгаажуулна уу.</div>" +
       '<div class="frow" style="margin-top:10px;align-items:flex-end">' +
       '<label class="field" style="flex:2"><span>Тайлбар (буцаахад заавал)</span><input type="text" data-f="hocmt"></label>' +

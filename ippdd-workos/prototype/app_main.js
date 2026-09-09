@@ -5,6 +5,8 @@
 function U(id) { return S.users[id] || { id: id, name: id, role: "", dept: "" }; }
 function isDirector() { return S.p && (U(S.p).role === "Захирал" || isCio()); }
 function isCio() { return S.p && U(S.p).role.indexOf("CIO") >= 0; }
+/* Хүлээн авагч зөвхөн газрын захирал (эсвэл CIO) байх дүрэм */
+function isBossRole(r) { return r === "Захирал" || (r || "").indexOf("CIO") >= 0; }
 var TODAY = new Date().toISOString().slice(0, 10);
 
 var SESSION_MS = 20 * 60 * 1000; // идэвхгүй 20 мин → автомат гарна (порталтай ижил)
@@ -385,8 +387,11 @@ var A = {
     must(!w.handover || w.handover.status === "RETURNED", "Хүлээлгэн өгөлт аль хэдийн бүртгэгдсэн");
     must(f.to && S.users[f.to], "Хүлээн авагч сонгоно");
     must(f.to !== S.p, "Өөртөө хүлээлгэн өгөхгүй");
+    must(isBossRole(U(f.to).role),
+      "Хүлээлгэн өгөлт зөвхөн газрын захиралд — өөрийн газрын захирал, эсвэл хүлээн авах газрын захирал");
     if (f.url) must(isDriveUrl(f.url) || /^https:\/\//.test(f.url), "Линк https байх ёстой");
     w.handover = { status: "PENDING", to: f.to, toName: U(f.to).name,
+      toDept: U(f.to).dept, toRole: U(f.to).role,
       note: (f.note || "").trim() || null, url: f.url || null,
       by: me().name, ts: now() };
     saveWork(w, "Хүлээлгэн өгөв → " + U(f.to).name);
@@ -394,7 +399,8 @@ var A = {
   confirmHandover: function (id, ok, comment) {
     var w = W(id);
     must(w.handover && w.handover.status === "PENDING", "Хүлээгдэж буй хүлээлгэн өгөлт алга");
-    must(S.p === w.handover.to || (isDirector() && S.p !== w.owner), "Зөвхөн хүлээн авагч (эсвэл захирал) баталгаажуулна");
+    must(S.p === w.handover.to,
+      "Зөвхөн хүлээн авагч газрын захирал (" + w.handover.toName + ") баталгаажуулна");
     must(S.p !== w.owner, "Эзэмшигч өөрөө баталгаажуулахгүй");
     if (ok) {
       w.handover.status = "CONFIRMED";
