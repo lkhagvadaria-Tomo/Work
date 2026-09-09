@@ -2,7 +2,10 @@ import { redirect } from "next/navigation";
 import { requireSession } from "@/lib/auth/session";
 import { withUser } from "@/lib/db";
 import { Card, Field, inputCls } from "@/components/ui";
-import { setEmployeeActive, setQuarterStatus, updateClosureProfile, upsertEmployee } from "@/actions/admin";
+import {
+  createQuarter, setEmployeeActive, setQuarterStatus, updateClosureProfile,
+  upsertDepartment, upsertEmployee,
+} from "@/actions/admin";
 import type { ClosureProfile } from "@/types/db";
 
 export const metadata = { title: "Админ" };
@@ -117,6 +120,46 @@ export default async function AdminPage() {
             ))}
           </tbody>
         </table>
+        <details className="mt-3 rounded-md border border-slate-200 p-3">
+          <summary className="cursor-pointer text-sm font-medium">+ Шинэ улирал үүсгэх</summary>
+          <form action={createQuarter} className="mt-3 flex flex-wrap items-end gap-3">
+            <Field label="Он *"><input name="year" type="number" min={2020} max={2100} required className={inputCls} /></Field>
+            <Field label="Улирал *">
+              <select name="quarter" required className={inputCls}>
+                <option>1</option><option>2</option><option>3</option><option>4</option>
+              </select>
+            </Field>
+            <Field label="Эхлэх *"><input name="start_date" type="date" required className={inputCls} /></Field>
+            <Field label="Дуусах *"><input name="end_date" type="date" required className={inputCls} /></Field>
+            <button className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Үүсгэх</button>
+          </form>
+          <p className="mt-2 text-[11px] text-slate-400">Шинэ улирал PLANNING төлөвтэй үүснэ; идэвхжүүлэхдээ дээрх төлөвөөр ACTIVE болгоно.</p>
+        </details>
+      </Card>
+
+      <Card title="Газрууд">
+        <table className="data w-full">
+          <thead><tr><th>Код</th><th>Нэр</th></tr></thead>
+          <tbody>
+            {data.departments.map((d) => (
+              <tr key={d.id}><td className="font-mono text-xs">{d.code}</td><td>{d.name}</td></tr>
+            ))}
+          </tbody>
+        </table>
+        <details className="mt-3 rounded-md border border-slate-200 p-3">
+          <summary className="cursor-pointer text-sm font-medium">+ Газар нэмэх / шинэчлэх (кодоор)</summary>
+          <form action={upsertDepartment} className="mt-3 flex flex-wrap items-end gap-3">
+            <Field label="Код *" hint="2–20 том үсэг/тоо/_"><input name="code" required pattern="[A-Z0-9_]{2,20}" className={inputCls} /></Field>
+            <Field label="Нэр *"><input name="name" required className={inputCls} /></Field>
+            <Field label="Захирал">
+              <select name="director_employee_id" className={inputCls}>
+                <option value="">—</option>
+                {data.employees.map((e) => <option key={e.id} value={e.id}>{e.full_name}</option>)}
+              </select>
+            </Field>
+            <button className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Хадгалах</button>
+          </form>
+        </details>
       </Card>
 
       <Card title="Хаалтын профайл (ажлын төрөл тус бүрийн гейт шаардлага)">

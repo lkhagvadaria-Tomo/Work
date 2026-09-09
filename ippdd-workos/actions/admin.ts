@@ -118,6 +118,81 @@ export async function updateClosureProfile(formData: FormData): Promise<void> {
   revalidatePath("/admin");
 }
 
+const quarterSchema = z.object({
+  year: z.coerce.number().int().min(2020).max(2100),
+  quarter: z.coerce.number().int().min(1).max(4),
+  start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});
+
+export async function createQuarter(formData: FormData): Promise<void> {
+  const session = await requireSession();
+  const parsed = quarterSchema.safeParse({
+    year: formData.get("year"),
+    quarter: formData.get("quarter"),
+    start_date: formData.get("start_date"),
+    end_date: formData.get("end_date"),
+  });
+  if (!parsed.success) fail("Улирлын талбар буруу: " + parsed.error.issues[0]?.message);
+  const d = parsed.data;
+  if (d.end_date <= d.start_date) fail("Дуусах огноо эхлэхээс хойш байх ёстой");
+  try {
+    await withUser(session.authUid, async (tx) => {
+      const { rows } = await tx.query<{ id: string }>(
+        `insert into quarters (year, quarter, code, start_date, end_date, status)
+         values ($1, $2, format('%s-Q%s', $1::int, $2::int), $3::date, $4::date, 'PLANNING')
+         returning id`,
+        [d.year, d.quarter, d.start_date, d.end_date],
+      );
+      await tx.query("select app.audit('quarter', $1, 'ADMIN_CREATE', null, $2)", [
+        rows[0].id, JSON.stringify(d),
+      ]);
+    });
+  } catch (e) {
+    const msg = e instanceof Error && /duplicate key/.test(e.message)
+      ? "Энэ улирал аль хэдийн бүртгэлтэй"
+      : "Улирал үүсгэж чадсангүй (админ эрх шаардлагатай)";
+    fail(msg);
+  }
+  revalidatePath("/admin");
+}
+
+const departmentSchema = z.object({
+  code: z.string().regex(/^[A-Z0-9_]{2,20}$/, "Код: 2–20 том үсэг/тоо/_"),
+  name: z.string().min(2).max(200),
+  director_employee_id: z.string().uuid().optional().or(z.literal("")),
+});
+
+export async function upsertDepartment(formData: FormData): Promise<void> {
+  const session = await requireSession();
+  const parsed = departmentSchema.safeParse({
+    code: formData.get("code"),
+    name: formData.get("name"),
+    director_employee_id: formData.get("director_employee_id") || "",
+  });
+  if (!parsed.success) fail("Газрын талбар буруу: " + parsed.error.issues[0]?.message);
+  const d = parsed.data;
+  try {
+    await withUser(session.authUid, async (tx) => {
+      const { rows } = await tx.query<{ id: string }>(
+        `insert into departments (code, name, director_employee_id)
+         values ($1, $2, nullif($3,'')::uuid)
+         on conflict (code) do update set
+           name = excluded.name,
+           director_employee_id = excluded.director_employee_id
+         returning id`,
+        [d.code, d.name, d.director_employee_id ?? ""],
+      );
+      await tx.query("select app.audit('department', $1, 'ADMIN_UPSERT', null, $2)", [
+        rows[0].id, JSON.stringify({ code: d.code, name: d.name }),
+      ]);
+    });
+  } catch (e) {
+    fail(e instanceof Error ? e.message : "Газар хадгалж чадсангүй (админ эрх шаардлагатай)");
+  }
+  revalidatePath("/admin");
+}
+
 export async function setQuarterStatus(quarterId: string, formData: FormData): Promise<void> {
   const session = await requireSession();
   const status = formData.get("status") as string;

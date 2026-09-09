@@ -3,7 +3,7 @@
 > Milestone percentages are indicators only. A phase is marked complete only when its
 > acceptance conditions pass (§58 Definition of Done).
 
-Last updated: 2026-09-08
+Last updated: 2026-09-09
 
 ## Overall: CODE COMPLETE — EXTERNAL CONFIGURATION REQUIRED (~95%)
 
@@ -51,10 +51,19 @@ checklist in docs/DEPLOYMENT.md. Nothing external is misrepresented as done.
 4. AI provider decision (`mock` until data-flow review approves external calls).
 5. Optional: `drive.metadata.readonly` scope for version-drift detection.
 
+## Post-handover verification (2026-09-09)
+
+- Full quarter closure exercised end-to-end through the real governance functions
+  (`scripts/dev/close-quarter-demo.sql`, local dev DB only): 5/5 work items closed via
+  lifecycle + sign-off, 10/10 KRs via `finalize_kr_closure`, quarter via
+  `finalize_quarter_closure` → certificate rendered (100% weighted achievement).
+- xlsx branch of `scripts/import-okr.ts` verified with a generated workbook (3 objectives /
+  10 KRs parsed, weights validated).
+- Admin UI now creates quarters and departments (audited) — limitation closed.
+
 ## Known limitations (stated, not hidden)
 
 - Drive changed-after-approval detection = metadata drift, not content hashing (D-008).
 - Agent is single-question Q&A (no persisted chat history) — grounded, advisory-only.
 - Drive folder provisioning is guided (path shown), not automated (needs `drive.file` scope approval).
 - Notifications are in-app only; Gmail/Chat channels are future work (§37 allows this for MVP).
-- Quarter/department admin CRUD is partial in the UI (quarters status-editable; new quarters via SQL/import).
