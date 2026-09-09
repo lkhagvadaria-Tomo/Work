@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble the working IPPDD WorkOS prototype from parts + real pilot data."""
+"""Assemble the working Нэткапитал WorkOS prototype from parts + real pilot data."""
 import json
 from pathlib import Path
 
@@ -71,10 +71,10 @@ body = f"""
   <div class="login-brand">
     <div class="lb-top"><div class="mark"><svg class="lg"><use href="#nfgMark"/></svg></div>
       <div><div class="w1">Нэткапитал Санхүүгийн Групп</div>
-      <div class="w2">IPPDD · Investment Product &amp; Process Development</div></div></div>
+      <div class="w2">Ажил · Баримт · Батлалын засаглалын нэгдсэн систем</div></div></div>
     <div class="lb-mid">
       <div class="eyebrow">OKR · Work · Evidence · Approval · Governance</div>
-      <h1>IPPDD WorkOS</h1>
+      <h1>Нэткапитал WorkOS</h1>
       <p>Улирлын OKR, засаглалтай ажил, нотолгоо, батлал, хаалтын гейтийг нэг дороос.
       «Баримт үүссэн» ≠ «ажил дууссан» — хаалт бүр гейт + хүний sign-off-оор баталгаажна.</p>
     </div>
@@ -105,7 +105,7 @@ body = f"""
 <div id="app" hidden>
   <aside id="sideNav">
     <div class="sn-brand"><div class="logo2"><svg class="lg"><use href="#nfgMark"/></svg></div>
-      <div><b>IPPDD WorkOS</b><span>Netcapital FG</span></div></div>
+      <div><b>Нэткапитал WorkOS</b><span>Netcapital Financial Group</span></div></div>
     <nav class="views" role="tablist" aria-label="Цэс">
       <button role="tab" data-tab="home" aria-selected="true">Нүүр</button>
       <button role="tab" data-tab="okr" aria-selected="false">Миний OKR</button>
@@ -139,7 +139,7 @@ body = f"""
   <main id="app-main"><p class="sub">Ачаалж байна…</p></main>
   <button id="chatFab" data-act="chat" aria-label="AI туслах" title="AI туслах">✦</button>
   <div id="chatDrawer" hidden>
-    <div class="ch-h"><div><b>IPPDD туслах</b><span>Зөвлөх эрхтэй — батлах, хаах эрхгүй</span></div>
+    <div class="ch-h"><div><b>Нэткапитал туслах</b><span>Зөвлөх эрхтэй — батлах, хаах эрхгүй</span></div>
       <button data-act="chat" aria-label="Хаах">✕</button></div>
     <div id="chatLog"></div>
     <div class="ch-sugg">

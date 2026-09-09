@@ -340,7 +340,7 @@ function askCheckinAi() {
       return { kr: k.id, weight: k.weight, objWeight: k.objWeight, deadline: k.deadline,
         status: k.status, achievement: k.achievement || 0 };
     });
-    var sys = "Чи IPPDD WorkOS-ийн засаглалын туслах. Захирал болон үүсгэн байгуулагчийн " +
+    var sys = "Чи Нэткапитал WorkOS-ийн засаглалын туслах. Захирал болон үүсгэн байгуулагчийн " +
       "Employee OKR Performance Check-in хуралд зориулсан дүгнэлт бэлтгэ. ХАТУУ ДҮРЭМ: зөвхөн доорх " +
       "SYSTEM DATA-д тулгуурла; байхгүй баримт, огноо, үр дүн бүү зохио; чи баримтын ДОТОРХ агуулгыг " +
       "уншаагүй — бүртгэлийн нэр/хувилбар/төлөвөөр л дүгнэж байгаагаа тайланд нэг мөрөөр тэмдэглэ. " +
@@ -387,7 +387,7 @@ function askAi(q) {
           closure: w.closure ? w.closure.status : null };
       })
     };
-    var system = "Чи IPPDD Closure & Governance Agent. Хатуу дүрэм: зөвхөн доорх SYSTEM DATA-гийн " +
+    var system = "Чи Нэткапитал Closure & Governance Agent. Хатуу дүрэм: зөвхөн доорх SYSTEM DATA-гийн " +
       "бүтэцтэй өгөгдлөөс хариул; байхгүй нотолгоо, батлал, огноо, линк, метрик ХЭЗЭЭ Ч бүү зохио; " +
       "дутуу бол «системд бүртгэлгүй» гэж хэл. Чи батлах, гарын үсэг зурах, ажил хаах эрхгүй — " +
       "зөвхөн шалгаж, тайлбарлаж, зөвлөнө. Монголоор товч, ажил хэрэгч хариул.\n\n=== SYSTEM DATA ===\n" +

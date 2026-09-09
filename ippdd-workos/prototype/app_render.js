@@ -952,7 +952,7 @@ function vReport() {
     workList().filter(function (w) { return w.handover && w.handover.status === "CONFIRMED"; }).length + "/" +
     workList().filter(function (w) { return w.status === "CLOSED"; }).length + "</div></div></div>";
   if (c) {
-    html += '<div class="cert"><p class="eyebrow">Netcapital Financial Group · IPPDD WorkOS</p>' +
+    html += '<div class="cert"><p class="eyebrow">Netcapital Financial Group · Нэткапитал WorkOS</p>' +
       "<h2>Улирлын хаалтын бүртгэл</h2>" +
       '<p class="eyebrow" style="letter-spacing:.04em;text-transform:none">Quarter Closure Record</p><dl>' +
       "<dt>Ажилтан</dt><dd>" + esc(c.employee) + "</dd><dt>Улирал</dt><dd>" + esc(S.meta.code) + "</dd>" +
@@ -1004,7 +1004,7 @@ function renderShell() {
 function renderChat() {
   var log = document.getElementById("chatLog");
   if (!log) return;
-  var html = '<div class="msg hint">Сайн байна уу! Би IPPDD туслах. Зөвхөн энэ системийн өгөгдлөөс хариулна — батлах, хаах эрх надад байхгүй. Асуулт бүр таны claude.ai эрхээр илгээгдэнэ (эхний удаад зөвшөөрөл асууна).</div>';
+  var html = '<div class="msg hint">Сайн байна уу! Би Нэткапитал туслах. Зөвхөн энэ системийн өгөгдлөөс хариулна — батлах, хаах эрх надад байхгүй. Асуулт бүр таны claude.ai эрхээр илгээгдэнэ (эхний удаад зөвшөөрөл асууна).</div>';
   html += S.ai.map(function (msg) {
     return '<div class="msg' + (msg.q ? " q" : "") + '">' + esc(msg.text) + "</div>";
   }).join("");
