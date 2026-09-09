@@ -36,9 +36,22 @@ run_sql "-c \"do \\\$\\\$ begin
 end \\\$\\\$;\""
 run_sql "-d $DB_NAME -c 'grant service_role to workos_service; grant usage on schema public, app to workos_service; grant all on all tables in schema public to workos_service; grant usage on all sequences in schema public to workos_service;'"
 
-echo "== seed"
+echo "== seed (core + dev personas + pilot OKR)"
 python3 scripts/pilot/gen_seed_okr.py
 run_sql "-d $DB_NAME -f '$PWD/supabase/seed.sql'"
+run_sql "-d $DB_NAME -f '$PWD/supabase/seed_dev.sql'"
 run_sql "-d $DB_NAME -f '$PWD/supabase/seed_okr.sql'"
 
+if [[ ! -f .env.local && "$DB_NAME" == "workos" ]]; then
+  cat > .env.local <<ENV
+DATABASE_URL=postgres://$DB_USER:$DB_PASS@localhost:5432/$DB_NAME
+DEV_AUTH=1
+SESSION_SECRET=local-dev-$(head -c16 /dev/urandom | od -An -tx1 | tr -d ' \n')
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+AI_PROVIDER=mock
+ENV
+  echo "== .env.local үүсгэлээ (dev тохиргоо)"
+fi
+
 echo "== done. DATABASE_URL=postgres://$DB_USER:$DB_PASS@localhost:5432/$DB_NAME"
+echo "== одоо: npm run dev  →  http://localhost:3000 (persona-аар нэвтэрнэ)"

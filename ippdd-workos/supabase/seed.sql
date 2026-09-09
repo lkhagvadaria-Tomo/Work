@@ -1,11 +1,11 @@
--- IPPDD WorkOS seed: org structure, dev personas, quarter, closure profiles,
--- gate rules, and pilot work items. The pilot OKR dataset (from the authoritative
--- workbook IPPDD_OKR_Q3_2026-08-01_v1.0) is applied by supabase/seed_okr.sql,
--- generated from scripts/pilot/la_okr_2026Q3.json — run both.
+-- IPPDD WorkOS seed — PRODUCTION-SAFE core data: org structure, real employees
+-- (auth_user_id = null; linked on first Google sign-in via app.link_employee),
+-- quarter, closure profiles, gate rules. Apply together with supabase/seed_okr.sql
+-- (the pilot OKR dataset generated from the authoritative workbook
+-- IPPDD_OKR_Q3_2026-08-01_v1.0).
 --
--- Dev persona auth UUIDs (0000…000N) are DEVELOPMENT ONLY: they are used by the
--- gated dev impersonation login (docs/DECISIONS.md D-004). In production,
--- auth_user_id is linked on first Google sign-in via app.link_employee().
+-- DEVELOPMENT ONLY additions (dev impersonation personas) live in
+-- supabase/seed_dev.sql — never apply that file to production.
 
 begin;
 
@@ -17,23 +17,19 @@ insert into departments (id, code, name) values
    'Investment Sales & Client Management Department (ХОБХУГ)');
 
 -- Employees -----------------------------------------------------------------
-insert into employees (id, auth_user_id, employee_code, email, full_name,
+insert into employees (id, employee_code, email, full_name,
                        department_id, position_title, manager_id, system_role) values
-  ('e0000000-0000-4000-8000-000000000001','00000000-0000-4000-8000-000000000001',
+  ('e0000000-0000-4000-8000-000000000001',
    'HQ_IPPDD_MJ','munkh-erdene.o@netgroup.mn','О.Мөнх-Эрдэнэ',
    'd0000000-0000-4000-8000-000000000001','Газрын захирал',null,'DIRECTOR'),
-  ('e0000000-0000-4000-8000-000000000002','00000000-0000-4000-8000-000000000002',
+  ('e0000000-0000-4000-8000-000000000002',
    'HQ_IPPDD_LA','lkhagvadari.a@netgroup.mn','А.Лхагвадарь',
    'd0000000-0000-4000-8000-000000000001','Менежер',
    'e0000000-0000-4000-8000-000000000001','EMPLOYEE'),
-  ('e0000000-0000-4000-8000-000000000003','00000000-0000-4000-8000-000000000003',
+  ('e0000000-0000-4000-8000-000000000003',
    'HQ_IPPDD_OO','onon.or@netgroup.mn','Б.Онон',
    'd0000000-0000-4000-8000-000000000001','Менежер',
-   'e0000000-0000-4000-8000-000000000001','REVIEWER'),
-  -- development-only administrator persona (not a production identity)
-  ('e0000000-0000-4000-8000-000000000004','00000000-0000-4000-8000-000000000004',
-   'DEV_ADMIN','workos-admin@dev.local','WorkOS Admin (dev)',
-   'd0000000-0000-4000-8000-000000000001','System Administrator',null,'ADMIN');
+   'e0000000-0000-4000-8000-000000000001','REVIEWER');
 
 update departments set director_employee_id = 'e0000000-0000-4000-8000-000000000001'
   where code = 'IPPDD';

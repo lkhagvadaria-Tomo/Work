@@ -13,16 +13,13 @@ The app is portable: only `DATABASE_URL` + Supabase Auth env vars differ per env
 ## Supabase setup (exact steps)
 
 1. Create a Supabase project (region close to users).
-2. Apply migrations, in order, to the project database — either
-   `supabase db push` with the Supabase CLI linked to this repo, or run each file in
-   `supabase/migrations/` via the SQL editor / `psql "$SUPABASE_DB_URL"`.
-   `00000000000000_roles.sql` is a no-op there (roles already exist).
-3. Seed: run `supabase/seed.sql`, then generate + run the pilot OKR seed
-   (`python3 scripts/pilot/gen_seed_okr.py` → `supabase/seed_okr.sql`) **or** import via
-   `scripts/import-okr.ts` with the service connection string.
-   ⚠ Production employees: keep only real people; the `WorkOS Admin (dev)` persona row and
-   dev `auth_user_id` UUIDs are for development — remove/replace them in production
-   (`update employees set auth_user_id = null where employee_code = 'DEV_ADMIN'; delete …`).
+2. **One command** (recommended): with the project's direct connection string,
+   `DATABASE_URL='postgresql://postgres:…@db.<project>.supabase.co:5432/postgres' npm run deploy:db`
+   — applies all migrations, the production-safe `seed.sql` (real employees only,
+   `auth_user_id = null`, no dev personas) and the pilot OKR (`seed_okr.sql`), and refuses
+   to run twice against the same database. `supabase/seed_dev.sql` (impersonation
+   personas) is development-only and is **not** applied unless you pass `--dev`.
+   Manual alternative: run the same files in order via the SQL editor / `psql`.
 4. Authentication → Providers → Google: Client ID/Secret from the Workspace admin
    (docs/GOOGLE_DRIVE.md); redirect URL is preconfigured by Supabase.
 5. Authentication → URL configuration: site URL = production `NEXT_PUBLIC_APP_URL`,

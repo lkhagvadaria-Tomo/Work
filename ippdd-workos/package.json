@@ -13,7 +13,9 @@
     "test:rls": "vitest run --dir tests/rls --no-file-parallelism",
     "test:e2e": "playwright test",
     "db:setup": "bash scripts/db/local-setup.sh",
-    "import:okr": "tsx scripts/import-okr.ts"
+    "import:okr": "tsx scripts/import-okr.ts",
+    "setup": "bash scripts/db/local-setup.sh",
+    "deploy:db": "bash scripts/deploy/provision.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

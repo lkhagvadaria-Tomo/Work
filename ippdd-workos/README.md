@@ -37,19 +37,15 @@ workflow, deployment, operations and the security checklist. Decision log:
 
 ```bash
 npm install
-
-# 1. Database: creates the `workos` DB + roles, applies migrations, seeds the
-#    pilot dataset (extracted from the authoritative workbook IPPDD_OKR_Q3_2026-08-01_v1.0)
-npm run db:setup
-
-# 2. Environment
-cp .env.example .env.local
-# defaults work locally: DATABASE_URL to local Postgres, DEV_AUTH=1 for the
-# gated persona login (no Google credentials needed in development)
-
-# 3. Run
-npm run dev            # http://localhost:3000 — log in with a dev persona
+npm run setup   # DB + migrations + seeds (pilot OKR from the authoritative workbook)
+                # and auto-creates .env.local for development
+npm run dev     # http://localhost:3000 — log in with a dev persona
 ```
+
+Монгол хэл дээрх идэвхжүүлэлтийн бүрэн заавар (локал демо + production):
+**`docs/АЖИЛЛУУЛАХ_ЗААВАР.md`**. Production database provisioning is one command:
+`DATABASE_URL='postgresql://…supabase.co…' npm run deploy:db` — applies migrations +
+production-safe seed (no dev personas; `supabase/seed_dev.sql` is development-only).
 
 Dev personas (development only, hard-disabled in production builds):
 `А.Лхагвадарь (пилот ажилтан)`, `Б.Онон (хянагч)`, `О.Мөнх-Эрдэнэ (захирал)`, `WorkOS Admin`.
