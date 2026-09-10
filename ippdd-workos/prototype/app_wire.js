@@ -520,6 +520,7 @@ document.addEventListener("click", function (ev) {
       A.closeKr(d.closekr, v === "" || v == null ? 100 : v); return;
     }
     if (d.dept) { S.deptFilter = d.dept; render(); return; }
+    if (d.page != null) { S.page = Number(d.page); render(); window.scrollTo(0, 0); return; }
     if (d.hoconf != null) {
       A.confirmHandover(wid, d.hoconf === "1", fval(t, "hocmt")); return;
     }
@@ -531,6 +532,7 @@ document.addEventListener("click", function (ev) {
       case "okrRead": readOkrSheet(); break;
       case "okrSave": saveOkrImport(); break;
       case "okrCancel": S.okrPreview = null; render(); break;
+      case "digest": A.digest(); break;
       case "backup": A.backup(); break;
       case "restore": A.restore(fval(t, "restorejson")); break;
       case "loadFw": loadFramework(); break;

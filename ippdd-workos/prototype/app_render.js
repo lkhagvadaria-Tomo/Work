@@ -81,10 +81,17 @@ function vHome() {
   var ws = deptWorks(), open = ws.filter(function (w) { return w.status !== "CLOSED" && w.status !== "CANCELLED"; });
   var overdue = open.filter(function (w) { return w.deadline && w.deadline < TODAY; });
   var krs = krList(), closedKr = krs.filter(function (k) { return k.status === "CLOSED"; }).length;
-  var myRev = S.p === "OO" ? pendingReviews().length : 0;
-  var myApp = S.p === "ME" ? pendingApprovals().length : 0;
+  var myQ = myQueue().length;
+  var soon = open.filter(function (w) {
+    if (!w.deadline || w.deadline < TODAY) return false;
+    var d = (new Date(w.deadline) - new Date(TODAY)) / 86400000;
+    return d <= 7;
+  });
   var multiDept = (S.config.depts || []).length > 1;
-  var rows = ws.map(function (w) {
+  var PAGE = 50, pages = Math.max(1, Math.ceil(ws.length / PAGE));
+  if (S.page >= pages) S.page = 0;
+  var shown = ws.slice(S.page * PAGE, S.page * PAGE + PAGE);
+  var rows = shown.map(function (w) {
     var ho = w.handover;
     return '<tr class="rowlink" data-open="' + esc(w.id) + '"><td class="mono">' + esc(w.code) + "</td>" +
       '<td class="wrap">' + esc(w.title) + '</td>' +
@@ -102,19 +109,35 @@ function vHome() {
     '<div class="stat"><div class="l">KR хаалт</div><div class="v' + (closedKr === krs.length && krs.length ? " good" : "") + '">' + closedKr + "/" + krs.length + "</div></div>" +
     '<div class="stat"><div class="l">Ажлын хаалт</div><div class="v">' + (ws.length - open.length) + "/" + ws.length + "</div></div>" +
     '<div class="stat"><div class="l">Хугацаа хэтэрсэн</div><div class="v' + (overdue.length ? " bad" : " good") + '">' + overdue.length + "</div></div>" +
-    (myRev ? '<div class="stat"><div class="l">Таны хянах ээлж</div><div class="v bad">' + myRev + "</div></div>" : "") +
-    (myApp ? '<div class="stat"><div class="l">Таны батлах ээлж</div><div class="v bad">' + myApp + "</div></div>" : "") +
+    (myQ ? '<div class="stat"><div class="l">Таны шийдэх ээлж</div><div class="v bad">' + myQ + "</div></div>" : "") +
+    (soon.length ? '<div class="stat"><div class="l">7 хоногт дуусах</div><div class="v warn">' + soon.length + "</div></div>" : "") +
     "</div>" +
+    (overdue.length || soon.length
+      ? '<p class="note" style="border-color:var(--warn-line)"><b>Анхаар:</b> ' +
+        (overdue.length ? "хугацаа хэтэрсэн <b>" + overdue.length + "</b> ажил" : "") +
+        (overdue.length && soon.length ? " · " : "") +
+        (soon.length ? "7 хоногт дуусах <b>" + soon.length + "</b> ажил" : "") + " — " +
+        esc(overdue.concat(soon).slice(0, 4).map(function (w) { return w.code + " (" + w.deadline + ")"; }).join(", ")) + "</p>"
+      : "") +
     (!S.seeded && S.live
       ? '<div class="card"><div class="card-b"><p style="margin:0 0 10px"><b>Хамтын сан хоосон байна.</b> Пилот өгөгдлийг (3 зорилт, 10 KR, 5 ажил) нэг товчоор суулгана:</p><button class="btn" data-act="seed">Анхны өгөгдөл суулгах</button></div></div>'
       : "") +
     deptChips() +
-    '<section class="card"><header class="card-h"><h3>Бүх ажил</h3>' +
-    '<button class="btn sm2" data-act="newWork">+ Шинэ ажил</button></header>' +
+    '<section class="card"><header class="card-h"><h3>Бүх ажил (' + ws.length + ")</h3>" +
+    '<span style="display:flex;gap:8px;flex-wrap:wrap">' +
+    (isBoss() ? '<button class="btn sm2 sec" data-act="digest">📋 Мэдэгдэл бэлтгэх</button>' : "") +
+    '<button class="btn sm2" data-act="newWork">+ Шинэ ажил</button></span></header>' +
     '<div class="scroll"><table><thead><tr><th>Код</th><th>Нэр</th>' +
     (multiDept ? "<th>Газар</th>" : "") +
     '<th>KR</th><th>Төлөв</th><th>Хугацаа</th><th>Нотолгоо</th></tr></thead><tbody>' +
-    rows + "</tbody></table></div></section>";
+    rows + "</tbody></table></div>" +
+    (pages > 1
+      ? '<div class="card-b" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' +
+        '<button class="btn sm2 sec" data-page="' + Math.max(0, S.page - 1) + '"' + (S.page === 0 ? " disabled" : "") + ">← Өмнөх</button>" +
+        '<span class="sub" style="margin:0">Хуудас ' + (S.page + 1) + " / " + pages + " · " +
+        (S.page * PAGE + 1) + "–" + Math.min(ws.length, S.page * PAGE + PAGE) + " / " + ws.length + "</span>" +
+        '<button class="btn sm2 sec" data-page="' + Math.min(pages - 1, S.page + 1) + '"' + (S.page >= pages - 1 ? " disabled" : "") + ">Дараах →</button></div>"
+      : "") + "</section>";
 }
 
 function actionButtons(w) {
@@ -629,7 +652,11 @@ function vWorkDetail(w) {
   html += "</div></section></div>";
 
   // audit
-  html += '<section class="card"><header class="card-h"><h3>Түүх (audit)</h3></header><div class="card-b"><ul class="list">' +
+  var vc = verifyAuditChain(w.audit || []);
+  html += '<section class="card"><header class="card-h"><h3>Түүх (audit)</h3>' +
+    (vc.n ? gbadge(vc.ok ? "PASS" : "FAIL") + '<span class="chip">' +
+      (vc.ok ? "гинж бүрэн бүтэн · " + vc.n + " бичлэг" : "⚠ " + vc.broken + "-р бичлэг дээр гинж тасарсан") + "</span>" : "") +
+    '</header><div class="card-b"><ul class="list">' +
     (w.audit || []).slice(0, 20).map(function (a) {
       return '<li><span class="sm">' + esc(a.action) + '</span><span class="sm" style="color:var(--faint)">' +
         esc(a.by) + " · " + fmt(a.ts) + "</span></li>";
@@ -1014,7 +1041,18 @@ function vCheckin() {
   var weighted = 0;
   krs.forEach(function (k) { weighted += (k.objWeight / 100) * (k.weight / 100) * (k.achievement || 0); });
   weighted = Math.round(weighted * 100) / 100;
-  var A2 = ws.map(function (w) { return { w: w, a: assessWork(w) }; });
+  var CAP = 60, tooMany = ws.length > CAP;
+  var wsShown = tooMany
+    ? ws.slice().sort(function (x, y) {
+        function rank(w) {
+          var late = w.status !== "CLOSED" && w.deadline && w.deadline < TODAY ? 0 : 1;
+          var open = w.status !== "CLOSED" ? 0 : 1;
+          return late * 2 + open;
+        }
+        return rank(x) - rank(y) || (x.deadline || "9999") < (y.deadline || "9999") ? -1 : 1;
+      }).slice(0, CAP)
+    : ws;
+  var A2 = wsShown.map(function (w) { return { w: w, a: assessWork(w) }; });
   var full = A2.filter(function (x) { return x.a.cls === "ok"; }).length;
   var ready = A2.filter(function (x) { return x.a.cls === "mid"; }).length;
   var gap = A2.filter(function (x) { return x.a.cls === "bad"; }).length;
@@ -1055,7 +1093,8 @@ function vCheckin() {
     }).join("") + "</tbody></table></div></section>";
 
   // ажил тус бүрийн үнэлгээ
-  html += '<h3 style="margin:18px 0 10px;font-size:15px">Ажил тус бүрийн үнэлгээ (' + ws.length + ")</h3>";
+  html += '<h3 style="margin:18px 0 10px;font-size:15px">Ажил тус бүрийн үнэлгээ (' +
+    A2.length + (tooMany ? " / " + ws.length : "") + ")</h3>";
   A2.forEach(function (x) {
     var w = x.w, a = x.a;
     var finals = (w.deliverables || []).filter(function (d) { return d.final; }).length;
@@ -1086,6 +1125,9 @@ function vCheckin() {
         : "") +
       "</div>";
   });
+  if (tooMany) html += '<p class="note" style="border-color:var(--warn-line)">Энэ шүүлтэд ' + ws.length +
+    " ажил байна — хурдны үүднээс хугацаа хэтэрсэн, нээлттэй ажлыг эхэлж " + CAP +
+    "-г харууллаа. Газраар шүүж (дээд талын чип) бүрэн жагсаалтыг хэсэгчлэн үзнэ үү.</p>";
   html += '<p class="note">Энэ тайлан хэвлэхэд бэлэн (🖨 товч → PDF болгон хадгалж хуралд авч орно). Дүгнэлтийн тайлбар: «Бүрэн» = гейт + sign-off + хүлээн авалт; «Хаахад бэлэн» = гейт FAIL биш; «Дутагдалтай» = гейтийн улаан дутагдалтай.</p>';
   return html;
 }

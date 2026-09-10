@@ -20,7 +20,8 @@ var S = {
   eomBusy: false, eomWid: null, eomProg: null,
   dcLinks: "", dcBusy: false, dcProg: null, dcResult: null,
   fw: null, fwBusy: false, fwProg: null, auditBusy: false, auditWid: null, auditProg: null,
-  okrLink: "", okrBusy: false, okrProg: null, okrPreview: null, okrOwner: null
+  okrLink: "", okrBusy: false, okrProg: null, okrPreview: null, okrOwner: null,
+  page: 0
 };
 
 function loadSession() {
@@ -113,8 +114,11 @@ function loadLocalSeed() {
 }
 function audit(w, action) {
   w.audit = w.audit || [];
-  w.audit.unshift({ ts: now(), by: me().name, action: action });
-  if (w.audit.length > 40) w.audit.length = 40;
+  var prev = w.audit[0] ? w.audit[0].h : null;
+  var e = { ts: now(), by: me().name, action: action };
+  e.h = chainHash(prev, e);
+  w.audit.unshift(e);
+  if (w.audit.length > 200) w.audit.length = 200;
 }
 var WORK_ARRAYS = ["deliverables", "evidence", "reviews", "approvals", "impl", "endorsements"];
 /* Өөр хэрэглэгчийн зэрэг нэмсэн бичлэгийг үл дарах — id-гаар нэгтгэнэ.
@@ -497,6 +501,42 @@ var A = {
     var id = "U" + Date.now().toString(36).toUpperCase().slice(-5);
     saveUser({ id: id, name: f.name.trim(), email: f.email.trim(), role: f.role, dept: f.dept });
     toast(f.name.trim() + " нэмэгдлээ — нэвтрэх жагсаалтад орсон");
+  },
+  digest: function () {
+    must(isBoss(), "Мэдэгдлийг захирал, CIO бэлтгэнэ");
+    var lines = ["Нэткапитал WorkOS — " + (S.meta ? S.meta.code : "") + " · " + TODAY, ""];
+    var byPerson = {};
+    workList().forEach(function (w) {
+      function add(who, txt) { (byPerson[who] = byPerson[who] || []).push(txt); }
+      if (w.status !== "CLOSED" && w.deadline && w.deadline < TODAY)
+        add(w.owner, "⏰ ХУГАЦАА ХЭТЭРСЭН " + w.code + " (" + w.deadline + ") — " + w.title);
+      (w.approvals || []).forEach(function (a) {
+        if (a.decision === "PENDING") add(w.approver, "✍ Хянаж батлах: " + w.code + " — " + w.title);
+      });
+      (w.reviews || []).forEach(function (r) {
+        if (r.decision === "PENDING") add(w.reviewer, "🔍 Хяналт (" + r.type + "): " + w.code);
+      });
+      if (w.closure && w.closure.status === "READY") add(w.approver, "🖊 Хаалтын sign-off: " + w.code);
+      if (w.handover && w.handover.status === "PENDING") add(w.handover.to, "📦 Хүлээн авалт баталгаажуулах: " + w.code);
+      if (w.status !== "CLOSED" && (w.approvals || []).some(function (a) { return a.decision === "APPROVE"; }) &&
+          !(w.cioSign && w.cioSign.decision === "APPROVE"))
+        Object.values(S.users).forEach(function (u) {
+          if ((u.role || "").indexOf("CIO") >= 0) add(u.id, "✅ CIO зөвшөөрөлт: " + w.code);
+        });
+    });
+    Object.keys(byPerson).forEach(function (uid2) {
+      lines.push(U(uid2).name + " (" + (U(uid2).email || "и-мэйл алга") + "):");
+      byPerson[uid2].forEach(function (t) { lines.push("  " + t); });
+      lines.push("");
+    });
+    if (!Object.keys(byPerson).length) lines.push("Хүлээгдэж буй зүйл алга.");
+    lines.push("— Дэлгэрэнгүй: " + location.href);
+    var txt = lines.join("\n");
+    if (navigator.clipboard && navigator.clipboard.writeText)
+      navigator.clipboard.writeText(txt).then(function () {
+        toast("Мэдэгдэл clipboard-д хууллаа — Chat/и-мэйлээр илгээнэ үү");
+      }).catch(function () { toast("Clipboard-д хуулж чадсангүй", true); });
+    else toast("Энэ хөтөч clipboard дэмжихгүй", true);
   },
   backup: function () {
     must(isBoss(), "Нөөшлөлтийг захирал, CIO хийнэ");

@@ -29,6 +29,33 @@ var EOM_CRITERIA = [
   { id: "RISK",    t: "Эрсдэл/нийцэл: Classification (Internal/Confidential), эскалацийн зам, PII/PDP хамрах бол хязгаар", ref: "EOM §2.9 · Three Lines of Defense" },
   { id: "LOG",     t: "Change Log: хувилбар бүрийн огноо, өөрчлөлт, үндэслэл, зохиогч", ref: "EOM §2.4 audit-readiness" }
 ];
+/* Аудитын гинжний хэш — тэмдэглэл бүр өмнөхтэйгээ холбогдоно.
+   Бичих эрхтэй хүн бүх гинжийг дахин бичиж чадах ч НЭГ бичлэг чимхэхэд гинж тасарч
+   илэрнэ (tamper-evident). Нөөц хуулбартай тулгавал бүрэн баталгаа болно. */
+function chainHash(prev, entry) {
+  var str = String(prev || "0") + "|" + entry.ts + "|" + entry.by + "|" + entry.action;
+  var h1 = 0x811c9dc5, h2 = 0x01000193;
+  for (var i = 0; i < str.length; i++) {
+    var c = str.charCodeAt(i);
+    h1 = ((h1 ^ c) * 16777619) >>> 0;
+    h2 = ((h2 + c * 31) ^ (h2 << 5)) >>> 0;
+  }
+  return ("0000000" + h1.toString(16)).slice(-8) + ("0000000" + h2.toString(16)).slice(-8);
+}
+/* Гинжийг эхнээс нь дахин тооцож шалгана. Буцаах: {ok, broken: index|null, n} */
+function verifyAuditChain(list) {
+  var arr = (list || []).slice().reverse(); // хуучнаас шинэ рүү
+  var prev = null;
+  for (var i = 0; i < arr.length; i++) {
+    var e = arr[i];
+    if (!e.h) { prev = null; continue; } // хуучин бичлэг хэшгүй — алгасна
+    var expect = chainHash(prev, e);
+    if (e.h !== expect) return { ok: false, broken: arr.length - i, n: arr.length };
+    prev = e.h;
+  }
+  return { ok: true, broken: null, n: arr.length };
+}
+
 /* Хүрээний (framework) баримтын нэрээс төрөл, хувилбар, огноог тодорхойлно.
    Жишээ: IPPDD_Investement_Product_Governance_policy_2026-08-05_v5.0 */
 var FW_KINDS = [
@@ -238,5 +265,5 @@ if (typeof module !== "undefined" && module.exports) {
   module.exports = { PROFILES: PROFILES, profileOf: profileOf, TRANSITIONS: TRANSITIONS,
     canGo: canGo, closableFrom: closableFrom, evaluateGate: evaluateGate, metricOk: metricOk,
     eomSig: eomSig, EOM_CRITERIA: EOM_CRITERIA, driveRef: driveRef,
-    fwMeta: fwMeta, FW_KINDS: FW_KINDS };
+    fwMeta: fwMeta, FW_KINDS: FW_KINDS, chainHash: chainHash, verifyAuditChain: verifyAuditChain };
 }

@@ -218,7 +218,13 @@
   .chip{background:var(--surface-2); border:1px solid var(--border); color:var(--muted);
     border-radius:99px; font-size:11px; font-weight:600; padding:2px 10px; white-space:nowrap}
 
-  .scroll{overflow-x:auto}
+  .scroll{overflow-x:auto; -webkit-overflow-scrolling:touch}
+  /* Нарийн дэлгэцэнд багана шахагдахын оронд хэвтээ гүйлгэнэ */
+  @media (max-width:760px){
+    .scroll table{min-width:680px}
+    main h1{font-size:clamp(19px,5.2vw,26px)}
+    .ci-work{padding:13px 14px}
+  }
   table{border-collapse:collapse; width:100%}
   th{text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.08em;
     color:var(--muted); padding:9px 15px; border-bottom:1px solid var(--border);
