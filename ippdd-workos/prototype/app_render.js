@@ -23,6 +23,42 @@ function pendingApprovals() {
   });
   return out;
 }
+/* Надад хүлээгдэж буй БҮХ зүйл — нэг дараалал */
+function myQueue() {
+  var out = [];
+  workList().forEach(function (w) {
+    if (S.p === w.owner) return; // өөрийн ажлаа өөрөө шийдэхгүй
+    (w.reviews || []).forEach(function (r) {
+      if (r.decision === "PENDING" && (S.p === w.reviewer || isBoss()))
+        out.push({ w: w, kind: "rev", r: r, t: "Хяналт (" + r.type + ")" });
+    });
+    (w.approvals || []).forEach(function (a) {
+      if (a.decision === "PENDING" && (S.p === w.approver || isBoss()))
+        out.push({ w: w, kind: "app", a: a, t: "Хянаж батлах" });
+    });
+    if (isCio() && !(w.cioSign && w.cioSign.decision === "APPROVE") &&
+        (w.approvals || []).some(function (a) { return a.decision === "APPROVE"; }) && w.status !== "CLOSED")
+      out.push({ w: w, kind: "cio", t: "CIO хүлээн зөвшөөрөлт" });
+    if (w.closure && w.closure.status === "READY" && (S.p === w.approver || isBoss()))
+      out.push({ w: w, kind: "sign", t: "Хаалтын sign-off" });
+    if (w.handover && w.handover.status === "PENDING" && S.p === w.handover.to)
+      out.push({ w: w, kind: "hoconf", t: "Хүлээн авалт баталгаажуулах" });
+  });
+  return out;
+}
+
+/* KR-ийн эзэмшил ба шатлал */
+function krOwner(k) { return k.owner || "LA"; }
+function myKrs() { return krList().filter(function (k) { return krOwner(k) === S.p; }); }
+function childKrs(id) { return krList().filter(function (k) { return k.parent === id; }); }
+function krWorks(id) { return workList().filter(function (w) { return w.kr === id; }); }
+function krProgress(k) {
+  var ws = krWorks(k.id);
+  var closed = ws.filter(function (w) { return w.status === "CLOSED"; }).length;
+  var late = ws.filter(function (w) { return w.status !== "CLOSED" && w.deadline && w.deadline < TODAY; }).length;
+  return { works: ws.length, closed: closed, late: late, ach: Number(k.achievement) || 0 };
+}
+
 function fmt(ts) { return ts ? new Date(ts).toLocaleString("mn-MN", { dateStyle: "short", timeStyle: "short" }) : "—"; }
 
 function deptChips() {
@@ -81,49 +117,15 @@ function vHome() {
     rows + "</tbody></table></div></section>";
 }
 
-function vOkr() {
-  var groups = {};
-  krList().forEach(function (k) { (groups[k.obj] = groups[k.obj] || []).push(k); });
-  var canCloseQ = S.p === "ME" && krList().length && krList().every(function (k) { return k.status === "CLOSED"; }) &&
-    !(S.meta && S.meta.closure);
-  var html = "<h1>Миний OKR — " + esc(S.meta ? S.meta.code : "") + "</h1>" +
-    '<p class="sub">Эх сурвалж: IPPDD_OKR_Q3_2026-08-01_v1.0 workbook (үг үсгээр нь)</p>';
-  Object.keys(groups).sort().forEach(function (obj) {
-    var ks = groups[obj];
-    var rows = ks.map(function (k) {
-      var open = openWorks().filter(function (w) { return w.kr === k.id; }).length;
-      var canClose = S.p === "ME" && k.status !== "CLOSED" && open === 0 &&
-        workList().some(function (w) { return w.kr === k.id; });
-      return "<tr><td class='mono'>" + esc(k.code) + "</td><td class='wrap'>" + esc(k.title) + "</td>" +
-        "<td class='num'>" + k.weight + "%</td><td class='num'>" + esc(k.deadline || "—") + "</td>" +
-        "<td>" + badge(k.status === "CLOSED" ? "Хаагдсан" : k.status === "IN_PROGRESS" ? "Хийгдэж байна" : "Эхлээгүй",
-          k.status === "CLOSED" ? "pass" : k.status === "IN_PROGRESS" ? "info" : "muted") + "</td>" +
-        "<td class='num'>" +
-        (S.p === "LA" && k.status !== "CLOSED"
-          ? '<input type="number" min="0" max="100" value="' + (k.achievement || 0) + '" style="width:70px" data-krach="' + esc(k.id) + '" aria-label="Гүйцэтгэл">%'
-          : (k.achievement || 0) + "%") + "</td>" +
-        "<td class='num'>" + open + "</td>" +
-        "<td>" + (canClose
-          ? '<button class="btn sm2 pass" data-closekr="' + esc(k.id) + '">KR хаах</button>'
-          : k.status === "CLOSED" ? '<span class="sm" style="color:var(--pass-ink)">✓ ' + esc(k.closedBy || "") + "</span>" : "") + "</td></tr>";
-    }).join("");
-    html += '<section class="card"><header class="card-h"><h3>' + esc(obj) + " · " + esc(ks[0].objTitle) +
-      '</h3><span class="chip">жин ' + ks[0].objWeight + '%</span></header>' +
-      '<div class="scroll"><table><thead><tr><th>KR</th><th>Нэр</th><th>Жин</th><th>Хугацаа</th><th>Төлөв</th><th>Гүйцэтгэл</th><th>Нээлттэй ажил</th><th></th></tr></thead><tbody>' +
-      rows + "</tbody></table></div></section>";
-  });
-  if (canCloseQ) html += '<div class="card"><div class="card-b"><p style="margin:0 0 10px"><b>Бүх KR хаагдсан.</b> Улирлын хаалтад гарын үсэг зурж, байнгын бүртгэл (гэрчилгээ) үүсгэнэ:</p><button class="btn pass" data-act="closeq">Улирлын хаалт — SIGN OFF</button></div></div>';
-  if (S.meta && S.meta.closure) html += '<p class="note">Улирал хаагдсан — гэрчилгээ «Тайлан» хэсэгт.</p>';
-  return html;
-}
-
 function actionButtons(w) {
   var b = [];
   var isOwner = S.p === w.owner;
   if (isOwner && w.status === "NOT_STARTED") b.push('<button class="btn" data-act="start">START WORK</button>');
-  if (isOwner && w.status === "IN_PROGRESS" && !profileOf(w).simplified) b.push('<button class="btn" data-act="submitReview">SUBMIT FOR REVIEW</button>');
+  if (isOwner && w.status === "IN_PROGRESS" && !profileOf(w).simplified)
+    b.push('<button class="btn" data-act="submitReview">' +
+      (profileOf(w).reviews.length ? "ХАРААТ ХЯНАЛТАД ИЛГЭЭХ" : "ЗАХИРАЛД ХЯНУУЛЖ БАТЛУУЛАХ") + "</button>");
   if (isOwner && ["RETURNED", "REJECTED", "BLOCKED"].indexOf(w.status) >= 0) b.push('<button class="btn" data-act="resubmit">RESUBMIT</button>');
-  if (isOwner && w.status === "REVIEW_PASSED") b.push('<button class="btn" data-act="requestApproval">REQUEST APPROVAL</button>');
+  if (isOwner && w.status === "REVIEW_PASSED") b.push('<button class="btn" data-act="requestApproval">ЗАХИРАЛД ХЯНУУЛЖ БАТЛУУЛАХ</button>');
   if (isOwner && closableFrom(w) && !(w.closure && w.closure.status === "READY")) b.push('<button class="btn pass" data-act="submitClosure">SUBMIT FOR CLOSURE</button>');
   if (isOwner && profileOf(w).selfqc && w.status !== "NOT_STARTED" && w.status !== "CLOSED" &&
       !(w.reviews || []).some(function (r) { return r.type === "SELF_QC" && r.decision === "PASS"; }))
@@ -138,6 +140,179 @@ function decideForm(kind, extra) {
     '<button class="btn sm2 pass" data-' + kind + '="' + (kind === "sign" ? "APPROVE" : kind === "rev" ? "PASS" : "APPROVE") + '"' + (extra || "") + ">" + (kind === "sign" ? "SIGN OFF" : kind === "rev" ? "PASS" : "APPROVE") + "</button>" +
     '<button class="btn sm2 warn" data-' + kind + '="RETURN"' + (extra || "") + ">RETURN</button>" +
     '<button class="btn sm2 fail" data-' + kind + '="REJECT"' + (extra || "") + ">REJECT</button></div></div>";
+}
+
+function krRow(k, editable) {
+  var pr = krProgress(k);
+  var kids = childKrs(k.id);
+  return "<tr><td class='mono'>" + esc(k.code) + "</td><td class='wrap'>" + esc(k.title) + "</td>" +
+    "<td class='num'>" + (k.weight || 0) + "%</td><td class='num'>" + esc(k.deadline || "—") + "</td>" +
+    "<td>" + badge(k.status === "CLOSED" ? "Хаагдсан" : k.status === "IN_PROGRESS" ? "Хийгдэж байна" : "Эхлээгүй",
+      k.status === "CLOSED" ? "pass" : k.status === "IN_PROGRESS" ? "info" : "muted") + "</td>" +
+    "<td class='num'>" +
+    (editable && k.status !== "CLOSED"
+      ? '<input type="number" min="0" max="100" value="' + pr.ach + '" style="width:70px" data-krach="' + esc(k.id) + '" aria-label="Гүйцэтгэл">%'
+      : pr.ach + "%") + "</td>" +
+    "<td class='num'>" + pr.works + (pr.late ? ' <span class="late">(' + pr.late + " хоцорсон)</span>" : "") + "</td>" +
+    "<td class='num'>" + (kids.length || "—") + "</td>" +
+    "<td>" + (isBoss() && S.p !== krOwner(k) && k.status !== "CLOSED" && pr.works && !openWorks().some(function (w) { return w.kr === k.id; })
+      ? '<button class="btn sm2 pass" data-closekr="' + esc(k.id) + '">KR хаах</button>'
+      : k.status === "CLOSED" ? '<span class="sm" style="color:var(--pass-ink)">✓ ' + esc(k.closedBy || "") + "</span>" : "") + "</td></tr>";
+}
+
+function krTable(ks, editable) {
+  return '<div class="scroll"><table><thead><tr><th>KR</th><th>Нэр</th><th>Жин</th><th>Хугацаа</th><th>Төлөв</th>' +
+    "<th>Гүйцэтгэл</th><th>Ажил</th><th>Дэд KR</th><th></th></tr></thead><tbody>" +
+    ks.map(function (k) { return krRow(k, editable); }).join("") + "</tbody></table></div>";
+}
+
+/* Захирал/CIO-гийн OKR доошоо буусан байдал: KR → хэнд хуваарилагдсан → тэр хүн хэрхэн хийж байгаа */
+function vCascade(owner) {
+  var mine = krList().filter(function (k) { return krOwner(k) === owner; });
+  var linked = mine.filter(function (k) { return childKrs(k.id).length; });
+  var html = '<section class="card"><header class="card-h"><h3>Доош хуваарилалт (cascade) — хэн юу хийж байна</h3>' +
+    '<span class="chip">' + linked.length + "/" + mine.length + " KR хуваарилагдсан</span></header><div class='card-b'>";
+  if (!mine.length) return html + '<p class="sub" style="margin:0">Энэ хүнд бүртгэгдсэн KR алга.</p></div></section>';
+  if (!linked.length) html += '<p class="sub" style="margin:0 0 10px">Одоогоор дэд KR холбогдоогүй. Доорх хүснэгтээс ' +
+    "ажилтны KR бүрд «эх KR»-ийг сонгоод шатлалыг үүсгэнэ.</p>";
+  linked.forEach(function (k) {
+    var kids = childKrs(k.id);
+    var totalAch = 0;
+    kids.forEach(function (c) { totalAch += Number(c.achievement) || 0; });
+    var avg = kids.length ? Math.round(totalAch / kids.length) : 0;
+    html += '<div class="ci-work"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">' +
+      "<span><b class='mono'>" + esc(k.code) + "</b> " + esc(k.title) + "</span>" +
+      '<span class="chip">дэд гүйцэтгэл ' + avg + "%</span></div>";
+    kids.forEach(function (c) {
+      var pr = krProgress(c), ws = krWorks(c.id);
+      html += '<div class="ci-dod" style="margin-top:8px"><b>' + esc(U(krOwner(c)).name) + "</b> · " +
+        esc(U(krOwner(c)).dept) + " — <span class='mono'>" + esc(c.code) + "</span> " + esc(c.title) + "</div>" +
+        '<div class="ci-facts">' +
+        '<span>Гүйцэтгэл: <b>' + pr.ach + "%</b></span>" +
+        "<span>Ажил: <b>" + pr.closed + "/" + pr.works + "</b> хаагдсан</span>" +
+        (pr.late ? '<span class="late">Хоцорсон: <b>' + pr.late + "</b></span>" : "") +
+        "<span>Төлөв: " + esc(c.status === "CLOSED" ? "хаагдсан" : c.status === "IN_PROGRESS" ? "хийгдэж байна" : "эхлээгүй") + "</span>" +
+        "</div>";
+      if (ws.length) html += '<ul class="list" style="margin-top:6px">' + ws.map(function (w) {
+        var a = assessWork(w);
+        return '<li><span class="sm"><button class="backlink" data-open="' + esc(w.id) + '" style="font-size:12px">' +
+          esc(w.code) + "</button> " + esc(w.title) + "</span>" +
+          '<span class="verdict ' + a.cls + '">' + esc(a.verdict) + "</span></li>";
+      }).join("") + "</ul>";
+      else html += '<p class="sub" style="margin:6px 0 0">Энэ KR-д ажил бүртгэгдээгүй.</p>';
+    });
+    html += "</div>";
+  });
+  // ажилтан бүрээр нэгтгэл
+  var byOwner = {};
+  krList().forEach(function (c) {
+    if (!c.parent) return;
+    var o = krOwner(c);
+    var b = byOwner[o] = byOwner[o] || { krs: 0, ach: 0, works: 0, closed: 0, late: 0 };
+    var pr = krProgress(c);
+    b.krs++; b.ach += pr.ach; b.works += pr.works; b.closed += pr.closed; b.late += pr.late;
+  });
+  var owners = Object.keys(byOwner);
+  if (owners.length) html += '<p class="sub" style="margin:14px 0 6px"><b>Ажилтан тус бүрээр</b></p>' +
+    '<div class="scroll"><table><thead><tr><th>Ажилтан</th><th>Газар</th><th>Дэд KR</th><th>Дундаж гүйцэтгэл</th>' +
+    "<th>Ажил (хаагдсан/нийт)</th><th>Хоцорсон</th></tr></thead><tbody>" +
+    owners.map(function (o) {
+      var b = byOwner[o];
+      return "<tr><td><b>" + esc(U(o).name) + "</b></td><td>" + esc(U(o).dept) + "</td><td class='num'>" + b.krs +
+        "</td><td class='num'>" + Math.round(b.ach / b.krs) + "%</td><td class='num'>" + b.closed + "/" + b.works +
+        "</td><td class='num'>" + (b.late ? '<span class="late">' + b.late + "</span>" : "0") + "</td></tr>";
+    }).join("") + "</tbody></table></div>";
+  return html + "</div></section>";
+}
+
+/* Ажилтны KR-ийг дээд шатны KR-т холбох (шатлал үүсгэх) */
+function vCascadeLink() {
+  var others = krList().filter(function (k) { return krOwner(k) !== S.p; });
+  if (!others.length) return "";
+  var mine = krList().filter(function (k) { return krOwner(k) === S.p; });
+  if (!mine.length) return "";
+  return '<details class="adder"><summary>Шатлал холбох — ажилтны KR аль эх KR-т харьяалагдах</summary><div>' +
+    '<div class="scroll"><table><thead><tr><th>Ажилтны KR</th><th>Эзэн</th><th>Эх KR (миний)</th></tr></thead><tbody>' +
+    others.map(function (k) {
+      return "<tr><td class='wrap'><b class='mono'>" + esc(k.code) + "</b> " + esc(k.title.slice(0, 70)) +
+        "</td><td>" + esc(U(krOwner(k)).name) + "</td><td><select data-krparent=\"" + esc(k.id) + "\">" +
+        '<option value="">— холбоогүй —</option>' +
+        mine.map(function (m) {
+          return '<option value="' + esc(m.id) + '"' + (k.parent === m.id ? " selected" : "") + ">" +
+            esc(m.code) + " · " + esc(m.title.slice(0, 40)) + "</option>";
+        }).join("") + "</select></td></tr>";
+    }).join("") + "</tbody></table></div></div></details>";
+}
+
+function vOkrImport() {
+  var pv = S.okrPreview;
+  var uopts = Object.values(S.users).map(function (u) {
+    return '<option value="' + esc(u.id) + '"' + ((S.okrOwner || S.p) === u.id ? " selected" : "") + ">" +
+      esc(u.name) + " (" + esc(u.dept) + ")</option>";
+  }).join("");
+  var myK = krList().filter(function (k) { return krOwner(k) === S.p; });
+  return '<section class="card"><header class="card-h"><h3>OKR импорт — Google Sheet линкээр</h3></header><div class="card-b">' +
+    '<p class="sub" style="margin:0 0 8px">Хүн бүрийн OKR тусдаа. Өөрийн (эсвэл ажилтны) OKR хүснэгтийн линкийг тавихад ' +
+    "агуулгыг уншиж зорилт, KR, жин, хугацаа, гүйцэтгэлийг задлан импортолно. <b>Уншилт нь энэ хуудсыг нээсэн хүний " +
+    "өөрийн Google эрхээр явна</b> — өөрийн OKR-ээ өөрөө импортлоно.</p>" +
+    '<div class="frow" style="align-items:flex-end">' +
+    '<label class="field" style="flex:2"><span>Google Sheet линк</span><input type="url" data-f="okrlink" value="' +
+    esc(S.okrLink || "") + '" placeholder="https://docs.google.com/spreadsheets/d/…"></label>' +
+    '<label class="field"><span>Эзэмшигч</span><select data-f="okrowner">' + uopts + "</select></label>" +
+    '<button class="btn sm2" data-act="okrRead"' + (S.okrBusy ? " disabled" : "") +
+    ' style="margin-bottom:9px">✦ Унших</button></div>' +
+    (S.okrBusy ? '<p class="note">' + esc(S.okrProg || "Ажиллаж байна…") + "</p>" : "") +
+    (pv ? '<p class="sub" style="margin:10px 0 4px"><b>Урьдчилан харах — ' + pv.rows.length + " KR</b>" +
+        (pv.source ? " · эх сурвалж: " + esc(pv.source) : "") + "</p>" +
+        '<div class="scroll"><table><thead><tr><th>Зорилт</th><th>KR</th><th>Нэр</th><th>Жин</th><th>Хугацаа</th><th>Гүйцэтгэл</th></tr></thead><tbody>' +
+        pv.rows.map(function (r) {
+          return "<tr><td class='mono'>" + esc(r.obj || "") + "</td><td class='mono'>" + esc(r.code || "") +
+            "</td><td class='wrap'>" + esc((r.title || "").slice(0, 90)) + "</td><td class='num'>" + esc(String(r.weight || 0)) +
+            "%</td><td class='num'>" + esc(r.deadline || "—") + "</td><td class='num'>" + esc(String(r.achievement || 0)) + "%</td></tr>";
+        }).join("") + "</tbody></table></div>" +
+        '<div class="frow" style="margin-top:10px;align-items:flex-end">' +
+        (myK.length ? '<label class="field"><span>Эх KR (сонголтоор)</span><select data-f="okrparent">' +
+          '<option value="">— холбоогүй —</option>' +
+          myK.map(function (m) { return '<option value="' + esc(m.id) + '">' + esc(m.code) + " · " + esc(m.title.slice(0, 40)) + "</option>"; }).join("") +
+          "</select></label>" : "") +
+        '<button class="btn sm2 pass" data-act="okrSave" style="margin-bottom:9px">Импортлох</button>' +
+        '<button class="btn sm2 sec" data-act="okrCancel" style="margin-bottom:9px">Болих</button></div>'
+      : "") +
+    "</div></section>";
+}
+
+function vOkr() {
+  var mine = myKrs();
+  var meName = esc(me().name);
+  var groups = {};
+  mine.forEach(function (k) { (groups[k.obj] = groups[k.obj] || []).push(k); });
+  var canCloseQ = isBoss() && krList().length && krList().every(function (k) { return k.status === "CLOSED"; }) &&
+    !(S.meta && S.meta.closure);
+  var html = "<h1>Миний OKR — " + meName + " · " + esc(S.meta ? S.meta.code : "") + "</h1>" +
+    '<p class="sub">Энэ хуудсанд <b>таны өөрийн</b> OKR харагдана. Хүн бүрийн OKR тусдаа: захирал, CIO өөрийн OKR-тэй, ' +
+    "ажилтан өөрийнхөө KR-тэй. Захирал/CIO доор нь хуваарилалтаа (cascade) харна.</p>";
+  if (!mine.length) {
+    html += '<div class="card"><div class="card-b"><p class="sub" style="margin:0">' + meName +
+      "-д бүртгэгдсэн KR алга. Доорх «OKR импорт»-оор Google Sheet линкээсээ оруулна уу.</p></div></div>";
+  }
+  Object.keys(groups).sort().forEach(function (obj) {
+    var ks = groups[obj];
+    html += '<section class="card"><header class="card-h"><h3>' + esc(obj) + (ks[0].objTitle ? " · " + esc(ks[0].objTitle) : "") +
+      '</h3><span class="chip">жин ' + (ks[0].objWeight || 0) + '%</span></header>' +
+      krTable(ks, true) + "</section>";
+  });
+  if (isBoss()) {
+    html += vCascade(S.p);
+    html += '<section class="card"><header class="card-h"><h3>Бүх хүний KR (шатлал холбох)</h3>' +
+      '<span class="chip">' + krList().length + " KR</span></header><div class='card-b'>" +
+      vCascadeLink() + "</div></section>";
+    html += vOkrImport();
+  } else {
+    html += vOkrImport();
+  }
+  if (canCloseQ) html += '<div class="card"><div class="card-b"><p style="margin:0 0 10px"><b>Бүх KR хаагдсан.</b> Улирлын хаалтад гарын үсэг зурж, байнгын бүртгэл (гэрчилгээ) үүсгэнэ:</p><button class="btn pass" data-act="closeq">Улирлын хаалт — SIGN OFF</button></div></div>';
+  if (S.meta && S.meta.closure) html += '<p class="note">Улирал хаагдсан — гэрчилгээ «Тайлан» хэсэгт.</p>';
+  return html;
 }
 
 function vWorkDetail(w) {
@@ -805,7 +980,16 @@ function vAdmin() {
     '<label class="field"><span>Эрх</span><select data-f="au_role"><option>Ажилтан</option><option>Хянагч</option><option>Захирал</option></select></label>' +
     '<button class="btn sm2" data-act="addUser" style="margin-bottom:10px">Нэмэх</button></div>' +
     '<p class="sub" style="margin:10px 0 0;font-size:11.5px">Албан ёсны системд хэрэглэгч Google Workspace и-мэйлээрээ нэвтэрч, эрх нь автоматаар холбогдоно.</p>' +
-    "</div></section></div>";
+    "</div></section></div>" +
+    '<section class="card"><header class="card-h"><h3>Өгөгдөл нөөшлөх / сэргээх</h3></header><div class="card-b">' +
+    '<p class="sub" style="margin:0 0 8px">Бүх ажил, KR, хэрэглэгч, тохиргоог JSON хэлбэрээр хуулж авна (clipboard). ' +
+    "Долоо хоног тутам нөөшлөж, аюулгүй хавтаст хадгалахыг зөвлөнө — прототипийн дата зөвхөн энэ хамтын санд байдаг.</p>" +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+    '<button class="btn sm2 sec" data-act="backup">📋 Нөөц хуулбар авах (JSON)</button>' +
+    '<button class="btn sm2 sec" data-act="restore">Сэргээх (JSON буулгах)</button></div>' +
+    '<label class="field" style="margin-top:10px"><span>Сэргээх JSON</span>' +
+    '<textarea data-f="restorejson" rows="3" style="width:100%;font-family:var(--mono);font-size:11px" placeholder="Нөөц JSON-оо энд буулгаад «Сэргээх» дарна"></textarea></label>' +
+    "</div></section>";
 }
 
 function assessWork(w) {
@@ -906,31 +1090,43 @@ function vCheckin() {
   return html;
 }
 
-function vQueue(kind) {
-  var isRev = kind === "rev";
-  var items = isRev ? pendingReviews() : pendingApprovals();
-  var mine = items.filter(function (x) { return isRev ? S.p === x.w.reviewer : S.p === x.w.approver; });
-  var html = "<h1>" + (isRev ? "Хянагчийн дараалал" : "Батлагчийн дараалал") + "</h1>" +
-    '<p class="sub">' + (isRev ? "Танд оногдсон review-үүд. RETURN/REJECT-д тайлбар заавал." :
-      "Танд оногдсон батлал ба хаалтын sign-off-ууд.") + "</p>";
-  if (!mine.length) return html + '<div class="card"><div class="card-b"><p class="sub" style="margin:0">' +
-    (items.length ? "Энэ хүлээлт өөр хүнд оногдсон (" + esc(me().name) + " биш)." : "Хүлээгдэж буй зүйл алга.") + "</p></div></div>";
-  mine.forEach(function (x) {
+function vQueue() {
+  var items = myQueue();
+  var html = "<h1>Миний дараалал</h1>" +
+    '<p class="sub">Надаас шийдвэр хүлээж буй бүх зүйл нэг дор: хяналт, хянаж батлах, CIO зөвшөөрөлт, ' +
+    "хаалтын sign-off, хүлээн авалтын баталгаажуулалт. Өөрийн ажлыг өөрөө шийдэхгүй.</p>";
+  if (!items.length) return html + '<div class="card"><div class="card-b"><p class="sub" style="margin:0">' +
+    "Хүлээгдэж буй зүйл алга — таны шийдвэр шаардсан ажил одоогоор байхгүй.</p></div></div>";
+  items.forEach(function (x) {
     var w = x.w;
     html += '<section class="card"><header class="card-h"><h3><button class="backlink" data-open="' + esc(w.id) + '" style="font-size:13.5px">' +
-      esc(w.code) + "</button> — " + esc(w.title) + "</h3>" + wbadge(w.status) + '</header><div class="card-b">';
-    if (x.sign) {
-      html += '<p class="sub">Хаалтын sign-off · гейт: ' + (w.gate ? w.gate.result : "?") + " · хүссэн: " + esc(w.closure.requestedBy) + "</p>" +
-        decideForm("sign", ' data-wid="' + esc(w.id) + '"');
-    } else if (isRev) {
-      html += '<p class="sub">Review төрөл: <b>' + esc(x.r.type) + "</b> · Эзэмшигч: " + esc(U(w.owner).name) +
-        " · Эцсийн deliverable: " + (w.deliverables || []).filter(function (d) { return d.final; }).length +
+      esc(w.code) + "</button> — " + esc(w.title) + "</h3>" +
+      '<span class="chip">' + esc(x.t) + "</span>" + wbadge(w.status) + '</header><div class="card-b">';
+    if (x.kind === "rev") {
+      html += '<p class="sub">Эзэмшигч: ' + esc(U(w.owner).name) + " · Эцсийн deliverable: " +
+        (w.deliverables || []).filter(function (d) { return d.final; }).length +
         " · Нотолгоо: " + (w.evidence || []).length + "</p>" +
         decideForm("rev", ' data-rid="' + esc(x.r.id) + '" data-wid="' + esc(w.id) + '"');
-    } else {
-      html += '<p class="sub">Батлалын төрөл: <b>' + esc(x.a.type) + "</b> · Хувилбар: <b class='mono'>" + esc(x.a.version || "—") +
-        "</b> · Review: " + (w.reviews || []).filter(function (r) { return r.decision === "PASS"; }).length + " PASS</p>" +
+    } else if (x.kind === "app") {
+      html += '<p class="sub">Эзэмшигч: ' + esc(U(w.owner).name) + " · Хувилбар: <b class='mono'>" + esc(x.a.version || "—") +
+        "</b> · Эцсийн deliverable: " + (w.deliverables || []).filter(function (d) { return d.final; }).length +
+        " · Нотолгоо: " + (w.evidence || []).length + "</p>" +
+        '<p class="sub" style="margin:-4px 0 8px;font-size:11.5px">Энэ бол агуулгын хяналт БА эрх мэдлийн батлал хоёр нэг дор — ' +
+        "ажилтанд тусад нь хянагч томилогддоггүй.</p>" +
         decideForm("app", ' data-aid="' + esc(x.a.id) + '" data-wid="' + esc(w.id) + '"');
+    } else if (x.kind === "cio") {
+      html += '<p class="sub">Газрын захирал баталсан — CIO хүлээн авч зөвшөөрөх ээлж (G9).</p>' +
+        decideForm("ciosign", ' data-wid="' + esc(w.id) + '"');
+    } else if (x.kind === "sign") {
+      html += '<p class="sub">Гейт: <b>' + (w.gate ? esc(w.gate.result) : "?") + "</b> · хүссэн: " +
+        esc(w.closure.requestedBy) + "</p>" + decideForm("sign", ' data-wid="' + esc(w.id) + '"');
+    } else if (x.kind === "hoconf") {
+      html += '<p class="sub">' + esc(w.handover.by) + " танд хүлээлгэн өгсөн" +
+        (w.handover.note ? " — " + esc(w.handover.note) : "") + "</p>" +
+        '<div class="frow" style="align-items:flex-end"><label class="field" style="flex:2"><span>Тайлбар (буцаахад заавал)</span>' +
+        '<input type="text" data-f="hocmt"></label><div style="display:flex;gap:6px;padding-bottom:9px">' +
+        '<button class="btn sm2 pass" data-hoconf="1" data-wid="' + esc(w.id) + '">Хүлээн авснаа баталгаажуулах</button>' +
+        '<button class="btn sm2 warn" data-hoconf="0" data-wid="' + esc(w.id) + '">Буцаах</button></div></div>';
     }
     html += "</div></section>";
   });
@@ -1060,8 +1256,7 @@ function render() {
   var html = S.tab === "home" ? vHome()
     : S.tab === "okr" ? vOkr()
     : S.tab === "work" ? (w ? vWorkDetail(w) : vHome())
-    : S.tab === "rev" ? vQueue("rev")
-    : S.tab === "app" ? vQueue("app")
+    : S.tab === "queue" ? vQueue()
     : S.tab === "report" ? vReport()
     : S.tab === "doccheck" ? vDocCheck() :
     S.tab === "process" ? vProcess() :
@@ -1073,10 +1268,8 @@ function render() {
   document.querySelectorAll("nav [role=tab]").forEach(function (t) {
     t.setAttribute("aria-selected", String(t.dataset.tab === (S.tab === "work" ? "home" : S.tab)));
   });
-  var revBtn = document.querySelector('[data-tab=rev] .cnt'), appBtn = document.querySelector('[data-tab=app] .cnt');
-  var nr = S.p === "OO" ? pendingReviews().length : 0;
-  var na = S.p === "ME" ? pendingApprovals().length : 0;
-  if (revBtn) { revBtn.textContent = nr || ""; revBtn.hidden = !nr; }
-  if (appBtn) { appBtn.textContent = na || ""; appBtn.hidden = !na; }
+  var qBtn = document.querySelector('[data-tab=queue] .cnt');
+  var nq = myQueue().length;
+  if (qBtn) { qBtn.textContent = nq || ""; qBtn.hidden = !nq; }
   renderChat();
 }

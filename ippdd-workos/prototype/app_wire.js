@@ -319,6 +319,64 @@ function runEomCheck(wid) {
   });
 }
 
+/* OKR импорт: Google Sheet-ийг нээсэн хүний эрхээр уншиж, AI-аар задлана */
+function readOkrSheet() {
+  if (S.okrBusy) return;
+  var el = document.querySelector('[data-f="okrlink"]');
+  var own = document.querySelector('[data-f="okrowner"]');
+  S.okrLink = el ? el.value : (S.okrLink || "");
+  S.okrOwner = own ? own.value : S.p;
+  var ref = driveRef(S.okrLink);
+  if (!ref || ref.kind !== "file") { toast("Google Sheet-ийн линк тавина уу (docs.google.com/spreadsheets/…)", true); return; }
+  Promise.all([useCap("mcp"), useCap("sample")]).then(function (caps) {
+    var mcp = caps[0], sample = caps[1];
+    if (!sample) { toast("AI энэ орчинд боломжгүй байна", true); return; }
+    if (!mcp) { toast("Google Drive холболт алга — claude.ai дотроос нээж ажиллуулна уу", true); return; }
+    S.okrBusy = true; S.okrProg = "OKR хүснэгтийг уншиж байна…"; S.okrPreview = null; render();
+    mcp.callTool("Google Drive", "read_file_content", { fileId: ref.id }).then(function (res) {
+      var pl = res && res.payload;
+      var txt = pl && typeof pl === "object" && typeof pl.fileContent === "string" ? pl.fileContent
+        : typeof pl === "string" ? pl : JSON.stringify(pl || "");
+      txt = String(txt).slice(0, 24000);
+      if (!txt.trim()) throw new Error("Хүснэгт хоосон эсвэл унших эрх алга");
+      S.okrProg = "Зорилт, KR-үүдийг задалж байна…"; render();
+      var sys = "Дараах Google Sheet-ийн текстээс OKR-ийг задал. Энэ нь нэг хүний улирлын OKR хүснэгт.\n\n" +
+        "ХАТУУ ДҮРЭМ: зөвхөн текстэд байгаа зүйлийг гарга — байхгүй KR, огноо, тоо бүү зохио; " +
+        "гүйцэтгэл (achievement) тодорхойгүй бол 0; жин (weight) байхгүй бол 0; огноо ISO (ОООО-СС-ӨӨ) хэлбэрт хөрвүүл; " +
+        "статус нь NOT_STARTED | IN_PROGRESS | CLOSED гурвын нэг.\n\n" +
+        "Хариу ЗӨВХӨН JSON: {\"source\":\"хүснэгтийн нэр эсвэл эзэмшигчийн нэр\",\"rows\":[" +
+        "{\"obj\":\"O1\",\"objTitle\":\"зорилтын нэр\",\"objWeight\":40,\"code\":\"KR1\",\"title\":\"KR-ийн бүтэн текст\"," +
+        "\"weight\":40,\"deadline\":\"2026-09-30\",\"status\":\"IN_PROGRESS\",\"achievement\":0}]}\n\n" +
+        "=== SHEET ===\n" + txt;
+      return sample.json(sys, { modelTier: "default", cache: false });
+    }).then(function (out) {
+      var rows = (out && Array.isArray(out.rows) ? out.rows : []).slice(0, 40).map(function (r) {
+        return { obj: String(r.obj || "O1").slice(0, 8), objTitle: String(r.objTitle || "").slice(0, 300),
+          objWeight: Number(r.objWeight) || 0, code: String(r.code || "KR1").slice(0, 8),
+          title: String(r.title || "").slice(0, 500), weight: Number(r.weight) || 0,
+          deadline: /^\d{4}-\d{2}-\d{2}$/.test(r.deadline || "") ? r.deadline : null,
+          status: ["NOT_STARTED", "IN_PROGRESS", "CLOSED"].indexOf(r.status) >= 0 ? r.status : "NOT_STARTED",
+          achievement: Math.max(0, Math.min(100, Number(r.achievement) || 0)) };
+      }).filter(function (r) { return r.title; });
+      if (!rows.length) throw new Error("KR олдсонгүй — хүснэгтийн бүтцийг шалгана уу");
+      S.okrPreview = { rows: rows, source: String((out && out.source) || "").slice(0, 200), link: S.okrLink };
+      toast(rows.length + " KR уншлаа — шалгаад «Импортлох» дарна уу");
+    }).catch(function (e) {
+      toast("OKR унших амжилтгүй: " + ((e && (e.message || e.code)) || "алдаа"), true);
+    }).finally(function () { S.okrBusy = false; S.okrProg = null; render(); });
+  });
+}
+
+function saveOkrImport() {
+  var pv = S.okrPreview;
+  if (!pv) return;
+  var par = document.querySelector('[data-f="okrparent"]');
+  try {
+    A.importOkr(pv.rows, S.okrOwner || S.p, par ? par.value : "", pv.source || pv.link);
+    S.okrPreview = null; S.okrLink = ""; render();
+  } catch (e) { /* must() toast хийсэн */ }
+}
+
 function askCheckinAi() {
   if (S.aiBusy) return;
   useCap("sample").then(function (sample) {
@@ -415,6 +473,10 @@ document.addEventListener("submit", function (ev) {
 
 document.addEventListener("change", function (ev) {
   var t = ev.target;
+  if (t.dataset && t.dataset.krparent) {
+    try { A.setKrParent(t.dataset.krparent, t.value); } catch (e) { render(); }
+    return;
+  }
   if (t.dataset && t.dataset.krach) {
     try { A.setKrAchievement(t.dataset.krach, t.value); } catch (e) { render(); }
   }
@@ -459,13 +521,18 @@ document.addEventListener("click", function (ev) {
     }
     if (d.dept) { S.deptFilter = d.dept; render(); return; }
     if (d.hoconf != null) {
-      A.confirmHandover(S.workId, d.hoconf === "1", fval(t, "hocmt")); return;
+      A.confirmHandover(wid, d.hoconf === "1", fval(t, "hocmt")); return;
     }
     switch (d.act) {
       case "print": window.print(); break;
       case "checkinAi": askCheckinAi(); break;
       case "eomCheck": runEomCheck(S.workId); break;
       case "docCheck": runDocCheck(); break;
+      case "okrRead": readOkrSheet(); break;
+      case "okrSave": saveOkrImport(); break;
+      case "okrCancel": S.okrPreview = null; render(); break;
+      case "backup": A.backup(); break;
+      case "restore": A.restore(fval(t, "restorejson")); break;
       case "loadFw": loadFramework(); break;
       case "docAudit": runDocAudit(S.workId); break;
       case "eomManual": A.recordEomManual(S.workId, fval(t, "emnote")); break;

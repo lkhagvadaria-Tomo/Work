@@ -2,13 +2,16 @@
    Цэвэр функцууд — node дээр тестлэгдэнэ, AI хамааралгүй. */
 "use strict";
 
+/* Ажилтанд тусад нь томилогдсон «хянагч» гэж байхгүй — агуулгын хяналт ба батлал нь
+   газрын захирлын НЭГ шийдвэр (G4 «хянаж батлах»). Зөвхөн техникийн ажилд (AI_AGENT)
+   өөр нэгжийн (IT) хараат хяналт үлдэнэ. */
 var PROFILES = {
-  PROCESS:  { deliv:true,  selfqc:true,  reviews:["FUNCTIONAL","PROCESS_OWNER"], approvals:["DIRECTOR"], impl:false, metric:false, minEv:1, simplified:false },
-  STANDARD: { deliv:true,  selfqc:true,  reviews:["FUNCTIONAL"], approvals:["DIRECTOR"], impl:false, metric:false, minEv:1, simplified:false },
-  AI_AGENT: { deliv:true,  selfqc:true,  reviews:["FUNCTIONAL","IT"], approvals:["DIRECTOR"], impl:true,  metric:true,  minEv:2, simplified:false },
-  TRAINING: { deliv:true,  selfqc:false, reviews:["FUNCTIONAL"], approvals:["DIRECTOR"], impl:false, metric:true,  minEv:1, simplified:false },
-  KPI:      { deliv:false, selfqc:false, reviews:["FUNCTIONAL"], approvals:[],           impl:false, metric:true,  minEv:1, simplified:true  },
-  DEFAULT:  { deliv:true,  selfqc:true,  reviews:["FUNCTIONAL"], approvals:["DIRECTOR"], impl:false, metric:false, minEv:1, simplified:false }
+  PROCESS:  { deliv:true,  selfqc:true,  reviews:[],     approvals:["DIRECTOR"], impl:false, metric:false, minEv:1, simplified:false },
+  STANDARD: { deliv:true,  selfqc:true,  reviews:[],     approvals:["DIRECTOR"], impl:false, metric:false, minEv:1, simplified:false },
+  AI_AGENT: { deliv:true,  selfqc:true,  reviews:["IT"], approvals:["DIRECTOR"], impl:true,  metric:true,  minEv:2, simplified:false },
+  TRAINING: { deliv:true,  selfqc:false, reviews:[],     approvals:["DIRECTOR"], impl:false, metric:true,  minEv:1, simplified:false },
+  KPI:      { deliv:false, selfqc:false, reviews:[],     approvals:["DIRECTOR"], impl:false, metric:true,  minEv:1, simplified:true  },
+  DEFAULT:  { deliv:true,  selfqc:true,  reviews:[],     approvals:["DIRECTOR"], impl:false, metric:false, minEv:1, simplified:false }
 };
 function profileOf(w) { return PROFILES[w.type] || PROFILES.DEFAULT; }
 
@@ -144,15 +147,15 @@ function evaluateGate(w, today) {
     var needA = p.approvals.filter(function (t) {
       return !apps.some(function (a) { return a.type === t && a.decision === "APPROVE"; });
     });
-    if (needA.length) add("G4", "G4 · Батлал", true, "FAIL",
+    if (needA.length) add("G4", "G4 · Захирлын хянаж батлах", true, "FAIL",
       { sev: "HIGH", res: "FAIL", title: "Батлал дутуу: " + needA.join(", "),
         act: "Эцсийн хувилбарыг батлагчид илгээ." });
     else {
       var unversioned = apps.some(function (a) { return a.decision === "APPROVE" && !a.version; });
-      add("G4", "G4 · Батлал", true, unversioned ? "WARNING" : "PASS", unversioned ?
+      add("G4", "G4 · Захирлын хянаж батлах", true, unversioned ? "WARNING" : "PASS", unversioned ?
         { sev: "MEDIUM", res: "WARNING", title: "Батлал хувилбарын дугааргүй" } : null);
     }
-  } else add("G4", "G4 · Батлал", false, "NOT_APPLICABLE");
+  } else add("G4", "G4 · Захирлын хянаж батлах", false, "NOT_APPLICABLE");
 
   // G5 implementation
   var implReq = p.impl || w.implReq;

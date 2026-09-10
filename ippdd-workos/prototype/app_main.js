@@ -19,7 +19,8 @@ var S = {
   tab: "home", workId: null, ai: [], aiBusy: false, chatOpen: false, checkinAi: null,
   eomBusy: false, eomWid: null, eomProg: null,
   dcLinks: "", dcBusy: false, dcProg: null, dcResult: null,
-  fw: null, fwBusy: false, fwProg: null, auditBusy: false, auditWid: null, auditProg: null
+  fw: null, fwBusy: false, fwProg: null, auditBusy: false, auditWid: null, auditProg: null,
+  okrLink: "", okrBusy: false, okrProg: null, okrPreview: null, okrOwner: null
 };
 
 function loadSession() {
@@ -131,7 +132,7 @@ function mergeWork(remote, mine) {
   mine.audit = ma.concat(ra).filter(function (x) {
     var key = x.ts + "|" + x.by + "|" + x.action;
     if (seen[key]) return false; seen[key] = 1; return true;
-  }).sort(function (x, y) { return x.ts < y.ts ? 1 : -1; }).slice(0, 60);
+  }).sort(function (x, y) { return x.ts < y.ts ? 1 : -1; }).slice(0, 200);
   return mine;
 }
 
@@ -312,11 +313,12 @@ var A = {
   submitReview: function (id) {
     var w = W(id); must(S.p === w.owner, "Зөвхөн эзэмшигч");
     var p = profileOf(w);
+    if (!p.reviews.length) { A.requestApproval(id); return; } // ажилтанд хянагч байхгүй → шууд захиралд
     p.reviews.forEach(function (t) {
       var done = w.reviews.some(function (r) { return r.type === t && (r.decision === "PASS" || r.decision === "PENDING"); });
       if (!done) w.reviews.push({ id: uid(), type: t, by: U(w.reviewer).name, decision: "PENDING", ts: now() });
     });
-    go(w, "SUBMITTED", "Review-д илгээв");
+    go(w, "SUBMITTED", "Хараат хяналтад илгээв");
   },
   decideReview: function (id, rid, decision, comment) {
     var w = W(id);
@@ -343,10 +345,13 @@ var A = {
   },
   requestApproval: function (id) {
     var w = W(id); must(S.p === w.owner, "Зөвхөн эзэмшигч");
+    must(!w.approvals.some(function (a) { return a.decision === "PENDING"; }), "Батлал аль хэдийн хүлээгдэж байна");
     var fin = w.deliverables.filter(function (d) { return d.final; }).slice(-1)[0];
     w.approvals.push({ id: uid(), type: "DIRECTOR", by: U(w.approver).name,
       decision: "PENDING", version: fin ? fin.version : null, ts: now() });
-    go(w, "WAITING_APPROVAL", "Батлалд илгээв");
+    if (w.status === "REVIEW_PASSED" || w.status === "SUBMITTED" || w.status === "IN_PROGRESS")
+      { w.status = "WAITING_APPROVAL"; saveWork(w, "Захирлын хянаж батлахаар илгээв → WAITING_APPROVAL"); }
+    else go(w, "WAITING_APPROVAL", "Захирлын хянаж батлахаар илгээв");
   },
   decideApproval: function (id, aid, decision, comment) {
     var w = W(id);
@@ -493,14 +498,63 @@ var A = {
     saveUser({ id: id, name: f.name.trim(), email: f.email.trim(), role: f.role, dept: f.dept });
     toast(f.name.trim() + " нэмэгдлээ — нэвтрэх жагсаалтад орсон");
   },
+  backup: function () {
+    must(isBoss(), "Нөөшлөлтийг захирал, CIO хийнэ");
+    var dump = JSON.stringify({ v: 1, ts: now(), by: me().name, meta: S.meta, config: S.config,
+      users: S.users, krs: S.krs, works: S.works, framework: S.fw }, null, 1);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(dump).then(function () {
+        toast("Нөөц хуулбар clipboard-д хууллаа (" + Math.round(dump.length / 1024) + " KB)");
+      }).catch(function () { toast("Clipboard-д хуулж чадсангүй", true); });
+    } else toast("Энэ хөтөч clipboard дэмжихгүй байна", true);
+  },
+  restore: function (json) {
+    must(isBoss(), "Сэргээлтийг захирал, CIO хийнэ");
+    var d;
+    try { d = JSON.parse(json); } catch (e) { must(false, "JSON буруу"); }
+    must(d && d.works && d.krs, "Нөөц файлын бүтэц буруу");
+    var n = 0;
+    Object.values(d.works).forEach(function (w) { S.works[w.id] = w; saveWork(w, "Нөөцөөс сэргээв"); n++; });
+    Object.values(d.krs).forEach(function (k) { S.krs[k.id] = k; saveKr(k); n++; });
+    if (d.users) Object.values(d.users).forEach(function (u) { saveUser(u); n++; });
+    if (d.config) { S.config = d.config; saveConfig(); }
+    toast(n + " бичлэг сэргээгдлээ");
+  },
+  setKrParent: function (kid, parentId) {
+    var k = S.krs[kid]; must(k, "KR олдсонгүй");
+    must(isBoss(), "KR-ийн шатлалыг зөвхөн захирал, CIO тогтооно");
+    must(!parentId || (S.krs[parentId] && parentId !== kid), "Эх KR буруу");
+    if (parentId && S.krs[parentId].owner === k.owner) must(false, "Эх KR нь өөр хүнийх байх ёстой");
+    k.parent = parentId || null;
+    saveKr(k);
+    toast(parentId ? kid + " → " + parentId + " шатлал холбогдлоо" : kid + " шатлалаас салгав");
+  },
+  importOkr: function (rows, ownerId, parentId, source) {
+    must(isBoss() || S.p === ownerId, "Зөвхөн эзэн өөрөө эсвэл захирал импортолно");
+    must(S.users[ownerId], "Эзэмшигч сонгоно");
+    must(rows && rows.length, "Импортлох KR алга");
+    var added = 0;
+    rows.forEach(function (r) {
+      var id = (r.obj || "O?") + "-" + (r.code || "KR?") + "·" + ownerId;
+      S.krs[id] = { id: id, obj: r.obj || "O1", objTitle: r.objTitle || "", objWeight: Number(r.objWeight) || 0,
+        code: r.code || "KR1", title: r.title || "", weight: Number(r.weight) || 0,
+        deadline: r.deadline || null, status: r.status || "NOT_STARTED",
+        achievement: Number(r.achievement) || 0,
+        owner: ownerId, dept: U(ownerId).dept, parent: parentId || null, source: source || null };
+      saveKr(S.krs[id]); added++;
+    });
+    toast(U(ownerId).name + "-ийн " + added + " KR импортлогдлоо");
+  },
   setKrAchievement: function (kid, v) {
-    var k = S.krs[kid]; must(S.p === "LA", "Зөвхөн OKR эзэмшигч (Лхагвадарь)");
+    var k = S.krs[kid]; must(k, "KR олдсонгүй");
+    must(S.p === (k.owner || "LA") || isBoss(), "Зөвхөн KR-ийн эзэн, эсвэл захирал");
     v = Number(v); must(isFinite(v) && v >= 0 && v <= 100, "0–100 хооронд");
     must(k.status !== "CLOSED", "Хаагдсан KR");
     k.achievement = v; saveKr(k);
   },
   closeKr: function (kid, achievement) {
-    var k = S.krs[kid]; must(isDirector(), "KR хаалтыг захирал хийнэ");
+    var k = S.krs[kid]; must(k, "KR олдсонгүй"); must(isBoss(), "KR хаалтыг захирал, CIO хийнэ");
+    must(S.p !== (k.owner || "LA"), "Өөрийн KR-ээ өөрөө хаахгүй — дээд шатны захирал хаана");
     var open = Object.values(S.works).filter(function (w) {
       return w.kr === kid && w.status !== "CLOSED" && w.status !== "CANCELLED";
     });

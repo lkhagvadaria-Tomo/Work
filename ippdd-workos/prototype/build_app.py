@@ -13,6 +13,8 @@ for o in D["objectives"]:
     for k in o["krs"]:
         krs.append({
             "id": f'{o["objective_code"]}-{k["kr_code"]}',
+            "owner": "LA", "dept": "IPPDD", "parent": None,
+            "source": "IPPDD_OKR_Q3_2026-08-01_v1.0 workbook",
             "obj": o["objective_code"], "objTitle": o["title"],
             "objWeight": float(o["weight"]), "code": k["kr_code"],
             "title": k["title"], "weight": float(k["weight"]),
@@ -27,7 +29,7 @@ for w in D["work"]:
         "id": wid, "code": w["work_code"], "kr": w["kr"], "title": w["title"],
         "type": w["work_type"], "priority": w["priority"], "deadline": w["deadline"],
         "dod": w["definition_of_done"], "status": w["status"],
-        "owner": "LA", "reviewer": "OO", "approver": "ME",
+        "owner": "LA", "reviewer": "ME", "approver": "ME",
         "implReq": w["work_type"] == "AI_AGENT",
         "validReq": bool(w["metrics"]),
         "requirements": w["requirements"] or [],
@@ -57,7 +59,7 @@ seed = {
     ]},
     "users": [
         {"id": "LA", "name": "А.Лхагвадарь", "email": "lkhagvadari.a@netgroup.mn", "role": "Ажилтан", "dept": "IPPDD"},
-        {"id": "OO", "name": "Б.Онон", "email": "onon.or@netgroup.mn", "role": "Хянагч", "dept": "IPPDD"},
+        {"id": "OO", "name": "Б.Онон", "email": "onon.or@netgroup.mn", "role": "Ажилтан", "dept": "IPPDD"},
         {"id": "ME", "name": "О.Мөнх-Эрдэнэ", "email": "munkh-erdene.o@netgroup.mn", "role": "Захирал", "dept": "IPPDD"},
         {"id": "OB", "name": "Өлзийбаяр Сандагдорж", "email": "", "role": "Захирал", "dept": "ISCMD"},
         {"id": "NG", "name": "Х.Нургүл", "email": "", "role": "CIO", "dept": "IPPDD"},
@@ -109,8 +111,7 @@ body = f"""
     <nav class="views" role="tablist" aria-label="Цэс">
       <button role="tab" data-tab="home" aria-selected="true">Нүүр</button>
       <button role="tab" data-tab="okr" aria-selected="false">Миний OKR</button>
-      <button role="tab" data-tab="rev" aria-selected="false">Хяналт <span class="cnt" hidden></span></button>
-      <button role="tab" data-tab="app" aria-selected="false">Батлал <span class="cnt" hidden></span></button>
+      <button role="tab" data-tab="queue" aria-selected="false">Миний дараалал <span class="cnt" hidden></span></button>
       <button role="tab" data-tab="checkin" aria-selected="false">Check-in</button>
       <button role="tab" data-tab="doccheck" aria-selected="false">Баримт шалгах</button>
       <button role="tab" data-tab="process" aria-selected="false">Процесс</button>
